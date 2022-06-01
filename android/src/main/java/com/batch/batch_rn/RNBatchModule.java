@@ -1,4 +1,4 @@
-package tech.bam.RNBatchPush;
+package com.batch.batch_rn;
 
 import android.app.Activity;
 import android.app.Application;
@@ -590,7 +590,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
 
     @ReactMethod
     public void userData_trackLocation(ReadableMap serializedLocation) {
-        Location nativeLocation = new Location("tech.bam.RNBatchPush");
+        Location nativeLocation = new Location("com.batch.batch_rn");
         nativeLocation.setLatitude(serializedLocation.getDouble("latitude"));
         nativeLocation.setLongitude(serializedLocation.getDouble("longitude"));
 

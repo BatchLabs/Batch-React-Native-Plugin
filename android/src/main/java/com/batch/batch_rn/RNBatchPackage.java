@@ -1,4 +1,4 @@
-package tech.bam.RNBatchPush;
+package com.batch.batch_rn;
 
 import android.app.Application;
 

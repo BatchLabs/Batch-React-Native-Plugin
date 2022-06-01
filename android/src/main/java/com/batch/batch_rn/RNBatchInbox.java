@@ -1,6 +1,5 @@
-package tech.bam.RNBatchPush;
+package com.batch.batch_rn;
 
-import android.app.Activity;
 import android.util.Log;
 
 import com.batch.android.BatchInboxNotificationContent;
@@ -9,7 +8,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
