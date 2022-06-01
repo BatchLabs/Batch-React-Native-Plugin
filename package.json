@@ -1,29 +1,14 @@
 {
-  "name": "@bam.tech/react-native-batch",
+  "name": "@batch.com/react-native-plugin",
   "version": "7.0.3",
-  "description": "React Native integration of Batch.com SDK",
-  "homepage": "https://bamlab.github.io/react-native-batch-push",
+  "description": "Batch.com React-Native Plugin",
+  "homepage": "https://github.com/BatchLabs/sdk.temp.react-native-plugin",
   "main": "dist/Batch.js",
   "types": "dist/Batch.d.ts",
   "repository": {
     "type": "git",
-    "url": "git@github.com:bamlab/react-native-batch-push.git"
+    "url": "git@github.com:BatchLabs/sdk.temp.react-native-plugin.git"
   },
-  "authors": [
-    {
-      "name": "Louis Lagrange",
-      "email": "lagrange.louis@gmail.com",
-      "url": "https://github.com/Minishlink"
-    },
-    {
-      "name": "Yann Leflour",
-      "url": "https://github.com/yleflour"
-    },
-    {
-      "name": "Guillaume Piedigrossi",
-      "url": "https://github.com/Spoutnik97"
-    }
-  ],
   "license": "MIT",
   "keywords": [
     "react-native",
