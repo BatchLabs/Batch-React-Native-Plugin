@@ -19,11 +19,14 @@
   "scripts": {
     "test": "jest",
     "bump-version": "./scripts/bump-version.sh",
-    "prepare": "tsc && expo-module prepare",
-    "postpublish": "yarn doc:deploy",
-    "doc:generate": "typedoc && touch ./docs/.nojekyll",
-    "doc:publish": "gh-pages --dotfiles -d docs",
-    "doc:deploy": "yarn doc:generate && yarn doc:publish"
+    "prepare": "tsc",
+    "doc": "typedoc",
+    "format": "prettier --write \"src/**/*.{ts,js}\" \"__tests__/**/*.{ts,js}\"",
+    "lint": "eslint --no-fix \"src/**\"",
+    "lint:fail-on-warnings": "eslint \"src/**\" --no-fix --max-warnings 0",
+    "lint:report": "eslint --no-fix --output-file eslint_report.json --format json \"src/**\"",
+    "lint:errors": "eslint \"src/**\" --quiet",
+    "lint:fix": "eslint --fix \"src/**\" || true"
   },
   "peerDependencies": {
     "react-native": "*"
@@ -33,6 +36,11 @@
     "@types/jest": "^27.0.2",
     "@types/react": "^17.0.33",
     "@types/react-native": "^0.66.1",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "expo-module-scripts": "^2.0.0",
     "gh-pages": "^2.0.1",
     "jest": "^27.3.1",
@@ -40,6 +48,6 @@
     "react-native": "^0.66.1",
     "ts-jest": "^27.0.7",
     "typedoc": "^0.22.7",
-    "typescript": "^4.4.4"
+    "typescript": "^4.7.2"
   }
 }
