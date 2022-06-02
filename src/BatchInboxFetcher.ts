@@ -1,11 +1,12 @@
 import { NativeModules } from 'react-native';
+
 import { IInboxNotification } from './BatchInbox';
 const RNBatch = NativeModules.RNBatch;
 
 export class BatchInboxFetcher {
   private readonly identifier: string;
 
-  constructor(identifier: string) {
+  public constructor(identifier: string) {
     this.identifier = identifier;
   }
 
@@ -14,21 +15,21 @@ export class BatchInboxFetcher {
    *
    * You'll usually want to use this when your component unmounts in order to free up memory.
    */
-  destroy(): Promise<void> {
+  public destroy(): Promise<void> {
     return RNBatch.inbox_fetcher_destroy(this.identifier);
   }
 
   /**
    * Returns whether there is more notification to fetch.
    */
-  hasMore(): Promise<boolean> {
+  public hasMore(): Promise<boolean> {
     return RNBatch.inbox_fetcher_hasMore(this.identifier);
   }
 
   /**
    * Marks all notifications as read.
    */
-  markAllNotificationsAsRead(): Promise<void> {
+  public markAllNotificationsAsRead(): Promise<void> {
     return RNBatch.inbox_fetcher_markAllAsRead(this.identifier);
   }
 
@@ -39,11 +40,8 @@ export class BatchInboxFetcher {
    *
    * @param notificationIdentifier The identifier of the notification to mark as read
    */
-  markNotificationAsRead(notificationIdentifier: string): Promise<void> {
-    return RNBatch.inbox_fetcher_markAsRead(
-      this.identifier,
-      notificationIdentifier
-    );
+  public markNotificationAsRead(notificationIdentifier: string): Promise<void> {
+    return RNBatch.inbox_fetcher_markAsRead(this.identifier, notificationIdentifier);
   }
 
   /**
@@ -53,11 +51,8 @@ export class BatchInboxFetcher {
    *
    * @param notificationIdentifier The identifier of the notification to mark as deleted
    */
-  markNotificationAsDeleted(notificationIdentifier: string): Promise<void> {
-    return RNBatch.inbox_fetcher_markAsDeleted(
-      this.identifier,
-      notificationIdentifier
-    );
+  public markNotificationAsDeleted(notificationIdentifier: string): Promise<void> {
+    return RNBatch.inbox_fetcher_markAsDeleted(this.identifier, notificationIdentifier);
   }
 
   /**
@@ -65,17 +60,15 @@ export class BatchInboxFetcher {
    *
    * Usually used as an initial fetch and refresh method in an infinite list.
    */
-  fetchNewNotifications(): Promise<{
+  public fetchNewNotifications(): Promise<{
     notifications: IInboxNotification[];
     endReached: boolean;
     foundNewNotifications: boolean;
   }> {
-    return RNBatch.inbox_fetcher_fetchNewNotifications(this.identifier).then(
-      result => ({
-        ...result,
-        notifications: parseNotifications(result.notifications),
-      })
-    );
+    return RNBatch.inbox_fetcher_fetchNewNotifications(this.identifier).then(result => ({
+      ...result,
+      notifications: parseNotifications(result.notifications),
+    }));
   }
 
   /**
@@ -83,22 +76,18 @@ export class BatchInboxFetcher {
    *
    * Usually used as a "fetchMore" method in an infinite list.
    */
-  fetchNextPage(): Promise<{
+  public fetchNextPage(): Promise<{
     notifications: IInboxNotification[];
     endReached: boolean;
   }> {
-    return RNBatch.inbox_fetcher_fetchNextPage(this.identifier).then(
-      result => ({
-        ...result,
-        notifications: parseNotifications(result.notifications),
-      })
-    );
+    return RNBatch.inbox_fetcher_fetchNextPage(this.identifier).then(result => ({
+      ...result,
+      notifications: parseNotifications(result.notifications),
+    }));
   }
 }
 
-const parseNotifications = (
-  notifications: IInboxNotification[]
-): IInboxNotification[] => {
+const parseNotifications = (notifications: IInboxNotification[]): IInboxNotification[] => {
   return notifications.map(notification => {
     if (!notification.payload) return notification;
 

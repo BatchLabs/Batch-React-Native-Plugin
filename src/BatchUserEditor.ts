@@ -90,12 +90,12 @@ export class BatchUserEditor {
     this._settings = settings;
   }
 
-  private addAction(action: IUserSettingsAction) {
+  private addAction(action: IUserSettingsAction): BatchUserEditor {
     this._settings.push(action);
     return this;
   }
 
-  public setAttribute(key: string, value: string | boolean | number | null) {
+  public setAttribute(key: string, value: string | boolean | number | null): BatchUserEditor {
     return this.addAction({
       type: 'setAttribute',
       key,
@@ -103,7 +103,7 @@ export class BatchUserEditor {
     });
   }
 
-  public setDateAttribute(key: string, value: number) {
+  public setDateAttribute(key: string, value: number): BatchUserEditor {
     return this.addAction({
       type: 'setDateAttribute',
       key,
@@ -111,7 +111,7 @@ export class BatchUserEditor {
     });
   }
 
-  public setURLAttribute(key: string, value: string) {
+  public setURLAttribute(key: string, value: string): BatchUserEditor {
     return this.addAction({
       type: 'setURLAttribute',
       key,
@@ -119,41 +119,41 @@ export class BatchUserEditor {
     });
   }
 
-  public removeAttribute(key: string) {
+  public removeAttribute(key: string): BatchUserEditor {
     return this.addAction({
       type: 'removeAttribute',
       key,
     });
   }
 
-  public clearAttributes() {
+  public clearAttributes(): BatchUserEditor {
     return this.addAction({
       type: 'clearAttributes',
     });
   }
 
-  public setIdentifier(value: string | null) {
+  public setIdentifier(value: string | null): BatchUserEditor {
     return this.addAction({
       type: 'setIdentifier',
       value,
     });
   }
 
-  public setLanguage(value?: string) {
+  public setLanguage(value?: string): BatchUserEditor {
     return this.addAction({
       type: 'setLanguage',
       value,
     });
   }
 
-  public setRegion(value?: string) {
+  public setRegion(value?: string): BatchUserEditor {
     return this.addAction({
       type: 'setRegion',
       value,
     });
   }
 
-  public addTag(collection: string, tag: string) {
+  public addTag(collection: string, tag: string): BatchUserEditor {
     return this.addAction({
       type: 'addTag',
       collection,
@@ -161,7 +161,7 @@ export class BatchUserEditor {
     });
   }
 
-  public removeTag(collection: string, tag: string) {
+  public removeTag(collection: string, tag: string): BatchUserEditor {
     return this.addAction({
       type: 'removeTag',
       collection,
@@ -169,14 +169,14 @@ export class BatchUserEditor {
     });
   }
 
-  public clearTagCollection(collection: string) {
+  public clearTagCollection(collection: string): BatchUserEditor {
     return this.addAction({
       type: 'clearTagCollection',
       collection,
     });
   }
 
-  public clearTags() {
+  public clearTags(): BatchUserEditor {
     return this.addAction({
       type: 'clearTags',
     });

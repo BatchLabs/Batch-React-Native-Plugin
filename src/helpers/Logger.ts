@@ -1,11 +1,10 @@
 const DEBUG = false;
 
-export function Log(debug: boolean, ...message: any[]) {
-  const args = ['[Batch]'].concat(Array.prototype.slice.call(arguments, 1));
+export function Log(debug: boolean, ...message: unknown[]): void {
   if (DEBUG && debug) {
-    console.debug.apply(console, args);
+    console.debug(...message);
   } else if (debug === false) {
-    console.log.apply(console, args);
+    console.log(...message);
   }
 }
 

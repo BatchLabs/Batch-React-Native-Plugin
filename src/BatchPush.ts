@@ -1,4 +1,5 @@
 import { Linking, NativeModules, Platform } from 'react-native';
+
 import { BatchEventEmitter, EmitterSubscription } from './BatchEventEmitter';
 const RNBatch = NativeModules.RNBatch;
 
@@ -12,12 +13,11 @@ export interface IAndroidNotificationTypes {
 
 export interface BatchPushEventPayload {
   isPositiveAction: boolean;
-  pushPayload: Record<string, any>;
+  pushPayload: Record<string, unknown>;
   deeplink?: string | null;
 }
 
-export const AndroidNotificationTypes: IAndroidNotificationTypes =
-  RNBatch.NOTIFICATION_TYPES;
+export const AndroidNotificationTypes: IAndroidNotificationTypes = RNBatch.NOTIFICATION_TYPES;
 
 /**
  * Batch's push module
@@ -82,10 +82,7 @@ export const BatchPush = {
    * Example : setAndroidNotificationTypes(batch.push.AndroidNotificationTypes.ALERT | batch.push.AndroidNotificationTypes.SOUND)
    */
   setAndroidNotificationTypes: (notificationTypes: number[]): void => {
-    const notificationType = notificationTypes.reduce(
-      (sum, value) => sum + value,
-      0
-    );
+    const notificationType = notificationTypes.reduce((sum, value) => sum + value, 0);
     RNBatch.push_setNotificationTypes(notificationType);
   },
 
@@ -112,8 +109,7 @@ export const BatchPush = {
    * On iOS, your application should still register for remote notifications
    * once per launch, in order to keep this value valid.
    */
-  getLastKnownPushToken: (): Promise<string> =>
-    RNBatch.push_getLastKnownPushToken(),
+  getLastKnownPushToken: (): Promise<string> => RNBatch.push_getLastKnownPushToken(),
 
   /**
    * Gets the app's initial URL.
@@ -141,19 +137,17 @@ export const BatchPush = {
    *
    * Push payload will vary depending on the platform.
    */
-  addListener(
-    eventType: 'open' | 'dismiss' | 'display',
-    callback: (payload: BatchPushEventPayload) => void
-  ): EmitterSubscription {
+  addListener(eventType: 'open' | 'dismiss' | 'display', callback: (payload: BatchPushEventPayload) => void): EmitterSubscription {
     if (Platform.OS === 'ios' && ['dismiss', 'display'].includes(eventType)) {
       // not supported by Batch iOS SDK
-      return { remove: () => {} };
+      return {
+        remove: () => {
+          // do nothing
+        },
+      };
     }
 
-    const subscription = BatchEventEmitter.addListener(
-      `notification_${eventType}`,
-      callback
-    );
+    const subscription = BatchEventEmitter.addListener(`notification_${eventType}`, callback);
     return {
       remove: () => subscription.remove(),
     };

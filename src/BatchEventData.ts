@@ -1,5 +1,5 @@
 import { Log } from './helpers/Logger';
-import { isString, isNumber, isBoolean } from './helpers/TypeHelpers';
+import { isBoolean, isNumber, isString } from './helpers/TypeHelpers';
 
 export const Consts = {
   AttributeKeyRegexp: /^[a-zA-Z0-9_]{1,30}$/,
@@ -27,7 +27,7 @@ export class BatchEventData {
   private _tags: { [key: string]: true }; // tslint:disable-line
   private _attributes: { [key: string]: ITypedEventAttribute }; // tslint:disable-line
 
-  constructor() {
+  public constructor() {
     this._tags = {};
     this._attributes = {};
   }
@@ -56,14 +56,7 @@ export class BatchEventData {
     }
 
     if (Object.keys(this._tags).length >= Consts.EventDataMaxTags) {
-      Log(
-        false,
-        'BatchEventData - Event data cannot hold more than ' +
-          Consts.EventDataMaxTags +
-          " tags. Ignoring tag: '" +
-          tag +
-          "'"
-      );
+      Log(false, 'BatchEventData - Event data cannot hold more than ' + Consts.EventDataMaxTags + " tags. Ignoring tag: '" + tag + "'");
       return this;
     }
 
@@ -72,7 +65,7 @@ export class BatchEventData {
     return this;
   }
 
-  private checkBeforePuttingAttribute(key: string, value: any): void {
+  private checkBeforePuttingAttribute(key: string, value: unknown): void {
     if (!isString(key)) {
       Log(false, 'BatchEventData - Key must be a string');
       throw new Error();
@@ -81,7 +74,8 @@ export class BatchEventData {
     if (!Consts.AttributeKeyRegexp.test(key || '')) {
       Log(
         false,
-        "BatchEventData - Invalid key. Please make sure that the key is made of letters, underscores and numbers only (a-zA-Z0-9_). It also can't be longer than 30 characters. Ignoring attribute '" +
+        'BatchEventData - Invalid key. Please make sure that the key is made of letters, underscores and numbers only (a-zA-Z0-9_).' +
+          "It also can't be longer than 30 characters. Ignoring attribute '" +
           key +
           "'"
       );
@@ -93,23 +87,16 @@ export class BatchEventData {
       throw new Error();
     }
 
-    if (
-      Object.keys(this._attributes).length >= Consts.EventDataMaxValues &&
-      !this._attributes.hasOwnProperty(key)
-    ) {
+    if (Object.keys(this._attributes).length >= Consts.EventDataMaxValues && !Object.prototype.hasOwnProperty.call(this._attributes, key)) {
       Log(
         false,
-        'BatchEventData - Event data cannot hold more than ' +
-          Consts.EventDataMaxValues +
-          " attributes. Ignoring attribute: '" +
-          key +
-          "'"
+        'BatchEventData - Event data cannot hold more than ' + Consts.EventDataMaxValues + " attributes. Ignoring attribute: '" + key + "'"
       );
       throw new Error();
     }
   }
 
-  private prepareAttributeKey(key: string) {
+  private prepareAttributeKey(key: string): string {
     return key.toLowerCase();
   }
 
@@ -175,10 +162,7 @@ export class BatchEventData {
       };
     } else if (isNumber(value)) {
       typedAttrValue = {
-        type:
-          value % 1 === 0
-            ? TypedEventAttributeType.Integer
-            : TypedEventAttributeType.Float,
+        type: value % 1 === 0 ? TypedEventAttributeType.Integer : TypedEventAttributeType.Float,
         value,
       };
     } else if (isBoolean(value)) {
@@ -187,10 +171,7 @@ export class BatchEventData {
         value,
       };
     } else {
-      Log(
-        false,
-        'BatchEventData - Invalid attribute value type. Must be a string, number or boolean'
-      );
+      Log(false, 'BatchEventData - Invalid attribute value type. Must be a string, number or boolean');
       return this;
     }
 
@@ -201,7 +182,7 @@ export class BatchEventData {
     return this;
   }
 
-  protected _toInternalRepresentation() {
+  protected _toInternalRepresentation(): unknown {
     return {
       attributes: this._attributes,
       tags: Object.keys(this._tags),

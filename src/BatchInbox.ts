@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native';
+
 import { BatchInboxFetcher } from './BatchInboxFetcher';
 const RNBatch = NativeModules.RNBatch;
 
@@ -32,7 +33,7 @@ export interface IInboxNotification {
   /**
    * Raw notification user data (also called payload)
    */
-  payload: any;
+  payload: unknown;
 
   /**
    * Date at which the push notification has been sent to the device
@@ -45,7 +46,8 @@ export interface IInboxNotification {
   isUnread: boolean;
 
   /**
-   * The push notification's source, indicating what made Batch send it. It can come from a push campaign via the API or the dashboard, or from the transactional API, for example.
+   * The push notification's source, indicating what made Batch send it.
+   * It can come from a push campaign via the API or the dashboard, or from the transactional API, for example.
    */
   source: NotificationSource;
 }
@@ -65,9 +67,7 @@ export const BatchInbox = {
   /**
    * Gets a Batch inbox fetcher.
    */
-  async getFetcher(
-    options: BatchInboxFetcherOptions = {}
-  ): Promise<BatchInboxFetcher> {
+  async getFetcher(options: BatchInboxFetcherOptions = {}): Promise<BatchInboxFetcher> {
     const fetcherIdentifier = await RNBatch.inbox_getFetcher(options);
     return new BatchInboxFetcher(fetcherIdentifier);
   },

@@ -1,9 +1,4 @@
-import {
-  DeviceEventEmitter,
-  NativeEventEmitter,
-  NativeModules,
-  Platform,
-} from 'react-native';
+import { DeviceEventEmitter, NativeEventEmitter, NativeModules, Platform } from 'react-native';
 
 export const BatchEventEmitter = Platform.select({
   ios: new NativeEventEmitter(NativeModules.RNBatch),

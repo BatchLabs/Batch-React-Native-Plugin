@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
+
 import { BatchEventEmitter, EmitterSubscription } from './BatchEventEmitter';
 const RNBatch = NativeModules.RNBatch;
 
@@ -13,22 +14,19 @@ export const BatchMessaging = {
   /**
    * Shows the currently enqueued message, if any.
    */
-  showPendingMessage: (): Promise<void> =>
-    RNBatch.messaging_showPendingMessage(),
+  showPendingMessage: (): Promise<void> => RNBatch.messaging_showPendingMessage(),
 
   /**
    * Define if incoming messages have to be enqueued or displayed directly
    *
    * @param active
    */
-  setNotDisturbed: (active: boolean): Promise<void> =>
-    RNBatch.messaging_setNotDisturbed(active),
+  setNotDisturbed: (active: boolean): Promise<void> => RNBatch.messaging_setNotDisturbed(active),
 
   /**
    * Disables do not disturb mode and shows the currently enqueued message, if any.
    */
-  disableDoNotDisturbAndShowPendingMessage: (): Promise<void> =>
-    RNBatch.messaging_disableDoNotDisturbAndShowPendingMessage(),
+  disableDoNotDisturbAndShowPendingMessage: (): Promise<void> => RNBatch.messaging_disableDoNotDisturbAndShowPendingMessage(),
 
   /**
    * Override the font used in message views. Not applicable for standard alerts.
@@ -47,37 +45,20 @@ export const BatchMessaging = {
     italicBoldFontName?: string | null
   ): Promise<void> => {
     if (Platform.OS === 'android') {
-      return RNBatch.messaging_setTypefaceOverride(
-        normalFontName,
-        boldFontName
-      );
+      return RNBatch.messaging_setTypefaceOverride(normalFontName, boldFontName);
     }
 
-    return RNBatch.messaging_setFontOverride(
-      normalFontName,
-      boldFontName,
-      italicFontName,
-      italicBoldFontName
-    );
+    return RNBatch.messaging_setFontOverride(normalFontName, boldFontName, italicFontName, italicBoldFontName);
   },
 
   /**
    * Listen for messaging events
    */
   addListener(
-    eventType:
-      | 'show'
-      | 'close'
-      | 'close_error'
-      | 'auto_close'
-      | 'click'
-      | 'webview_click',
+    eventType: 'show' | 'close' | 'close_error' | 'auto_close' | 'click' | 'webview_click',
     callback: (payload: BatchMessagingEventPayload) => void
   ): EmitterSubscription {
-    const subscription = BatchEventEmitter.addListener(
-      `messaging_${eventType}`,
-      callback
-    );
+    const subscription = BatchEventEmitter.addListener(`messaging_${eventType}`, callback);
     return {
       remove: () => subscription.remove(),
     };
