@@ -98,7 +98,7 @@ const parseNotifications = (notifications: IInboxNotification[]): IInboxNotifica
       return {
         ...notification,
         payload: {
-          ...notification.payload,
+          ...(notification.payload as Record<string, unknown>),
           'com.batch': JSON.parse(batchPayload),
         },
       };
