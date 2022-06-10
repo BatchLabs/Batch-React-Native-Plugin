@@ -251,11 +251,11 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
         }
 
         else if([type isEqualToString:@"setLanguage"]) {
-            [editor setLanguage:action[@"value"]];
+            [editor setLanguage:[self safeNilValue:action[@"value"]]];
         }
 
         else if([type isEqualToString:@"setRegion"]) {
-            [editor setRegion:action[@"value"]];
+            [editor setRegion:[self safeNilValue:action[@"value"]]];
         }
 
         else if([type isEqualToString:@"addTag"]) {
