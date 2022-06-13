@@ -10,7 +10,7 @@
   #import "RCTEventEmitter.h"
 #endif
 
-@import Batch;
+#import <Batch/Batch.h>
 
 #define PluginVersion "ReactNative/7.0.3"
 
