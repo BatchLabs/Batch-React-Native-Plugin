@@ -223,6 +223,12 @@ RCT_EXPORT_METHOD(userData_getRegion:(RCTPromiseResolveBlock)resolve rejecter:(R
     resolve(region);
 }
 
+RCT_EXPORT_METHOD(userData_getLanguage:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString* language = [BatchUser language];
+    resolve(language);
+}
+
 RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 {
     BatchUserDataEditor *editor = [BatchUser editor];

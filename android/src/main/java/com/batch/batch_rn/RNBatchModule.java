@@ -507,6 +507,12 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
     }
 
     @ReactMethod
+    public void userData_getLanguage(Promise promise) {
+        String language = Batch.User.getLanguage(reactContext);
+        promise.resolve(language);
+    }
+
+    @ReactMethod
     public void userData_save(ReadableArray actions) {
         BatchUserDataEditor editor = Batch.User.editor();
         for (int i = 0; i < actions.size(); i++) {
