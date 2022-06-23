@@ -211,6 +211,12 @@ RCT_EXPORT_METHOD(userData_getInstallationId:(RCTPromiseResolveBlock)resolve rej
     resolve(installationId);
 }
 
+RCT_EXPORT_METHOD(userData_getIdentifier:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString* userId = [BatchUser identifier];
+    resolve(userId);
+}
+
 RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 {
     BatchUserDataEditor *editor = [BatchUser editor];
