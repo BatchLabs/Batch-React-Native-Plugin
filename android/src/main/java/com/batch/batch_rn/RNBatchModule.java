@@ -501,6 +501,12 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
     }
 
     @ReactMethod
+    public void userData_getRegion(Promise promise) {
+        String region = Batch.User.getRegion(reactContext);
+        promise.resolve(region);
+    }
+
+    @ReactMethod
     public void userData_save(ReadableArray actions) {
         BatchUserDataEditor editor = Batch.User.editor();
         for (int i = 0; i < actions.size(); i++) {

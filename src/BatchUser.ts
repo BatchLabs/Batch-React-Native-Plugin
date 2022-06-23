@@ -49,6 +49,12 @@ export const BatchUser = {
   getIdentifier: (): Promise<string> => RNBatch.userData_getIdentifier(),
 
   /**
+   * Get the region.
+   * @returns The region set with BatchUser.editor().setRegion();
+   */ 
+  getRegion: (): Promise<string> => RNBatch.userData_getRegion(),
+
+  /**
    * Creates an editor for the user profile
    * The profile is not updated until the method `save()` is called
    */
