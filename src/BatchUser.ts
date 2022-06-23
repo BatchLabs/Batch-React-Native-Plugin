@@ -43,6 +43,12 @@ export const BatchUser = {
   getInstallationID: (): Promise<string> => RNBatch.userData_getInstallationId(),
 
   /**
+   * Get the custom user identifier.
+   * @returns The custom user identifier set with BatchUser.editor().setIdentifier();
+   */  
+  getIdentifier: (): Promise<string> => RNBatch.userData_getIdentifier(),
+
+  /**
    * Creates an editor for the user profile
    * The profile is not updated until the method `save()` is called
    */
