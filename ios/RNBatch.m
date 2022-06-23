@@ -217,6 +217,12 @@ RCT_EXPORT_METHOD(userData_getIdentifier:(RCTPromiseResolveBlock)resolve rejecte
     resolve(userId);
 }
 
+RCT_EXPORT_METHOD(userData_getRegion:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString* region = [BatchUser region];
+    resolve(region);
+}
+
 RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 {
     BatchUserDataEditor *editor = [BatchUser editor];
