@@ -139,14 +139,14 @@ export class BatchUserEditor {
     });
   }
 
-  public setLanguage(value?: string): BatchUserEditor {
+  public setLanguage(value: string | null): BatchUserEditor {
     return this.addAction({
       type: 'setLanguage',
       value,
     });
   }
 
-  public setRegion(value?: string): BatchUserEditor {
+  public setRegion(value: string | null): BatchUserEditor {
     return this.addAction({
       type: 'setRegion',
       value,
