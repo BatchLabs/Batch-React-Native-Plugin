@@ -55,6 +55,12 @@ export const BatchUser = {
   getRegion: (): Promise<string> => RNBatch.userData_getRegion(),
 
   /**
+   * Get the language.
+   * @returns The language set with BatchUser.editor().setLanguage();
+   */ 
+  getLanguage: (): Promise<string> => RNBatch.userData_getLanguage(),
+
+  /**
    * Creates an editor for the user profile
    * The profile is not updated until the method `save()` is called
    */
