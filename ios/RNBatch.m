@@ -229,6 +229,72 @@ RCT_EXPORT_METHOD(userData_getLanguage:(RCTPromiseResolveBlock)resolve rejecter:
     resolve(language);
 }
 
+RCT_EXPORT_METHOD(userData_getAttributes:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [BatchUser fetchAttributes:^(NSDictionary<NSString *,BatchUserAttribute *> * _Nullable attributes) {
+        
+        if (attributes == nil) {
+            reject(@"BatchBridgeError", @"Native SDK fetchAttributes returned an error", nil);
+            return;
+        }
+        __block NSError *mapError = nil;
+        NSMutableDictionary<NSString*, NSDictionary<NSString*, id>*>* bridgeAttributes = [[NSMutableDictionary alloc] initWithCapacity:attributes.count];
+        [attributes enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, BatchUserAttribute * _Nonnull attribute, BOOL * _Nonnull stop) {
+            NSString *bridgeType;
+            id bridgeValue = nil;
+            
+            switch (attribute.type) {
+                case BatchUserAttributeTypeBool:
+                    bridgeType = @"b";
+                    bridgeValue = attribute.numberValue;
+                    break;
+                case BatchUserAttributeTypeDate:
+                {
+                    bridgeType = @"d";
+                    NSDate *dateValue = attribute.dateValue;
+                    if (dateValue != nil) {
+                        bridgeValue = @(floor(dateValue.timeIntervalSince1970 * 1000));
+                    }
+                    break;
+                }
+                case BatchUserAttributeTypeDouble:
+                    bridgeType = @"f";
+                    bridgeValue = attribute.numberValue;
+                    break;
+                case BatchUserAttributeTypeLongLong:
+                    bridgeType = @"i";
+                    bridgeValue = attribute.numberValue;
+                    break;
+                case BatchUserAttributeTypeString:
+                    bridgeType = @"s";
+                    bridgeValue = attribute.stringValue;
+                    break;
+                case BatchUserAttributeTypeURL:
+                    bridgeType = @"u";
+                    bridgeValue = attribute.urlValue.absoluteString;
+                    break;
+                default:
+                {
+                    reject(@"BatchBridgeError", [NSString stringWithFormat:@"Fetch attribute: Unknown attribute type %lu.", (unsigned long)attribute.type], nil);
+                    *stop = true;
+                    return;
+                }
+            }
+            if (bridgeValue == nil) {
+                reject(@"BatchBridgeError", [NSString stringWithFormat:@"Fetch attribute: Failed to serialize attribute for type %@", bridgeType], nil);
+                *stop = true;
+                return;
+             }
+            *stop = false;
+            bridgeAttributes[key] = @{
+                @"type": bridgeType,
+                @"value": bridgeValue,
+            };
+        }];
+        resolve(bridgeAttributes);
+    }];
+}
+
 RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 {
     BatchUserDataEditor *editor = [BatchUser editor];
