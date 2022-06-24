@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native';
 
 import { BatchEventData } from './BatchEventData';
+import { BatchUserAttribute } from './BatchUserAttribute';
 import { BatchUserEditor } from './BatchUserEditor';
 import Log from './helpers/Logger';
 import { isNumber, isString } from './helpers/TypeHelpers';
@@ -59,6 +60,20 @@ export const BatchUser = {
    * @returns The language set with BatchUser.editor().setLanguage();
    */ 
   getLanguage: (): Promise<string> => RNBatch.userData_getLanguage(),
+
+  /**
+   * Read the saved attributes. 
+   * Reading is asynchronous so as not to interfere with saving operations.
+   * @returns The attributes set with Batch.Editor()
+   */
+  getAttributes: (): Promise<{[key: string]: BatchUserAttribute}> => {
+    return RNBatch.userData_getAttributes().then(attributes => {
+       Object.keys(attributes).map(key => {
+          attributes[key] = new BatchUserAttribute(attributes[key].type, attributes[key].value)
+      })
+      return attributes
+    })
+  },
 
   /**
    * Creates an editor for the user profile

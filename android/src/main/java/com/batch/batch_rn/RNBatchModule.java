@@ -13,8 +13,10 @@ import androidx.annotation.Nullable;
 
 import com.batch.android.Batch;
 import com.batch.android.BatchActivityLifecycleHelper;
+import com.batch.android.BatchAttributesFetchListener;
 import com.batch.android.BatchEventDispatcher;
 import com.batch.android.BatchPushPayload;
+import com.batch.android.BatchUserAttribute;
 import com.batch.android.PushNotificationType;
 import com.batch.android.BatchInboxFetcher;
 import com.batch.android.BatchInboxNotificationContent;
@@ -510,6 +512,71 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
     public void userData_getLanguage(Promise promise) {
         String language = Batch.User.getLanguage(reactContext);
         promise.resolve(language);
+    }
+
+    @ReactMethod
+    public void userData_getAttributes(final Promise promise) {
+        Batch.User.fetchAttributes(reactContext, new BatchAttributesFetchListener() {
+            @Override
+            public void onSuccess(@NonNull Map<String, BatchUserAttribute> map) {
+
+                WritableMap bridgeAttributes = new WritableNativeMap();
+
+                for (Map.Entry<String, BatchUserAttribute> attributeEntry : map.entrySet()) {
+                    WritableMap typedBridgeAttribute = new WritableNativeMap();
+                    BatchUserAttribute attribute = attributeEntry.getValue();
+                    String type;
+                    switch (attribute.type) {
+                        case BOOL:
+                            type = "b";
+                            typedBridgeAttribute.putBoolean("value", (Boolean) attribute.value);
+                            break;
+                        case DATE: {
+                            type = "d";
+                            Date dateValue = attribute.getDateValue();
+                            if (dateValue == null) {
+                                promise.reject("BATCH_BRIDGE_ERROR", "Fetch attribute: Could not parse date for key: " + attributeEntry.getKey());
+                                return;
+                            }
+                            typedBridgeAttribute.putDouble("value", dateValue.getTime());
+                            break;
+                        }
+                        case STRING:
+                            type = "s";
+                            typedBridgeAttribute.putString("value", (String) attribute.value);
+                            break;
+                        case URL:
+                            type = "u";
+                            URI uriValue = attribute.getUriValue();
+                            if (uriValue == null) {
+                                promise.reject("BATCH_BRIDGE_ERROR", "Fetch attribute: Could not parse URI for key: " + attributeEntry.getKey());
+                                return;
+                            }
+                            typedBridgeAttribute.putString("value", uriValue.toString());
+                            break;
+                        case LONGLONG:
+                            type = "i";
+                            typedBridgeAttribute.putDouble("value", (long) attribute.value);
+                            break;
+                        case DOUBLE:
+                            type = "f";
+                            typedBridgeAttribute.putDouble("value", (double) attribute.value);
+                            break;
+                        default:
+                            promise.reject("BATCH_BRIDGE_ERROR", "Fetch attribute: Unknown attribute type " + attribute.type + " for key: " + attributeEntry.getKey());
+                            return;
+                    }
+                    typedBridgeAttribute.putString("type", type);
+                    bridgeAttributes.putMap(attributeEntry.getKey(), typedBridgeAttribute);
+                }
+                promise.resolve(bridgeAttributes);
+            }
+
+            @Override
+            public void onError() {
+                promise.reject("BATCH_BRIDGE_ERROR","Cannot fetch user attributes");
+            }
+        });
     }
 
     @ReactMethod
