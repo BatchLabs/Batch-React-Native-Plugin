@@ -181,6 +181,11 @@ RCT_EXPORT_METHOD(push_refreshToken)
     [BatchPush refreshToken];
 }
 
+RCT_EXPORT_METHOD(push_setShowForegroundNotification:(BOOL) enabled)
+{
+    [BatchUNUserNotificationCenterDelegate sharedInstance].showForegroundNotifications = enabled;
+}
+
 RCT_EXPORT_METHOD(push_clearBadge)
 {
     [BatchPush clearBadge];

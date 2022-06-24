@@ -74,6 +74,12 @@ export const BatchPush = {
     }
   },
 
+  setShowForegroundNotification: (enabled: boolean): void => {
+    if (Platform.OS === 'ios') {
+      RNBatch.push_setShowForegroundNotification(enabled);
+    }
+  },
+
   /**
    * Change the used remote notification types on Android. (Ex: sound, vibrate, alert)
    *
