@@ -16,6 +16,7 @@ import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
 import com.batch.android.BatchEventDispatcher;
 import com.batch.android.BatchPushPayload;
+import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchUserAttribute;
 import com.batch.android.PushNotificationType;
 import com.batch.android.BatchInboxFetcher;
@@ -35,6 +36,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -44,6 +46,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEventDispatcher {
@@ -574,7 +577,30 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
 
             @Override
             public void onError() {
-                promise.reject("BATCH_BRIDGE_ERROR","Cannot fetch user attributes");
+                promise.reject("BATCH_BRIDGE_ERROR", "Native SDK fetchAttributes returned an error");
+            }
+        });
+    }  
+    
+    @ReactMethod
+    public void userData_getTags(final Promise promise) {
+        Batch.User.fetchTagCollections(reactContext, new BatchTagCollectionsFetchListener() {
+            @Override
+            public void onSuccess(@NonNull Map<String, Set<String>> map) {
+                WritableMap bridgeTagCollections = new WritableNativeMap();
+                for (Map.Entry<String, Set<String>> tagCollection : map.entrySet()) {
+                    WritableArray tags = new WritableNativeArray();
+                    for (String tag : tagCollection.getValue()) {
+                        tags.pushString(tag);
+                    }
+                    bridgeTagCollections.putArray(tagCollection.getKey(), tags);
+                }
+                promise.resolve(bridgeTagCollections);
+            }
+
+            @Override
+            public void onError() {
+                promise.reject("BATCH_BRIDGE_ERROR","Native fetchTagCollections returned an error");
             }
         });
     }

@@ -46,34 +46,43 @@ export const BatchUser = {
   /**
    * Get the custom user identifier.
    * @returns The custom user identifier set with BatchUser.editor().setIdentifier();
-   */  
+   */
+
   getIdentifier: (): Promise<string> => RNBatch.userData_getIdentifier(),
 
   /**
    * Get the region.
    * @returns The region set with BatchUser.editor().setRegion();
-   */ 
+   */
+
   getRegion: (): Promise<string> => RNBatch.userData_getRegion(),
 
   /**
    * Get the language.
    * @returns The language set with BatchUser.editor().setLanguage();
-   */ 
+   */
+
   getLanguage: (): Promise<string> => RNBatch.userData_getLanguage(),
 
   /**
-   * Read the saved attributes. 
+   * Read the saved attributes.
    * Reading is asynchronous so as not to interfere with saving operations.
-   * @returns The attributes set with Batch.Editor()
+   * @returns The attributes set with Batch.editor().setAttribute()
    */
-  getAttributes: (): Promise<{[key: string]: BatchUserAttribute}> => {
+  getAttributes: (): Promise<{ [key: string]: BatchUserAttribute }> => {
     return RNBatch.userData_getAttributes().then(attributes => {
-       Object.keys(attributes).map(key => {
-          attributes[key] = new BatchUserAttribute(attributes[key].type, attributes[key].value)
-      })
-      return attributes
-    })
+      Object.keys(attributes).map(key => {
+        attributes[key] = new BatchUserAttribute(attributes[key].type, attributes[key].value);
+      });
+      return attributes;
+    });
   },
+
+  /**
+   * Get the tag collections.
+   * @returns The tags added with BatchUser.editor().addTag()
+   */
+  getTags: (): Promise<{ [key: string]: Array<string> }> => RNBatch.userData_getTags(),
 
   /**
    * Creates an editor for the user profile
