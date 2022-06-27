@@ -48,21 +48,21 @@ export const BatchUser = {
    * @returns The custom user identifier set with BatchUser.editor().setIdentifier();
    */
 
-  getIdentifier: (): Promise<string> => RNBatch.userData_getIdentifier(),
+  getIdentifier: (): Promise<string | undefined> => RNBatch.userData_getIdentifier(),
 
   /**
    * Get the region.
    * @returns The region set with BatchUser.editor().setRegion();
    */
 
-  getRegion: (): Promise<string> => RNBatch.userData_getRegion(),
+  getRegion: (): Promise<string | undefined> => RNBatch.userData_getRegion(),
 
   /**
    * Get the language.
    * @returns The language set with BatchUser.editor().setLanguage();
    */
 
-  getLanguage: (): Promise<string> => RNBatch.userData_getLanguage(),
+  getLanguage: (): Promise<string | undefined> => RNBatch.userData_getLanguage(),
 
   /**
    * Read the saved attributes.
