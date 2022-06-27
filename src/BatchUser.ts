@@ -82,7 +82,7 @@ export const BatchUser = {
    * Get the tag collections.
    * @returns The tags added with BatchUser.editor().addTag()
    */
-  getTags: (): Promise<{ [key: string]: Array<string> }> => RNBatch.userData_getTags(),
+  getTagCollections: (): Promise<{ [key: string]: string[] }> => RNBatch.userData_getTags(),
 
   /**
    * Creates an editor for the user profile
