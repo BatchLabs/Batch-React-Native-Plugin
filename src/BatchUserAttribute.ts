@@ -1,14 +1,13 @@
 export enum BatchUserAttributeType {
-    STRING = "s",
-    BOOLEAN = "b",
-    INTEGER = "i",
-    DOUBLE = "f",
-    DATE = "d",
-    URL = "u",
-  }
+  STRING = 's',
+  BOOLEAN = 'b',
+  INTEGER = 'i',
+  DOUBLE = 'f',
+  DATE = 'd',
+  URL = 'u',
+}
 
 export class BatchUserAttribute {
-    
   public constructor(private _type: BatchUserAttributeType, private _value: unknown) {}
 
   public getType(): BatchUserAttributeType {

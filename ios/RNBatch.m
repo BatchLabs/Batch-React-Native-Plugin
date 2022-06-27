@@ -300,6 +300,23 @@ RCT_EXPORT_METHOD(userData_getAttributes:(RCTPromiseResolveBlock)resolve rejecte
     }];
 }
 
+RCT_EXPORT_METHOD(userData_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [BatchUser fetchTagCollections:^(NSDictionary<NSString *,NSSet<NSString *> *> * _Nullable collections) {
+        if (collections == nil) {
+            reject(@"BatchBridgeError", @"Native SDK fetchTagCollections returned an error", nil);
+            return;
+        }
+        
+        NSMutableDictionary<NSString*, NSArray<NSString*>*>* bridgeTagCollections = [[NSMutableDictionary alloc] initWithCapacity:collections.count];
+        [collections enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSSet<NSString *> * _Nonnull obj, BOOL * _Nonnull stop) {
+            bridgeTagCollections[key] = [obj allObjects];
+        }];
+        resolve(bridgeTagCollections);
+    }];
+        
+}
+
 RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 {
     BatchUserDataEditor *editor = [BatchUser editor];
