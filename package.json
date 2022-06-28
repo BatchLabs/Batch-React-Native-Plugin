@@ -21,6 +21,10 @@
     "bump-version": "./scripts/bump-version.sh",
     "prepare": "tsc",
     "doc": "typedoc",
+    "postpublish": "yarn doc:deploy",
+    "doc:generate": "typedoc && touch ./docs/.nojekyll",
+    "doc:publish": "gh-pages --dotfiles -d docs",
+    "doc:deploy": "yarn doc:generate && yarn doc:publish",
     "format": "prettier --write \"src/**/*.{ts,js}\" \"__tests__/**/*.{ts,js}\"",
     "lint": "eslint --no-fix \"src/**\"",
     "lint:fail-on-warnings": "eslint \"src/**\" --no-fix --max-warnings 0",
@@ -31,7 +35,6 @@
   "peerDependencies": {
     "react-native": "*"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^27.0.2",
     "@types/react": "^17.0.33",
