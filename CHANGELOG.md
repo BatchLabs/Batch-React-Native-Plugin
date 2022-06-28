@@ -1,3 +1,16 @@
+UPCOMING
+----
+
+**Plugin**
+
+* Updated Batch 1.19. Batch requires Xcode 13.3.1 and iOS 10.0 or higher.
+* Updated how Batch is imported to support React-Native v0.68 wich now uses Objective-C++.
+
+**User**
+
+* Added getters for `identifier`, `language`, `region`, `attributes` and `tagCollections` in `BatchUser`.
+* Added a fix where you couldn't use `setLanguage` or `setRegion` with a nil value on iOS.
+
 7.0.3
 ----
 
