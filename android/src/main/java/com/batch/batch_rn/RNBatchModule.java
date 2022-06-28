@@ -50,9 +50,12 @@ import java.util.Set;
 import java.util.UUID;
 
 public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEventDispatcher {
+
     private static final String NAME = "RNBatch";
     private static final String PLUGIN_VERSION_ENVIRONMENT_VARIABLE = "batch.plugin.version";
     private static final String PLUGIN_VERSION = "ReactNative/7.0.3";
+
+    private static final String BATCH_BRIDGE_ERROR_CODE = "BATCH_BRIDGE_ERROR";
 
     private final ReactApplicationContext reactContext;
 
@@ -538,7 +541,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
                             type = "d";
                             Date dateValue = attribute.getDateValue();
                             if (dateValue == null) {
-                                promise.reject("BATCH_BRIDGE_ERROR", "Fetch attribute: Could not parse date for key: " + attributeEntry.getKey());
+                                promise.reject(BATCH_BRIDGE_ERROR_CODE, "Fetch attribute: Could not parse date for key: " + attributeEntry.getKey());
                                 return;
                             }
                             typedBridgeAttribute.putDouble("value", dateValue.getTime());
@@ -552,7 +555,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
                             type = "u";
                             URI uriValue = attribute.getUriValue();
                             if (uriValue == null) {
-                                promise.reject("BATCH_BRIDGE_ERROR", "Fetch attribute: Could not parse URI for key: " + attributeEntry.getKey());
+                                promise.reject(BATCH_BRIDGE_ERROR_CODE, "Fetch attribute: Could not parse URI for key: " + attributeEntry.getKey());
                                 return;
                             }
                             typedBridgeAttribute.putString("value", uriValue.toString());
@@ -566,7 +569,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
                             typedBridgeAttribute.putDouble("value", (double) attribute.value);
                             break;
                         default:
-                            promise.reject("BATCH_BRIDGE_ERROR", "Fetch attribute: Unknown attribute type " + attribute.type + " for key: " + attributeEntry.getKey());
+                            promise.reject(BATCH_BRIDGE_ERROR_CODE, "Fetch attribute: Unknown attribute type " + attribute.type + " for key: " + attributeEntry.getKey());
                             return;
                     }
                     typedBridgeAttribute.putString("type", type);
@@ -577,7 +580,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
 
             @Override
             public void onError() {
-                promise.reject("BATCH_BRIDGE_ERROR", "Native SDK fetchAttributes returned an error");
+                promise.reject(BATCH_BRIDGE_ERROR_CODE, "Native SDK fetchAttributes returned an error");
             }
         });
     }  
@@ -600,7 +603,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
 
             @Override
             public void onError() {
-                promise.reject("BATCH_BRIDGE_ERROR","Native fetchTagCollections returned an error");
+                promise.reject(BATCH_BRIDGE_ERROR_CODE,"Native fetchTagCollections returned an error");
             }
         });
     }
