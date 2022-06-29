@@ -46,6 +46,6 @@ repositories {
 
 dependencies {
     implementation "com.facebook.react:react-native:+"
-    implementation "com.batch.android:batch-sdk:${safeExtGet('batchSdkVersion', DEFAULT_BATCH_SDK_VERSION)}"
+    api "com.batch.android:batch-sdk:${safeExtGet('batchSdkVersion', DEFAULT_BATCH_SDK_VERSION)}"
 }
 
