@@ -1,13 +1,11 @@
-name: Build & Tests
+name: Release
 on:
   push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '**'
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  build_and_test:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,4 +18,9 @@ jobs:
       - name: Test
         run: yarn test
       - name: Lint
-        run: yarn lint
+        run: yarn lint 
+      - name: Git config
+        uses: BatchLabs/action.git-config@v1
+      # TODO npm deploy
+      - name: Documentation
+        run: yarn doc:deploy
