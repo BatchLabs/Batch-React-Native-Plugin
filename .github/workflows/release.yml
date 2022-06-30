@@ -7,12 +7,14 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: release
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
             node-version: '17'
             cache: 'yarn'
+            registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: yarn
       - name: Test
@@ -21,6 +23,8 @@ jobs:
         run: yarn lint 
       - name: Git config
         uses: BatchLabs/action.git-config@v1
-      # TODO npm deploy
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Documentation
         run: yarn doc:deploy
