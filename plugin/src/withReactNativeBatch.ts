@@ -34,7 +34,7 @@ const pkg = {
   // This pattern enables users to safely migrate off of this
   // out-of-tree `@config-plugins/react-native-batch` to a future
   // upstream plugin in `react-native-batch`
-  name: '@bam.tech/react-native-batch',
+  name: '@batch.com/react-native-plugin',
   // Indicates that this plugin is dangerously linked to a module,
   // and might not work with the latest version of that module.
   version: 'UNVERSIONED',
