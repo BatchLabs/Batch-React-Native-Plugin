@@ -4,25 +4,24 @@ import { Props } from './withReactNativeBatch';
 export const pushDependencies = (contents: string, props: Props): string => {
   let newContents = contents;
 
-  const defaultConfigContents = newContents.match(
-    /defaultConfig {[^{\}]+(?=})/
+  const versionNameLine = newContents.match(
+    /versionName "([^"]*)"/
   );
 
-  if (defaultConfigContents) {
-    const endOfDefaultConfigIndex = newContents.indexOf(
-      defaultConfigContents[0]
-    );
-    const start = newContents.substring(0, endOfDefaultConfigIndex);
-    const end = newContents.substring(
-      endOfDefaultConfigIndex + defaultConfigContents[0].length
+  if (versionNameLine) {
+    const endOfVersionNameIndex = newContents.indexOf(
+      versionNameLine[0]
     );
 
+    const start = newContents.substring(0, endOfVersionNameIndex);
+    const end = newContents.substring(
+      endOfVersionNameIndex + versionNameLine[0].length
+    );
     newContents =
-      start +
-      defaultConfigContents[0] +
-      `    resValue "string", "BATCH_API_KEY", "${props.androidApiKey}"` +
-      '\n    ' +
-      end;
+      start 
+      + versionNameLine[0]
+      + `\n        resValue "string", "BATCH_API_KEY", "${props.androidApiKey}"`
+      + end;
   }
 
   const dependenciesString = 'dependencies {';
@@ -38,7 +37,6 @@ export const pushDependencies = (contents: string, props: Props): string => {
       `\n    implementation platform('com.google.firebase:firebase-bom:25.12.0')\n    implementation "com.google.firebase:firebase-messaging"\n    ${'implementation "com.batch.android:batch-sdk:${rootProject.ext.batchSdkVersion}"'}` +
       end;
   }
-
   return newContents;
 };
 
