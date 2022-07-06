@@ -4,10 +4,10 @@ import {
   withApplyPlugin,
   withGoogleServicesFile,
 } from '@expo/config-plugins/build/android/GoogleServices';
-import { withReactNativeBatchMainActivity } from './withReactNativeBatchMainActivity';
-import { withReactNativeBatchAppBuildGradle } from './withReactNativeBatchAppBuildGradle';
-import { withReactNativeBatchInfoPlist } from './withReactNativeBatchInfoPlist';
-import { withReactNativeBatchAppDelegate } from './withReactNativeBatchAppDelegate';
+import { withReactNativeBatchMainActivity } from './android/withReactNativeBatchMainActivity';
+import { withReactNativeBatchAppBuildGradle } from './android/withReactNativeBatchAppBuildGradle';
+import { withReactNativeBatchInfoPlist } from './ios/withReactNativeBatchInfoPlist';
+import { withReactNativeBatchAppDelegate } from './ios/withReactNativeBatchAppDelegate';
 
 export type Props = { androidApiKey: string; iosApiKey: string };
 /**
