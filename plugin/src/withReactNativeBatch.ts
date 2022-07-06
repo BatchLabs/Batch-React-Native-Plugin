@@ -6,7 +6,6 @@ import {
 } from '@expo/config-plugins/build/android/GoogleServices';
 import { withReactNativeBatchMainActivity } from './withReactNativeBatchMainActivity';
 import { withReactNativeBatchAppBuildGradle } from './withReactNativeBatchAppBuildGradle';
-import { withReactNativeBatchProjectBuildGradle } from './withReactNativeBatchProjectBuildGradle';
 import { withReactNativeBatchInfoPlist } from './withReactNativeBatchInfoPlist';
 import { withReactNativeBatchAppDelegate } from './withReactNativeBatchAppDelegate';
 
@@ -22,7 +21,6 @@ const withReactNativeBatch: ConfigPlugin<Props | void> = (config, props) => {
   newConfig = withApplyPlugin(newConfig);
   newConfig = withReactNativeBatchAppBuildGradle(newConfig, _props);
   newConfig = withReactNativeBatchMainActivity(newConfig);
-  newConfig = withReactNativeBatchProjectBuildGradle(newConfig);
   newConfig = withReactNativeBatchInfoPlist(newConfig, _props);
   newConfig = withReactNativeBatchAppDelegate(newConfig);
   // Return the modified config.
