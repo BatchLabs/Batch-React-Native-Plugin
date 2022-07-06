@@ -1,5 +1,5 @@
 import { ConfigPlugin, withAppDelegate } from '@expo/config-plugins';
-import { Props } from './withReactNativeBatch';
+import { Props } from '../withReactNativeBatch';
 
 const DID_FINISH_LAUNCHING_WITH_OPTIONS_DECLARATION =
   '- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions\n{';

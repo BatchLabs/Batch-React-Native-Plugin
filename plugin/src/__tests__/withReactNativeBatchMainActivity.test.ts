@@ -1,4 +1,4 @@
-import { modifyMainActivity } from '../withReactNativeBatchMainActivity';
+import { modifyMainActivity } from '../android/withReactNativeBatchMainActivity';
 import {
   mainActivityExpectedFixture,
   mainActivityFixture,

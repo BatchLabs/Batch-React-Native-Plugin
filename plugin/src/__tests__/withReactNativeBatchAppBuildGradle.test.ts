@@ -1,4 +1,4 @@
-import { pushDependencies } from '../withReactNativeBatchAppBuildGradle';
+import { pushDependencies } from '../android/withReactNativeBatchAppBuildGradle';
 import {
   buildGradleFixture,
   buildGradleExpectedFixture,

@@ -1,5 +1,5 @@
 import { ConfigPlugin, withInfoPlist, InfoPlist } from '@expo/config-plugins';
-import { Props } from './withReactNativeBatch';
+import { Props } from '../withReactNativeBatch';
 
 export const modifyInfoPlist = (
   infoPlist: InfoPlist,

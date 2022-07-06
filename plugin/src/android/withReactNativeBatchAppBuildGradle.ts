@@ -1,6 +1,6 @@
 import { ConfigPlugin, withAppBuildGradle } from '@expo/config-plugins';
-import { Props } from './withReactNativeBatch';
-import { BATCH_SDK_VERISON } from './constants';
+import { Props } from '../withReactNativeBatch';
+import { BATCH_SDK_VERISON } from '../constants';
 
 
 export const pushDependencies = (contents: string, props: Props): string => {

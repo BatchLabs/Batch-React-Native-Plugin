@@ -1,4 +1,4 @@
-import { modifyAppDelegate } from '../withReactNativeBatchAppDelegate';
+import { modifyAppDelegate } from '../ios/withReactNativeBatchAppDelegate';
 import {
   appDelegateExpectedFixture,
   appDelegateFixture,
