@@ -1,5 +1,7 @@
 import { ConfigPlugin, withAppBuildGradle } from '@expo/config-plugins';
 import { Props } from './withReactNativeBatch';
+import { BATCH_SDK_VERISON } from './constants';
+
 
 export const pushDependencies = (contents: string, props: Props): string => {
   let newContents = contents;
@@ -33,9 +35,11 @@ export const pushDependencies = (contents: string, props: Props): string => {
     const end = newContents.substring(index);
 
     newContents =
-      start +
-      `\n    implementation platform('com.google.firebase:firebase-bom:25.12.0')\n    implementation "com.google.firebase:firebase-messaging"\n    ${'implementation "com.batch.android:batch-sdk:${rootProject.ext.batchSdkVersion}"'}` +
-      end;
+    start +
+    `\n    implementation platform('com.google.firebase:firebase-bom:25.12.0') 
+    implementation "com.google.firebase:firebase-messaging" 
+    api "com.batch.android:batch-sdk:${BATCH_SDK_VERISON}"` 
+    + end;
   }
   return newContents;
 };
