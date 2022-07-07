@@ -9,7 +9,7 @@ import { withReactNativeBatchAppBuildGradle } from './android/withReactNativeBat
 import { withReactNativeBatchInfoPlist } from './ios/withReactNativeBatchInfoPlist';
 import { withReactNativeBatchAppDelegate } from './ios/withReactNativeBatchAppDelegate';
 
-export type Props = { androidApiKey: string; iosApiKey: string };
+export type Props = { androidApiKey: string; iosApiKey: string, enableDoNotDistrub?: boolean };
 /**
  * Apply react-native-batch configuration for Expo SDK 42 projects.
  */
