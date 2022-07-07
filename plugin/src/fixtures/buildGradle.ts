@@ -157,6 +157,7 @@ android {
         versionCode 1
         versionName "1.0"
         resValue "string", "BATCH_API_KEY", "FAKE_ANDROID_API_KEY"
+        resValue "bool", "BATCH_DO_NOT_DISTURB_INITIAL_STATE", "false"
     }
     splits {
         abi {

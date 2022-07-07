@@ -1,4 +1,5 @@
 import { ConfigPlugin, withInfoPlist, InfoPlist } from '@expo/config-plugins';
+import { BATCH_DO_NOT_DISTURB_INITIAL_STATE } from '../constants';
 import { Props } from '../withReactNativeBatch';
 
 export const modifyInfoPlist = (
@@ -6,6 +7,7 @@ export const modifyInfoPlist = (
   props: Props
 ): InfoPlist => {
   infoPlist.BatchAPIKey = props.iosApiKey;
+  infoPlist.BatchDoNotDisturbInitialState = props.enableDoNotDistrub || BATCH_DO_NOT_DISTURB_INITIAL_STATE;
   return infoPlist;
 };
 
