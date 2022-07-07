@@ -23,36 +23,36 @@ export class BatchUserAttribute {
   }
 
   public getStringValue(): string | undefined {
-    if (this._type == BatchUserAttributeType.STRING) {
+    if (this._type === BatchUserAttributeType.STRING) {
       return this._value as string;
     }
     return undefined;
   }
 
   public getBooleanValue(): boolean | undefined {
-    if (this._type == BatchUserAttributeType.BOOLEAN) {
+    if (this._type === BatchUserAttributeType.BOOLEAN) {
       return this._value as boolean;
     }
     return undefined;
   }
 
   public getNumberValue(): number | undefined {
-    if (this._type == BatchUserAttributeType.INTEGER || this._type == BatchUserAttributeType.DOUBLE) {
+    if (this._type === BatchUserAttributeType.INTEGER || this._type === BatchUserAttributeType.DOUBLE) {
       return this._value as number;
     }
     return undefined;
   }
 
   public getDateValue(): Date | undefined {
-    if (this._type == BatchUserAttributeType.DATE) {
+    if (this._type === BatchUserAttributeType.DATE) {
       return new Date(this._value as number);
     }
     return undefined;
   }
 
   public getURLValue(): URL | undefined {
-    if (this._type == BatchUserAttributeType.URL) {
-      return new URL(URL.prototype.toString.call(this._value as URL));
+    if (this._type === BatchUserAttributeType.URL) {
+      return new URL(this._value as string);
     }
     return undefined;
   }
