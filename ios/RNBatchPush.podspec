@@ -2,13 +2,13 @@ Pod::Spec.new do |s|
   s.name         = "RNBatchPush"
   s.version      = "1.0.0"
   s.summary      = "Batch.com React-Native Plugin"
-  s.homepage     = "https://github.com/BatchLabs/sdk.temp.react-native-plugin"
+  s.homepage     = "https://github.com/BatchLabs/Batch-React-Native-Plugin"
   s.license      = { :type => "MIT", :file => "../LICENSE" }
   s.authors = {
     "Batch.com" => "support@batch.com"
   }
   s.platform     = :ios, "10.0"
-  s.source       = { :git => "git@github.com:BatchLabs/sdk.temp.react-native-plugin.git", :tag => "master" }
+  s.source       = { :git => "git@github.com:BatchLabs/Batch-React-Native-Plugin.git", :tag => "master" }
   s.source_files  = "*.{h,m}"
   s.requires_arc = true
 

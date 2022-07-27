@@ -23,7 +23,7 @@ Depending on your plan, you way benefit from a specific support level. In that c
 
 ## Reproduction steps
 <!-- Provide detailed reproduction steps. For example :
-  1. Install Batch SDK in a Flutter app
+  1. Install Batch SDK in a React-Native app
   2. Start the SDK
   3. Send a test notification
   4. Open the test notification
@@ -37,9 +37,9 @@ A minimal reproduction project isn’t compulsory but will reduce greatly the re
 ### SDK Version
 <!-- e.g. v1.17 -->
 ### Installation method
-<!-- e.g. pub get -->
+<!-- e.g. yarn install -->
 ### Relevant development tools versions
-<!-- e.g. Xcode version, Flutter version -->
+<!-- e.g. Xcode version, React-Native version -->
 
 ## Additional information
 <!-- Anything else you can include that'll make it easier for us to help you! -->
