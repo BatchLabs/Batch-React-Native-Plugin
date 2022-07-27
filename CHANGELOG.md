@@ -1,10 +1,11 @@
-UPCOMING
+8.0.0
 ----
 
 **Plugin**
 
 * Updated Batch 1.19. Batch requires Xcode 13.3.1 and iOS 10.0 or higher.
 * Updated how Batch is imported to support React-Native v0.68 wich now uses Objective-C++.
+* Added support for Expo 45
 
 **User**
 
