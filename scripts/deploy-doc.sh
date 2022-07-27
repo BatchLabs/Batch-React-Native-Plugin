@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# Git config
+git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+git config --global user.name "github-actions"
+
 # Copy generated documentation
 cp -r docs/. ../temp-doc
 

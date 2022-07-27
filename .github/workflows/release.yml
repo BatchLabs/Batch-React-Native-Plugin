@@ -21,8 +21,6 @@ jobs:
         run: yarn test
       - name: Lint
         run: yarn lint 
-      - name: Git config
-        uses: BatchLabs/action.git-config@v1
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
