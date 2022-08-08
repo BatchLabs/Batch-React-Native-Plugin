@@ -1,3 +1,10 @@
+UPCOMING
+----
+
+**Plugin**
+
+* Fixed autolinking on react-native 0.69+ and Expo 46
+
 8.0.0 - 8.0.1
 ----
 
