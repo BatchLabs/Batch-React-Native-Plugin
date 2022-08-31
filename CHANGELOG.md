@@ -1,3 +1,15 @@
+8.1.0
+----
+
+**Plugin**
+
+* Plugin now compiles with and targets SDK 33 (Android 13).
+
+**Push**
+
+* Added a new API: `BatchPush.requestNotificationAuthorization()`. This allows you to request for the [new notification permission introduced](https://developer.android.com/about/versions/13/changes/notification-permission) in Android 13. See the documentation for more info.
+
+
 8.0.2
 ----
 
