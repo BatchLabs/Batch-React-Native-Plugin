@@ -40,15 +40,12 @@ export const BatchPush = {
   },
 
   /**
-   * Ask iOS users if they want to accept push notifications.
-   * Required to be able to push users (or use requestProvisionalNotificationAuthorization).
+   * Ask users if they want to accept push notifications.
+   * Required to be able to push users (or use requestProvisionalNotificationAuthorization - ios only).
    *
-   * No effect on Android.
    */
   requestNotificationAuthorization: (): void => {
-    if (Platform.OS === 'ios') {
-      RNBatch.push_requestNotificationAuthorization();
-    }
+    RNBatch.push_requestNotificationAuthorization();
   },
 
   /**

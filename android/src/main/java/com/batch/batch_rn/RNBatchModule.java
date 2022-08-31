@@ -239,6 +239,11 @@ public class RNBatchModule extends ReactContextBaseJavaModule implements BatchEv
         promise.resolve(pushToken);
     }
 
+    @ReactMethod
+    public void push_requestNotificationAuthorization() {
+        Batch.Push.requestNotificationPermission(reactContext);
+    }
+
     // MESSAGING MODULE
 
     private void showPendingMessage() {
