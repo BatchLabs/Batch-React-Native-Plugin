@@ -14,7 +14,7 @@
 
 #define PluginVersion "ReactNative/8.1.0"
 
-@interface RNBatch : RCTEventEmitter <RCTBridgeModule, BatchEventDispatcherDelegate>
+@interface RNBatch : RCTEventEmitter <RCTBridgeModule>
 
 + (void)start;
 
