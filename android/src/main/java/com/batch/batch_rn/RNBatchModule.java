@@ -47,7 +47,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     private static final String NAME = "RNBatch";
     private static final String PLUGIN_VERSION_ENVIRONMENT_VARIABLE = "batch.plugin.version";
-    private static final String PLUGIN_VERSION = "ReactNative/8.1.0";
+    private static final String PLUGIN_VERSION = "ReactNative/8.1.1";
 
     public static final String LOGGER_TAG = "RNBatchBridge";
 
