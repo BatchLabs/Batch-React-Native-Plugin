@@ -146,12 +146,11 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void addListener(String eventName) {
-        // iOS only
+        eventDispatcher.setHasListener(true);
     }
 
     @ReactMethod
     public void removeListeners(double count) {
-        // iOS only
     }
 
     // PUSH MODULE

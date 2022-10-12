@@ -9,7 +9,6 @@ import com.batch.android.Batch;
 import com.batch.android.BatchEventDispatcher;
 import com.batch.android.BatchPushPayload;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -20,6 +19,12 @@ import java.util.LinkedList;
  * Bridge class to handle events dispatched by the Batch native SDK
  */
 public class RNBatchEventDispatcher implements BatchEventDispatcher {
+
+
+    /**
+     * Max number of events we keep in the event queue
+     */
+    private static final int MAX_QUEUE_SIZE = 5;
 
     /**
      * React Context
@@ -37,11 +42,20 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
     private final LinkedList<RNBatchEvent> events = new LinkedList<>();
 
     /**
+     * Whether we have a listener registered
+     * Default: false
+     */
+    private boolean hasListener;
+
+    /**
      * Send event to the JS bridge
      * @param event dispatched event
      */
     private void sendEvent(@NonNull RNBatchEvent event) {
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
+            Log.d(RNBatchModule.LOGGER_TAG,
+                    "Trying to send an event while react context is null" +
+                            " or has no active catalyst instance. Aborting.");
             return;
         }
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
@@ -70,61 +84,69 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
             }
 
             RNBatchEvent event = new RNBatchEvent(eventName, params);
-            synchronized (events) {
-                events.add(event);
-            }
-
-            if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
+            if (!isModuleReady() || !hasListener) {
                 Log.d(RNBatchModule.LOGGER_TAG,
-                        "React context is null or has no active catalyst instance. Queuing event.");
+                        "Module is not ready or no listener registered yet. Queuing event: ".concat(eventName));
+                queueEvent(event);
                 return;
             }
-            dequeueEvents();
+            sendEvent(event);
         }
     }
 
     /**
      * Dequeue the stored events
      */
-    public void dequeueEvents() {
-        if (events.isEmpty()) {
-            return;
-        }
+    private void dequeueEvents() {
         synchronized(events) {
-            sendEvent(events.pop());
+            if (events.isEmpty()) {
+                return;
+            }
+            while(events.size() != 0) {
+                sendEvent(events.pop());
+            }
         }
-        dequeueEvents();
     }
 
     /**
-     * Set the react context instance
-     *
-     * Note: We are using a LifecycleEventListener to be notified when the react context
-     * has a catalyst instance ready
+     * Put event in queue
+     * @param event event to queue
+     */
+    private void queueEvent(RNBatchEvent event) {
+        synchronized (events) {
+            if(events.size() >= MAX_QUEUE_SIZE) {
+                events.clear();
+            }
+            events.add(event);
+        }
+    }
+
+    /**
+     * Set the react context instance used to emit event
      * @param reactContext context
      */
-    public void setReactContext(final ReactApplicationContext reactContext) {
+    public void setReactContext(@NonNull ReactApplicationContext reactContext) {
         this.reactContext = reactContext;
-        this.reactContext.addLifecycleEventListener(new LifecycleEventListener() {
-            @Override
-            public void onHostResume() {
-                // No we should have a catalyst instance ready
-                if (reactContext.hasActiveCatalystInstance()) {
-                    dequeueEvents();
-                    reactContext.removeLifecycleEventListener(this);
-                }
-            }
+    }
 
-            @Override
-            public void onHostPause() {
-                // do noting
-            }
+    /**
+     * Simple method to know if module is ready
+     * Meaning we have a react context and a catalyst instance ready
+     * @return true if ready
+     */
+    private boolean isModuleReady() {
+        return reactContext != null && reactContext.hasActiveCatalystInstance();
+    }
 
-            @Override
-            public void onHostDestroy() {
-                // do noting
-            }
-        });
+    /**
+     * Indicate we have at least one registered listener
+     * @param hasListener if we have a listener registered
+     */
+    public void setHasListener(boolean hasListener) {
+        if(!this.hasListener && hasListener) {
+            this.dequeueEvents();
+        }
+        this.hasListener = hasListener;
     }
 
     /**
