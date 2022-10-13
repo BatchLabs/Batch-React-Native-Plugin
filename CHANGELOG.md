@@ -1,9 +1,16 @@
+8.1.2
+----
+
+**Plugin**
+
+* Fixed an issue on Android where `open` push message events queued on cold start were sent before we could register a listener.
+
 8.1.1
 ----
 
 **Plugin**
 
-* Fixed an issue where listening for `open` push message event wasn't working on cold start.
+* Fixed an issue where listening for `open` push message events wasn't working on cold start.
 
 8.1.0
 ----
