@@ -70,7 +70,7 @@ public class RNBatchInbox {
         }
 
         output.putMap("payload", RNUtils.convertMapToWritableMap((Map) notification.getRawPayload()));
-
+        output.putBoolean("hasLandingMessage", notification.hasLandingMessage());
         return output;
     }
 

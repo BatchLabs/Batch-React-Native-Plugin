@@ -50,6 +50,11 @@ export interface IInboxNotification {
    * It can come from a push campaign via the API or the dashboard, or from the transactional API, for example.
    */
   source: NotificationSource;
+
+  /**
+   * Flag indicating whether this notification has a landing message attached.
+   */
+  hasLandingMessage: boolean;
 }
 
 export interface BatchInboxFetcherOptions {
