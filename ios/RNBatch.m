@@ -750,15 +750,16 @@ RCT_EXPORT_METHOD(inbox_fetcher_fetchNextPage:
             break;
     }
 
-    NSString *title = notification.title;
+    NSString *title = notification.message.title;
 
     NSDictionary *output = @{
         @"identifier": notification.identifier,
-        @"body": notification.body,
+        @"body": notification.message.body,
         @"isUnread": @(notification.isUnread),
         @"date": [NSNumber numberWithDouble:notification.date.timeIntervalSince1970 * 1000],
         @"source": source,
-        @"payload": notification.payload
+        @"payload": notification.payload,
+        @"hasLandingMessage": @(notification.hasLandingMessage)
     };
 
     if (title != nil) {
