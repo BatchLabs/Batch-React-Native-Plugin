@@ -187,7 +187,7 @@ RCT_EXPORT_METHOD(userData_getLanguage:(RCTPromiseResolveBlock)resolve rejecter:
 RCT_EXPORT_METHOD(userData_getAttributes:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     [BatchUser fetchAttributes:^(NSDictionary<NSString *,BatchUserAttribute *> * _Nullable attributes) {
-        
+
         if (attributes == nil) {
             reject(@"BatchBridgeError", @"Native SDK fetchAttributes returned an error", nil);
             return;
@@ -197,7 +197,7 @@ RCT_EXPORT_METHOD(userData_getAttributes:(RCTPromiseResolveBlock)resolve rejecte
         [attributes enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, BatchUserAttribute * _Nonnull attribute, BOOL * _Nonnull stop) {
             NSString *bridgeType;
             id bridgeValue = nil;
-            
+
             switch (attribute.type) {
                 case BatchUserAttributeTypeBool:
                     bridgeType = @"b";
@@ -257,14 +257,14 @@ RCT_EXPORT_METHOD(userData_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCT
             reject(@"BatchBridgeError", @"Native SDK fetchTagCollections returned an error", nil);
             return;
         }
-        
+
         NSMutableDictionary<NSString*, NSArray<NSString*>*>* bridgeTagCollections = [[NSMutableDictionary alloc] initWithCapacity:collections.count];
         [collections enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSSet<NSString *> * _Nonnull obj, BOOL * _Nonnull stop) {
             bridgeTagCollections[key] = [obj allObjects];
         }];
         resolve(bridgeTagCollections);
     }];
-        
+
 }
 
 RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
@@ -642,6 +642,31 @@ RCT_EXPORT_METHOD(inbox_fetcher_markAsDeleted:
     }
 
     [fetcher markNotificationAsDeleted:notification];
+    resolve([NSNull null]);
+}
+
+RCT_EXPORT_METHOD(inbox_fetcher_displayLandingMessage:
+                  (NSString *) fetcherIdentifier
+                  notification:
+                  (NSString *) notificationIdentifier
+                  resolver:
+                  (RCTPromiseResolveBlock) resolve
+                  rejecter:
+                  (RCTPromiseRejectBlock) reject) {
+    BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
+    if (!fetcher) {
+        reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
+        return;
+    }
+
+    BatchInboxNotificationContent * notification = [self findNotificationInList:[fetcher allFetchedNotifications] withNotificationIdentifier:notificationIdentifier];
+
+    if (!notification) {
+        reject(@"InboxError", @"NOTIFICATION_NOT_FOUND", nil);
+        return;
+    }
+
+    [notification displayLandingMessage];
     resolve([NSNull null]);
 }
 
