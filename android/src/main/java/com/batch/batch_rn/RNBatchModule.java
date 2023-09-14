@@ -436,6 +436,24 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
+    public void inbox_fetcher_displayLandingMessage(String fetcherIdentifier, String notificationIdentifier, final Promise promise) {
+        if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
+            promise.reject("InboxError", "FETCHER_NOT_FOUND");
+            return;
+        }
+
+        BatchInboxFetcher fetcher = this.batchInboxFetcherMap.get(fetcherIdentifier);
+        @Nullable BatchInboxNotificationContent notification = findNotificationInList(fetcher.getFetchedNotifications(), notificationIdentifier);
+
+        if (notification == null) {
+            promise.reject("InboxError", "NOTIFICATION_NOT_FOUND");
+            return;
+        }
+        notification.displayLandingMessage(reactContext);
+        promise.resolve(null);
+    }
+
     // USER DATA EDITOR MODULE
 
     @ReactMethod
@@ -525,8 +543,8 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                 promise.reject(BATCH_BRIDGE_ERROR_CODE, "Native SDK fetchAttributes returned an error");
             }
         });
-    }  
-    
+    }
+
     @ReactMethod
     public void userData_getTags(final Promise promise) {
         Batch.User.fetchTagCollections(reactContext, new BatchTagCollectionsFetchListener() {

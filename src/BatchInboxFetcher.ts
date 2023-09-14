@@ -56,6 +56,17 @@ export class BatchInboxFetcher {
   }
 
   /**
+   * Display the landing message attached to the notification.
+   *
+   * The notification must have been fetched by this fetcher before.
+   *
+   * @param notificationIdentifier The identifier of the notification to display
+   */
+  public displayNotificationLandingMessage(notificationIdentifier: string): Promise<void> {
+    return RNBatch.inbox_fetcher_displayLandingMessage(this.identifier, notificationIdentifier);
+  }
+
+  /**
    * Fetches new notifications (and resets pagination to 0).
    *
    * Usually used as an initial fetch and refresh method in an infinite list.
