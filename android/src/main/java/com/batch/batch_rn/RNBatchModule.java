@@ -14,6 +14,7 @@ import com.batch.android.Batch;
 import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
 import com.batch.android.BatchTagCollectionsFetchListener;
+import com.batch.android.BatchEmailSubscriptionState;
 import com.batch.android.BatchUserAttribute;
 import com.batch.android.PushNotificationType;
 import com.batch.android.BatchInboxFetcher;
@@ -614,6 +615,17 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                     String value = action.getString("value");
                     editor.setIdentifier(value);
                 }
+            }  else if (type.equals("setEmail")) {
+                ReadableType valueType = action.getType("value");
+                if (valueType.equals(ReadableType.Null)) {
+                    editor.setEmail(null);
+                } else {
+                    String value = action.getString("value");
+                    editor.setEmail(value);
+                }
+            } else if (type.equals("setEmailMarketingSubscriptionState")) {
+                String value = action.getString("value");
+                editor.setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.valueOf(value));
             } else if (type.equals("setLanguage")) {
                 ReadableType valueType = action.getType("value");
                 if (valueType.equals(ReadableType.Null)) {

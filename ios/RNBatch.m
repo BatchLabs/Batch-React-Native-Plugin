@@ -306,6 +306,19 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 
         }
 
+        else if([type isEqualToString:@"setEmail"]) {
+            [editor setEmail:[self safeNilValue:action[@"value"]] error:nil];
+        }
+
+        else if([type isEqualToString:@"setEmailMarketingSubscriptionState"]) {
+            NSString* value = action[@"value"];
+            if([value isEqualToString:@"SUBSCRIBED"]) {
+                [editor setEmailMarketingSubscriptionState:BatchEmailSubscriptionStateSubscribed];
+            } else if ([value isEqualToString:@"UNSUBSCRIBED"]) {
+                 [editor setEmailMarketingSubscriptionState: BatchEmailSubscriptionStateUnsubscribed];
+            }
+        }
+
         else if([type isEqualToString:@"setLanguage"]) {
             [editor setLanguage:[self safeNilValue:action[@"value"]]];
         }
