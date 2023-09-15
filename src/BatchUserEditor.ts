@@ -1,6 +1,14 @@
 import { NativeModules } from 'react-native';
 const RNBatch = NativeModules.RNBatch;
 
+/**
+ * Enum defining the state of an email subscription
+ */
+export enum BatchEmailSubscriptionState {
+  SUBSCRIBED = 'SUBSCRIBED',
+  UNSUBSCRIBED = 'UNSUBSCRIBED',
+}
+
 interface IUserSettingsSetAttributeAction {
   type: 'setAttribute';
   key: string;
@@ -43,6 +51,16 @@ interface IUserSettingsSetIdentifierAction {
   value: string | null;
 }
 
+interface IUserSettingsSetEmailAction {
+  type: 'setEmail';
+  value: string | null;
+}
+
+interface IUserSettingsSetEmailMarketingSubscriptionStateAction {
+  type: 'setEmailMarketingSubscriptionState';
+  value: BatchEmailSubscriptionState;
+}
+
 interface IUserSettingsAddTagAction {
   type: 'addTag';
   collection: string;
@@ -76,7 +94,9 @@ type IUserSettingsAction =
   | IUserSettingsAddTagAction
   | IUserSettingsRemoveTagAction
   | IUserSettingsClearTagsAction
-  | IUserSettingsClearTagCollectionAction;
+  | IUserSettingsClearTagCollectionAction
+  | IUserSettingsSetEmailAction
+  | IUserSettingsSetEmailMarketingSubscriptionStateAction;
 
 type IUserSettingsActions = IUserSettingsAction[];
 
@@ -135,6 +155,20 @@ export class BatchUserEditor {
   public setIdentifier(value: string | null): BatchUserEditor {
     return this.addAction({
       type: 'setIdentifier',
+      value,
+    });
+  }
+
+  public setEmail(value: string | null): BatchUserEditor {
+    return this.addAction({
+      type: 'setEmail',
+      value,
+    });
+  }
+
+  public setEmailMarketingSubscriptionState(value: BatchEmailSubscriptionState): BatchUserEditor {
+    return this.addAction({
+      type: 'setEmailMarketingSubscriptionState',
       value,
     });
   }
