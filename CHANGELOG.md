@@ -1,3 +1,8 @@
+UPCOMING
+____
+
+* Fixed an issue on iOS where `refreshToken` was not running on main thread.
+
 8.1.2
 ----
 
