@@ -126,7 +126,9 @@ RCT_EXPORT_METHOD(push_requestProvisionalNotificationAuthorization)
 
 RCT_EXPORT_METHOD(push_refreshToken)
 {
-    [BatchPush refreshToken];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [BatchPush refreshToken];
+    });
 }
 
 RCT_EXPORT_METHOD(push_setShowForegroundNotification:(BOOL) enabled)
