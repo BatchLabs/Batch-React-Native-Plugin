@@ -25,6 +25,8 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'com.batch.batch_rn'
+
     compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
     buildToolsVersion safeExtGet('buildToolsVersion', DEFAULT_BUILD_TOOLS_VERSION)
 
