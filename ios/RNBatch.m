@@ -192,7 +192,6 @@ RCT_EXPORT_METHOD(userData_getAttributes:(RCTPromiseResolveBlock)resolve rejecte
             reject(@"BatchBridgeError", @"Native SDK fetchAttributes returned an error", nil);
             return;
         }
-        __block NSError *mapError = nil;
         NSMutableDictionary<NSString*, NSDictionary<NSString*, id>*>* bridgeAttributes = [[NSMutableDictionary alloc] initWithCapacity:attributes.count];
         [attributes enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, BatchUserAttribute * _Nonnull attribute, BOOL * _Nonnull stop) {
             NSString *bridgeType;
