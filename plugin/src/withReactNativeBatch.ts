@@ -1,15 +1,12 @@
 import { ConfigPlugin, createRunOncePlugin } from '@expo/config-plugins';
-import {
-  withClassPath,
-  withApplyPlugin,
-  withGoogleServicesFile,
-} from '@expo/config-plugins/build/android/GoogleServices';
-import { withReactNativeBatchMainActivity } from './android/withReactNativeBatchMainActivity';
-import { withReactNativeBatchAppBuildGradle } from './android/withReactNativeBatchAppBuildGradle';
-import { withReactNativeBatchInfoPlist } from './ios/withReactNativeBatchInfoPlist';
-import { withReactNativeBatchAppDelegate } from './ios/withReactNativeBatchAppDelegate';
+import { withClassPath, withApplyPlugin, withGoogleServicesFile } from '@expo/config-plugins/build/android/GoogleServices';
 
-export type Props = { androidApiKey: string; iosApiKey: string, enableDoNotDistrub?: boolean };
+import { withReactNativeBatchAppBuildGradle } from './android/withReactNativeBatchAppBuildGradle';
+import { withReactNativeBatchMainActivity } from './android/withReactNativeBatchMainActivity';
+import { withReactNativeBatchAppDelegate } from './ios/withReactNativeBatchAppDelegate';
+import { withReactNativeBatchInfoPlist } from './ios/withReactNativeBatchInfoPlist';
+
+export type Props = { androidApiKey: string; iosApiKey: string; enableDoNotDisturb?: boolean; enableDoNotDistrub?: boolean };
 /**
  * Apply react-native-batch configuration for Expo SDK 42 projects.
  */
