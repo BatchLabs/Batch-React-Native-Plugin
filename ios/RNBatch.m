@@ -302,7 +302,6 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 
         else if([type isEqualToString:@"setIdentifier"]) {
             [editor setIdentifier:[self safeNilValue:action[@"value"]]];
-
         }
 
         else if([type isEqualToString:@"setEmail"]) {
@@ -324,6 +323,10 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 
         else if([type isEqualToString:@"setRegion"]) {
             [editor setRegion:[self safeNilValue:action[@"value"]]];
+        }
+
+        else if([type isEqualToString:@"setAttributionId"]) {
+            [editor setAttributionIdentifier:[self safeNilValue:action[@"value"]]];
         }
 
         else if([type isEqualToString:@"addTag"]) {
