@@ -642,6 +642,14 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                     String value = action.getString("value");
                     editor.setRegion(value);
                 }
+            } else if (type.equals("setAttributionId")) {
+                ReadableType valueType = action.getType("value");
+                if (valueType.equals(ReadableType.Null)) {
+                    editor.setAttributionIdentifier(null);
+                } else {
+                    String value = action.getString("value");
+                    editor.setAttributionIdentifier(value);
+                }
             } else if (type.equals("addTag")) {
                 String collection = action.getString("collection");
                 String tag = action.getString("tag");

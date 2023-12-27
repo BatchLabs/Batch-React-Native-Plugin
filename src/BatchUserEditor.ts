@@ -61,6 +61,11 @@ interface IUserSettingsSetEmailMarketingSubscriptionStateAction {
   value: BatchEmailSubscriptionState;
 }
 
+interface IUserSettingsSetAttributionIdAction {
+  type: 'setAttributionId';
+  value: string | null;
+}
+
 interface IUserSettingsAddTagAction {
   type: 'addTag';
   collection: string;
@@ -96,7 +101,8 @@ type IUserSettingsAction =
   | IUserSettingsClearTagsAction
   | IUserSettingsClearTagCollectionAction
   | IUserSettingsSetEmailAction
-  | IUserSettingsSetEmailMarketingSubscriptionStateAction;
+  | IUserSettingsSetEmailMarketingSubscriptionStateAction
+  | IUserSettingsSetAttributionIdAction;
 
 type IUserSettingsActions = IUserSettingsAction[];
 
@@ -183,6 +189,13 @@ export class BatchUserEditor {
   public setRegion(value: string | null): BatchUserEditor {
     return this.addAction({
       type: 'setRegion',
+      value,
+    });
+  }
+
+  public setAttributionIdentifier(value: string | null): BatchUserEditor {
+    return this.addAction({
+      type: 'setAttributionId',
       value,
     });
   }
