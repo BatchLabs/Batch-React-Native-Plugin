@@ -7,11 +7,11 @@ Pod::Spec.new do |s|
   s.authors = {
     "Batch.com" => "support@batch.com"
   }
-  s.platform     = :ios, "10.0"
+  s.platform     = :ios, "12.0"
   s.source       = { :git => "git@github.com:BatchLabs/Batch-React-Native-Plugin.git", :tag => "master" }
   s.source_files  = "ios/*.{h,m}"
   s.requires_arc = true
 
   s.dependency "React"
-  s.dependency 'Batch', '~> 1.20.0'
+  s.dependency 'Batch', '~> 1.21.0'
 end
