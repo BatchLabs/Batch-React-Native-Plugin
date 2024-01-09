@@ -1,7 +1,24 @@
-UPCOMING
+9.0.0
 ____
 
+**Plugin**
+
+* Updated Batch 1.21. 
+* Batch requires Xcode 15.1 and iOS 12.0 or higher. 
+* Batch now compiles with and targets SDK 34 (Android 14).
+* Added support for react-native 0.73+
 * Fixed an issue on iOS where `refreshToken` was not running on main thread.
+
+**User**
+
+* Removed automatic collection of the advertising id. You need to collect it from your side and pass it to Batch via the added `BatchUser.editor().setAttributionIdentifier(id)` method.
+* Added `setEmail` method to `BatchUserEditor`. This requires to have a user identifier registered or to call the `setIdentifier` method on the editor instance beforehand.
+* Added `setEmailMarketingSubscriptionState` method to `BatchUserEditor`.
+
+**Inbox**
+
+* Added `hasLandingMessage` property to `IInboxNotification`.
+* Added `displayNotificationLandingMessage` method to `BatchInboxFetcher`.
 
 8.1.2
 ----
