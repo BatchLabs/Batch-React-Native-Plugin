@@ -1,10 +1,10 @@
-9.0.0
+8.2.0
 ____
 
 **Plugin**
 
 * Updated Batch 1.21. 
-* Batch requires Xcode 15.1 and iOS 12.0 or higher. 
+* Batch requires iOS 12.0 or higher. 
 * Batch now compiles with and targets SDK 34 (Android 14).
 * Added support for react-native 0.73+
 * Fixed an issue on iOS where `refreshToken` was not running on main thread.
