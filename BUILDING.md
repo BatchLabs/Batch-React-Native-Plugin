@@ -1,6 +1,6 @@
 ## How to develop
 
-### Install dependcies
+### Install dependencies
 
 Install the plugin's dependencies.
 
