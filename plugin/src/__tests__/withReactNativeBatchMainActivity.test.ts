@@ -1,13 +1,20 @@
 import { modifyMainActivity } from '../android/withReactNativeBatchMainActivity';
 import {
-  mainActivityExpectedFixture,
-  mainActivityFixture,
+  mainJavaActivityExpectedFixture,
+  mainJavaActivityFixture,
+  mainKotlinActivityExpectedFixture,
+  mainKotlinActivityFixture,
 } from '../fixtures/mainActivity';
 
 describe(modifyMainActivity, () => {
-  it('should push depedencies in the ProjetGradle file', () => {
-    const result = modifyMainActivity(mainActivityFixture);
+  it('should push on new intent in java main activity', () => {
+    const result = modifyMainActivity(mainJavaActivityFixture);
+    expect(result).toEqual(mainJavaActivityExpectedFixture);
+  });
 
-    expect(result).toEqual(mainActivityExpectedFixture);
+  it('should push on new intent in kotlin main activity', () => {
+    const result = modifyMainActivity(mainKotlinActivityFixture);
+
+    expect(result).toEqual(mainKotlinActivityExpectedFixture);
   });
 });
