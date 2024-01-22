@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   }
   s.platform     = :ios, "10.0"
   s.source       = { :git => "git@github.com:BatchLabs/Batch-React-Native-Plugin.git", :tag => "master" }
-  s.source_files  = "ios/*.{h,m}"
+  s.source_files  = "ios/**/*.{h,m}"
   s.requires_arc = true
 
   s.dependency "React"

@@ -3,18 +3,18 @@ import { ConfigPlugin, withMainActivity } from '@expo/config-plugins';
 export const modifyMainActivity = (content: string): string => {
   let newContent = content;
 
-  if (!newContent.includes('import android.content.Intent;')) {
+  if (!newContent.includes('import android.content.Intent')) {
     newContent = content.replace(
-      'import com.facebook.react.ReactActivity;',
-      `import com.facebook.react.ReactActivity;
-import android.content.Intent;
-import com.batch.android.Batch;`
+      'import com.facebook.react.ReactActivity',
+      `import com.facebook.react.ReactActivity
+import android.content.Intent
+import com.batch.android.Batch`
     );
   } else {
     newContent = content.replace(
-      'import com.facebook.react.ReactActivity;',
-      `import com.facebook.react.ReactActivity;
-      import com.batch.android.Batch;`
+      'import com.facebook.react.ReactActivity',
+      `import com.facebook.react.ReactActivity
+      import com.batch.android.Batch`
     );
   }
 
@@ -26,18 +26,16 @@ import com.batch.android.Batch;`
 
     newContent =
       start +
-      `\n  @Override
-  public void onNewIntent(Intent intent)
-  {
-      Batch.onNewIntent(this, intent);
-      super.onNewIntent(intent);
+      `\n  override fun onNewIntent(intent: Intent?) {
+      Batch.onNewIntent(this, intent)
+      super.onNewIntent(intent)
   }\n\n` +
       end;
   } else {
     newContent = newContent.replace(
-      'super.onNewIntent(intent);',
-      `Batch.onNewIntent(this, intent);
-    super.onNewIntent(intent);`
+      'super.onNewIntent(intent)',
+      `Batch.onNewIntent(this, intent)
+    super.onNewIntent(intent)`
     );
   }
 
