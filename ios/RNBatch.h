@@ -12,7 +12,7 @@
 
 #import <Batch/Batch.h>
 
-#define PluginVersion "ReactNative/8.1.2"
+#define PluginVersion "ReactNative/8.2.0"
 
 @interface RNBatch : RCTEventEmitter <RCTBridgeModule>
 

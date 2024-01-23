@@ -7,7 +7,7 @@ ____
 * Batch requires iOS 12.0 or higher. 
 * Batch now compiles with and targets SDK 34 (Android 14).
 * Added support for react-native 0.73+
-* Added support for Expo 50. Since, as of writing, Expo 50 is still in beta, this might change after the stable release.
+* Added support for Expo 50.
 * Fixed an issue on iOS where `refreshToken` was not running on main thread.
 
 **User**
