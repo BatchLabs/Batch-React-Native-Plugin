@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.batch.android.Batch;
 import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
+import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchEmailSubscriptionState;
 import com.batch.android.BatchUserAttribute;
@@ -172,8 +173,8 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void push_getLastKnownPushToken(Promise promise) {
-        String pushToken = Batch.Push.getLastKnownPushToken();
-        promise.resolve(pushToken);
+        BatchPushRegistration registration = Batch.Push.getRegistration();
+        promise.resolve(registration != null ? registration.getToken() : null);
     }
 
     @ReactMethod
