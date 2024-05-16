@@ -21,7 +21,6 @@ import com.batch.android.BatchInboxFetcher;
 import com.batch.android.BatchInboxNotificationContent;
 import com.batch.android.BatchMessage;
 import com.batch.android.BatchUserDataEditor;
-import com.batch.android.Config;
 import com.batch.android.json.JSONObject;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -92,7 +91,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
             Resources resources = application.getResources();
             String packageName = application.getPackageName();
             String batchAPIKey = resources.getString(resources.getIdentifier("BATCH_API_KEY", "string", packageName));
-            Batch.setConfig(new Config(batchAPIKey));
+            Batch.start(batchAPIKey);
             Batch.EventDispatcher.addDispatcher(eventDispatcher);
             try {
                 boolean doNotDisturbEnabled = resources.getBoolean(resources.getIdentifier("BATCH_DO_NOT_DISTURB_INITIAL_STATE", "bool", packageName));
