@@ -108,29 +108,6 @@ export const BatchUser = {
   },
 
   /**
-   * Track a transaction. Batch must be started at some point, or events won't be sent to the server.
-   * @param amount Transaction's amount.
-   * @param data The transaction data (optional). Must be an object.
-   */
-  trackTransaction: (amount: number, data?: { [key: string]: unknown }): void => {
-    if (typeof amount === 'undefined') {
-      Log(false, 'BatchUser - Amount must be a valid number. Ignoring transaction.');
-      return;
-    }
-
-    if (!isNumber(amount) || isNaN(amount)) {
-      Log(false, 'BatchUser - Amount must be a valid number. Ignoring transaction.');
-      return;
-    }
-
-    if (typeof data !== 'object') {
-      data = null;
-    }
-
-    RNBatch.userData_trackTransaction(amount, data);
-  },
-
-  /**
    * Track a geolocation update
    * You can call this method from any thread. Batch must be started at some point, or location updates won't be sent to the server.
    * @param location User location object

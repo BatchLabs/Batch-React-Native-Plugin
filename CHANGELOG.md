@@ -1,5 +1,18 @@
+9.0.0
+----
+
+**Plugin**
+
+* Updated Batch 2.0
+* Batch requires iOS 13.0 or higher.
+* Batch requires a `minSdk` level of 21 or higher.
+
+**User**
+
+- Removed method `trackTransaction` with no equivalent.
+
 8.2.0
-____
+----
 
 **Plugin**
 
