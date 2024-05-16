@@ -36,9 +36,9 @@ export const Batch = {
    * - Prevent batch.start()
    * - Disable any network capability from the SDK
    * - Disable all In-App campaigns
-   * - Make the Inbox module return an error immediatly when used
+   * - Make the Inbox module return an error immediately when used
    * - Make the SDK reject any editor calls
-   * - Make the SDK reject calls to batch.user.trackEvent(), batch.user.trackTransaction(), batch.user.trackLocation()
+   * - Make the SDK reject calls to batch.profile.trackEvent(), batch.profile.trackLocation()
    *   and any related methods
    *
    * Even if you opt in afterwards, data that has been generated while opted out WILL be lost.

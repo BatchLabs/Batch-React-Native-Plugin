@@ -674,15 +674,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void userData_trackTransaction(double amount, ReadableMap data) {
-        JSONObject transactionData = null;
-        if (data != null) {
-            transactionData = new JSONObject(data.toHashMap());
-        }
-        Batch.User.trackTransaction(amount, transactionData);
-    }
-
-    @ReactMethod
     public void userData_trackLocation(ReadableMap serializedLocation) {
         Location nativeLocation = new Location("com.batch.batch_rn");
         nativeLocation.setLatitude(serializedLocation.getDouble("latitude"));

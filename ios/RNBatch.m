@@ -453,17 +453,6 @@ RCT_EXPORT_METHOD(userData_trackEvent:(NSString*)name label:(NSString*)label dat
     [BatchUser trackEvent:name withLabel:label associatedData:batchEventData];
 }
 
-RCT_EXPORT_METHOD(userData_trackTransaction:(double)amount data:(NSDictionary*)rawData)
-{
-    if (rawData && ![rawData isKindOfClass:[NSDictionary class]])
-    {
-        NSLog(@"RNBatch: trackTransaction data should be an dictionary or nil");
-        return;
-    }
-
-    [BatchUser trackTransactionWithAmount:amount data:rawData];
-}
-
 RCT_EXPORT_METHOD(userData_trackLocation:(NSDictionary*)serializedLocation)
 {
     if (![serializedLocation isKindOfClass:[NSDictionary class]] || [serializedLocation count]==0)
