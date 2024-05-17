@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.batch.android.Batch;
 import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
+import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchEmailSubscriptionState;
@@ -21,8 +22,6 @@ import com.batch.android.PushNotificationType;
 import com.batch.android.BatchInboxFetcher;
 import com.batch.android.BatchInboxNotificationContent;
 import com.batch.android.BatchMessage;
-import com.batch.android.BatchUserDataEditor;
-import com.batch.android.json.JSONObject;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -571,7 +570,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void userData_save(ReadableArray actions) {
-        BatchUserDataEditor editor = Batch.User.editor();
+        BatchProfileAttributeEditor editor = Batch.Profile.editor();
         for (int i = 0; i < actions.size(); i++) {
             ReadableMap action = actions.getMap(i);
             String type = action.getString("type");
@@ -605,27 +604,17 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
             } else if (type.equals("removeAttribute")) {
                 String key = action.getString("key");
                 editor.removeAttribute(key);
-            } else if (type.equals("clearAttributes")) {
-                editor.clearAttributes();
-            } else if (type.equals("setIdentifier")) {
+            } else if (type.equals("setEmail")) {
                 ReadableType valueType = action.getType("value");
                 if (valueType.equals(ReadableType.Null)) {
-                    editor.setIdentifier(null);
+                    editor.setEmailAddress(null);
                 } else {
                     String value = action.getString("value");
-                    editor.setIdentifier(value);
-                }
-            }  else if (type.equals("setEmail")) {
-                ReadableType valueType = action.getType("value");
-                if (valueType.equals(ReadableType.Null)) {
-                    editor.setEmail(null);
-                } else {
-                    String value = action.getString("value");
-                    editor.setEmail(value);
+                    editor.setEmailAddress(value);
                 }
             } else if (type.equals("setEmailMarketingSubscriptionState")) {
                 String value = action.getString("value");
-                editor.setEmailMarketingSubscriptionState(BatchEmailSubscriptionState.valueOf(value));
+                editor.setEmailMarketingSubscription(BatchEmailSubscriptionState.valueOf(value));
             } else if (type.equals("setLanguage")) {
                 ReadableType valueType = action.getType("value");
                 if (valueType.equals(ReadableType.Null)) {
@@ -642,35 +631,25 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                     String value = action.getString("value");
                     editor.setRegion(value);
                 }
-            } else if (type.equals("setAttributionId")) {
-                ReadableType valueType = action.getType("value");
-                if (valueType.equals(ReadableType.Null)) {
-                    editor.setAttributionIdentifier(null);
-                } else {
-                    String value = action.getString("value");
-                    editor.setAttributionIdentifier(value);
-                }
             } else if (type.equals("addTag")) {
                 String collection = action.getString("collection");
                 String tag = action.getString("tag");
-                editor.addTag(collection, tag);
+                editor.addToArray(collection, tag);
             } else if (type.equals("removeTag")) {
                 String collection = action.getString("collection");
                 String tag = action.getString("tag");
-                editor.removeTag(collection, tag);
+                editor.removeFromArray(collection, tag);
             } else if (type.equals("clearTagCollection")) {
                 String collection = action.getString("collection");
-                editor.clearTagCollection(collection);
-            } else if (type.equals("clearTags")) {
-                editor.clearTags();
+                editor.removeAttribute(collection);
             }
         }
         editor.save();
     }
 
     @ReactMethod
-    public void userData_trackEvent(String name, String label, ReadableMap serializedEventData) {
-        Batch.User.trackEvent(name, label, RNUtils.convertSerializedEventDataToEventData(serializedEventData));
+    public void userData_trackEvent(String name, ReadableMap serializedEventData) {
+        Batch.Profile.trackEvent(name, RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData));
     }
 
     @ReactMethod
@@ -687,6 +666,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
             nativeLocation.setTime((long) serializedLocation.getDouble("date"));
         }
 
-        Batch.User.trackLocation(nativeLocation);
+        Batch.Profile.trackLocation(nativeLocation);
     }
 }

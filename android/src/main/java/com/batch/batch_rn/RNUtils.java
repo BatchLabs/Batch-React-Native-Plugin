@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 import android.util.Log;
 
-import com.batch.android.BatchEventData;
+import com.batch.android.BatchEventAttributes;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
@@ -16,7 +16,9 @@ import com.facebook.react.bridge.WritableNativeMap;
 import org.json.JSONArray;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class RNUtils {
@@ -78,16 +80,22 @@ public class RNUtils {
     }
 
     @Nullable
-    public static BatchEventData convertSerializedEventDataToEventData(@Nullable ReadableMap serializedEventData) {
+    public static BatchEventAttributes convertSerializedEventDataToEventAttributes(@Nullable ReadableMap serializedEventData) {
         if (serializedEventData == null) {
             return null;
         }
 
-        BatchEventData batchEventData = new BatchEventData();
-        ReadableArray tags = serializedEventData.getArray("tags");
-
+        BatchEventAttributes eventAttributes = new BatchEventAttributes();
+        ReadableArray tags = serializedEventData.getArray("$tags");
+        List<String> tagsList = new ArrayList<>();
         for (int i = 0; i < tags.size(); i++) {
-            batchEventData.addTag(tags.getString(i));
+            tagsList.add(tags.getString(i));
+        }
+        eventAttributes.putStringList("$tags", tagsList);
+
+        String label = serializedEventData.getString("$label");
+        if (label != null) {
+            eventAttributes.put("$label", label);
         }
 
         ReadableMap attributes = serializedEventData.getMap("attributes");
@@ -98,24 +106,24 @@ public class RNUtils {
             ReadableMap valueMap = attributes.getMap(key);
             String type = valueMap.getString("type");
             if ("string".equals(type)) {
-                batchEventData.put(key, valueMap.getString("value"));
+                eventAttributes.put(key, valueMap.getString("value"));
             } else if ("boolean".equals(type)) {
-                batchEventData.put(key, valueMap.getBoolean("value"));
+                eventAttributes.put(key, valueMap.getBoolean("value"));
             } else if ("integer".equals(type)) {
-                batchEventData.put(key, valueMap.getDouble("value"));
+                eventAttributes.put(key, valueMap.getDouble("value"));
             } else if ("float".equals(type)) {
-                batchEventData.put(key, valueMap.getDouble("value"));
+                eventAttributes.put(key, valueMap.getDouble("value"));
             } else if ("date".equals(type)) {
                 long timestamp = (long) valueMap.getDouble("value");
                 Date date = new Date(timestamp);
-                batchEventData.put(key, date);
+                eventAttributes.put(key, date);
             } else if ("url".equals(type)) {
-                batchEventData.put(key, URI.create(valueMap.getString("value")));
+                eventAttributes.put(key, URI.create(valueMap.getString("value")));
             } else {
                 Log.e("RNBatchPush", "Invalid parameter : Unknown event_data.attributes type (" + type + ")");
             }
         }
 
-        return batchEventData;
+        return eventAttributes;
     }
 }
