@@ -35,6 +35,7 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -591,6 +592,9 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                     case String:
                         editor.setAttribute(key, action.getString("value"));
                         break;
+                    case Array:
+                        ReadableArray array = action.getArray("value");
+                        editor.setAttribute(key, RNUtils.convertReadableArrayToList(array));
                 }
             } else if (type.equals("setDateAttribute")) {
                 String key = action.getString("key");
@@ -604,7 +608,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
             } else if (type.equals("removeAttribute")) {
                 String key = action.getString("key");
                 editor.removeAttribute(key);
-            } else if (type.equals("setEmail")) {
+            } else if (type.equals("setEmailAddress")) {
                 ReadableType valueType = action.getType("value");
                 if (valueType.equals(ReadableType.Null)) {
                     editor.setEmailAddress(null);
@@ -612,7 +616,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                     String value = action.getString("value");
                     editor.setEmailAddress(value);
                 }
-            } else if (type.equals("setEmailMarketingSubscriptionState")) {
+            } else if (type.equals("setEmailMarketingSubscription")) {
                 String value = action.getString("value");
                 editor.setEmailMarketingSubscription(BatchEmailSubscriptionState.valueOf(value));
             } else if (type.equals("setLanguage")) {
@@ -631,17 +635,26 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                     String value = action.getString("value");
                     editor.setRegion(value);
                 }
-            } else if (type.equals("addTag")) {
-                String collection = action.getString("collection");
-                String tag = action.getString("tag");
-                editor.addToArray(collection, tag);
-            } else if (type.equals("removeTag")) {
-                String collection = action.getString("collection");
-                String tag = action.getString("tag");
-                editor.removeFromArray(collection, tag);
-            } else if (type.equals("clearTagCollection")) {
-                String collection = action.getString("collection");
-                editor.removeAttribute(collection);
+            } else if (type.equals("addToArray")) {
+                String key = action.getString("key");
+                ReadableType valueType = action.getType("value");
+                if (valueType.equals(ReadableType.String)) {
+                    String value = action.getString("value");
+                    editor.addToArray(key, value);
+                } else if(valueType.equals(ReadableType.Array)) {
+                    ReadableArray arrayValue = action.getArray("value");
+                    editor.addToArray(key, RNUtils.convertReadableArrayToList(arrayValue));
+                }
+            } else if (type.equals("removeFromArray")) {
+                String key = action.getString("key");
+                ReadableType valueType = action.getType("value");
+                if (valueType.equals(ReadableType.String)) {
+                    String value = action.getString("value");
+                    editor.removeFromArray(key, value);
+                } else if(valueType.equals(ReadableType.Array)) {
+                    ReadableArray arrayValue = action.getArray("value");
+                    editor.removeFromArray(key, RNUtils.convertReadableArrayToList(arrayValue));
+                }
             }
         }
         editor.save();
