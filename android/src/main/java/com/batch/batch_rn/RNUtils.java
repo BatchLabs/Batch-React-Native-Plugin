@@ -87,11 +87,9 @@ public class RNUtils {
 
         BatchEventAttributes eventAttributes = new BatchEventAttributes();
         ReadableArray tags = serializedEventData.getArray("$tags");
-        List<String> tagsList = new ArrayList<>();
-        for (int i = 0; i < tags.size(); i++) {
-            tagsList.add(tags.getString(i));
+        if (tags != null && tags.size() > 0) {
+            eventAttributes.putStringList("$tags", convertReadableArrayToList(tags));
         }
-        eventAttributes.putStringList("$tags", tagsList);
 
         String label = serializedEventData.getString("$label");
         if (label != null) {
@@ -125,5 +123,19 @@ public class RNUtils {
         }
 
         return eventAttributes;
+    }
+
+    /**
+     * Convert a ReadableArray into a List of String
+     *
+     * @param array ReadableArray to convert
+     * @return List of String
+     */
+    public static List<String> convertReadableArrayToList(ReadableArray array) {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            list.add(array.getString(i));
+        }
+        return list;
     }
 }
