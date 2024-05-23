@@ -1,4 +1,4 @@
-import { BatchEventData, Consts } from './BatchEventData';
+import { BatchEventAttributes, Consts } from './BatchEventAttributes';
 import * as Logger from './helpers/Logger';
 
 describe('BatchEventData', () => {
@@ -7,7 +7,7 @@ describe('BatchEventData', () => {
   });
 
   it(`handles less than or equal ${Consts.EventDataMaxTags} tags`, () => {
-    const batchEventData = new BatchEventData();
+    const batchEventData = new BatchEventAttributes();
     const spy = jest.spyOn(Logger, 'Log');
 
     for (let i = 1; i <= Consts.EventDataMaxTags; i++) {
@@ -17,7 +17,7 @@ describe('BatchEventData', () => {
     expect(spy).not.toHaveBeenCalled();
   });
   it(`handles less than or equal ${Consts.EventDataMaxValues} attributes`, () => {
-    const batchEventData = new BatchEventData();
+    const batchEventData = new BatchEventAttributes();
     const spy = jest.spyOn(Logger, 'Log');
 
     for (let i = 1; i <= Consts.EventDataMaxValues; i++) {
@@ -27,7 +27,7 @@ describe('BatchEventData', () => {
     expect(spy).not.toHaveBeenCalled();
   });
   it(`skips other tags after the first ${Consts.EventDataMaxTags}`, () => {
-    const batchEventData = new BatchEventData();
+    const batchEventData = new BatchEventAttributes();
     const spy = jest.spyOn(Logger, 'Log');
 
     for (let i = 1; i <= Consts.EventDataMaxTags; i++) {
@@ -39,7 +39,7 @@ describe('BatchEventData', () => {
     expect(spy).toHaveBeenCalled();
   });
   it(`skips other attributes after the first ${Consts.EventDataMaxValues}`, () => {
-    const batchEventData = new BatchEventData();
+    const batchEventData = new BatchEventAttributes();
     const spy = jest.spyOn(Logger, 'Log');
 
     for (let i = 1; i <= Consts.EventDataMaxValues; i++) {
@@ -51,7 +51,7 @@ describe('BatchEventData', () => {
     expect(spy).toHaveBeenCalled();
   });
   it(`handles a date attribute`, () => {
-    const batchEventData = new BatchEventData();
+    const batchEventData = new BatchEventAttributes();
     const spy = jest.spyOn(Logger, 'Log');
 
     batchEventData.putDate('test_date', Date.now());
@@ -59,7 +59,7 @@ describe('BatchEventData', () => {
     expect(spy).not.toHaveBeenCalled();
   });
   it(`handles an url attribute`, () => {
-    const batchEventData = new BatchEventData();
+    const batchEventData = new BatchEventAttributes();
     const spy = jest.spyOn(Logger, 'Log');
 
     batchEventData.putURL('test_url', 'https://batch.com');
@@ -67,7 +67,7 @@ describe('BatchEventData', () => {
     expect(spy).not.toHaveBeenCalled();
   });
   it(`skips a too long url attribute`, () => {
-    const batchEventData = new BatchEventData();
+    const batchEventData = new BatchEventAttributes();
     const spy = jest.spyOn(Logger, 'Log');
 
     batchEventData.putURL(
