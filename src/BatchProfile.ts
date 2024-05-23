@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-import { BatchEventData } from './BatchEventData';
+import { BatchEventAttributes } from './BatchEventAttributes';
 import { BatchProfileAttributeEditor } from './BatchProfileAttributeEditor';
 import Log from './helpers/Logger';
 
@@ -47,10 +47,10 @@ export const BatchProfile = {
    * @param name The event name. Must be a string.
    * @param data The event data (optional). Must be an object.
    */
-  trackEvent: (name: string, data?: BatchEventData): void => {
+  trackEvent: (name: string, data?: BatchEventAttributes): void => {
     // Since _toInternalRepresentation is private, we have to resort to this little hack to access the method.
     // That syntax keeps the argument type checking, while casting as any would not.
-    RNBatch.userData_trackEvent(name, data instanceof BatchEventData ? data['_toInternalRepresentation']() : null);
+    RNBatch.userData_trackEvent(name, data instanceof BatchEventAttributes ? data['_toInternalRepresentation']() : null);
   },
 
   /**

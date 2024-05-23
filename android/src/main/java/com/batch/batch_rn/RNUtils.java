@@ -80,29 +80,18 @@ public class RNUtils {
     }
 
     @Nullable
-    public static BatchEventAttributes convertSerializedEventDataToEventAttributes(@Nullable ReadableMap serializedEventData) {
-        if (serializedEventData == null) {
+    public static BatchEventAttributes convertSerializedEventDataToEventAttributes(@Nullable ReadableMap attributes) {
+        if (attributes == null) {
             return null;
         }
-
         BatchEventAttributes eventAttributes = new BatchEventAttributes();
-        ReadableArray tags = serializedEventData.getArray("$tags");
-        if (tags != null && tags.size() > 0) {
-            eventAttributes.putStringList("$tags", convertReadableArrayToList(tags));
-        }
-
-        String label = serializedEventData.getString("$label");
-        if (label != null) {
-            eventAttributes.put("$label", label);
-        }
-
-        ReadableMap attributes = serializedEventData.getMap("attributes");
         ReadableMapKeySetIterator iterator = attributes.keySetIterator();
 
         while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
             ReadableMap valueMap = attributes.getMap(key);
             String type = valueMap.getString("type");
+
             if ("string".equals(type)) {
                 eventAttributes.put(key, valueMap.getString("value"));
             } else if ("boolean".equals(type)) {
@@ -117,11 +106,28 @@ public class RNUtils {
                 eventAttributes.put(key, date);
             } else if ("url".equals(type)) {
                 eventAttributes.put(key, URI.create(valueMap.getString("value")));
+            } else if ("object".equals(type)) {
+                BatchEventAttributes object = convertSerializedEventDataToEventAttributes(valueMap.getMap("value"));
+                if (object != null) {
+                    eventAttributes.put(key, object);
+                }
+            } else if ("string_array".equals(type)) {
+                List<String> list = convertReadableArrayToList(valueMap.getArray("value"));
+                eventAttributes.putStringList(key, list);
+            } else if ("object_array".equals(type)) {
+                List<BatchEventAttributes> list = new ArrayList<>();
+                ReadableArray array = valueMap.getArray("value");
+                for (int i = 0; i < array.size(); i++) {
+                    BatchEventAttributes object = convertSerializedEventDataToEventAttributes(array.getMap(i));
+                    if (object != null) {
+                        list.add(object);
+                    }
+                }
+                eventAttributes.putObjectList(key, list);
             } else {
-                Log.e("RNBatchPush", "Invalid parameter : Unknown event_data.attributes type (" + type + ")");
+                Log.e(RNBatchModule.LOGGER_TAG, "Invalid parameter : Unknown event_data.attributes type (" + type + ")");
             }
         }
-
         return eventAttributes;
     }
 

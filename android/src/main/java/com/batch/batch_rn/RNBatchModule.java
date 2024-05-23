@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.batch.android.Batch;
 import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
+import com.batch.android.BatchEventAttributes;
 import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchTagCollectionsFetchListener;
@@ -662,7 +663,8 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void userData_trackEvent(String name, ReadableMap serializedEventData) {
-        Batch.Profile.trackEvent(name, RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData));
+        BatchEventAttributes attributes = RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData);
+        Batch.Profile.trackEvent(name, attributes);
     }
 
     @ReactMethod
