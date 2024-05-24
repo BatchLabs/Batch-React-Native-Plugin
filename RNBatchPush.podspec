@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.authors = {
     "Batch.com" => "support@batch.com"
   }
-  s.platform     = :ios, "12.0"
+  s.platform     = :ios, "13.0"
   s.source       = { :git => "git@github.com:BatchLabs/Batch-React-Native-Plugin.git", :tag => "master" }
   s.source_files  = "ios/*.{h,m}"
   s.requires_arc = true
