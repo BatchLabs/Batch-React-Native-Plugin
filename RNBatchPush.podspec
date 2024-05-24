@@ -13,5 +13,5 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.dependency "React"
-  s.dependency 'Batch', '~> 1.21.0'
+  s.dependency 'Batch', '~> 2.0.0'
 end
