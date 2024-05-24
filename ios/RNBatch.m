@@ -47,7 +47,7 @@ RCT_EXPORT_MODULE()
     }
 
     NSString *batchAPIKey = [info objectForKey:@"BatchAPIKey"];
-    [Batch startWithAPIKey:batchAPIKey];
+    [BatchSDK startWithAPIKey:batchAPIKey];
     dispatcher = [[RNBatchEventDispatcher alloc] init];
     [BatchEventDispatcher addDispatcher:dispatcher];
 }
@@ -78,7 +78,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Batch optIn];
+    [BatchSDK optIn];
     [RNBatch start];
     resolve([NSNull null]);
 }
@@ -86,21 +86,21 @@ RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
 RCT_EXPORT_METHOD(optOut:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Batch optOut];
+    [BatchSDK optOut];
     resolve([NSNull null]);
 }
 
 RCT_EXPORT_METHOD(optOutAndWipeData:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [Batch optOutAndWipeData];
+    [BatchSDK optOutAndWipeData];
     resolve([NSNull null]);
 }
 
 RCT_EXPORT_METHOD(presentDebugViewController)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIViewController *debugVC = [Batch debugViewController];
+        UIViewController *debugVC = [BatchSDK makeDebugViewController];
         if (debugVC) {
             [RCTPresentedViewController() presentViewController:debugVC animated:YES completion:nil];
         }
@@ -108,12 +108,6 @@ RCT_EXPORT_METHOD(presentDebugViewController)
 }
 
 // Push Module
-
-RCT_EXPORT_METHOD(push_registerForRemoteNotifications)
-{
-    [BatchPush registerForRemoteNotifications];
-}
-
 RCT_EXPORT_METHOD(push_requestNotificationAuthorization)
 {
     [BatchPush requestNotificationAuthorization];
@@ -268,47 +262,52 @@ RCT_EXPORT_METHOD(userData_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCT
 
 RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 {
-    BatchUserDataEditor *editor = [BatchUser editor];
+    BatchProfileEditor *editor = [BatchProfile editor];
     for (NSDictionary* action in actions) {
         NSString* type = action[@"type"];
+        NSString* key = action[@"key"];
 
         // Set double, long, NSString, bool class values
         if([type isEqualToString:@"setAttribute"]) {
-            [editor setAttribute:[self safeNilValue:action[@"value"]] forKey:action[@"key"]];
-
+            id value = action[@"value"];
+            if ([value isKindOfClass:[NSString class]]) {
+                [editor setStringAttribute:value forKey:key error:nil];
+            } else if([value isKindOfClass:[NSNumber class]]) {
+                if (value == (id)kCFBooleanTrue || value == (id)kCFBooleanFalse) {
+                    [editor setBooleanAttribute:[value boolValue] forKey:key error:nil];
+                } else {
+                    [editor setDoubleAttribute:[value doubleValue] forKey:key error:nil];
+                }
+            } else if([value isKindOfClass:[NSString class]]) {
+                [editor setStringAttribute:value forKey:key error:nil];
+            } else if([value isKindOfClass:[NSArray class]]) {
+                [editor setStringArrayAttribute:value forKey:key error:nil];
+            } else if([value isKindOfClass:[NSNull class]]) {
+                [editor removeAttributeForKey:key error:nil];
+            }
         }
-
         // Handle dates
         // @TODO: prevent date parsing from erroring
         else if([type isEqualToString:@"setDateAttribute"]) {
             double timestamp = [action[@"value"] doubleValue];
             NSTimeInterval unixTimeStamp = timestamp / 1000.0;
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-            [editor setAttribute:date forKey:action[@"key"]];
+            [editor setDateAttribute:date forKey:key error:nil];
         }
-
         else if([type isEqualToString:@"setURLAttribute"]) {
             NSURL *url = [NSURL URLWithString:[self safeNilValue:action[@"value"]]];
-            [editor setAttribute:url forKey:action[@"key"]];
-        }
+            [editor setURLAttribute:url forKey:action[@"key"] error:nil];
 
+        }
         else if([type isEqualToString:@"removeAttribute"]) {
-            [editor removeAttributeForKey:action[@"key"]];
+            [editor removeAttributeForKey:action[@"key"] error:nil];
         }
 
-        else if([type isEqualToString:@"clearAttributes"]) {
-            [editor clearAttributes];
+        else if([type isEqualToString:@"setEmailAddress"]) {
+            [editor setEmailAddress:[self safeNilValue:action[@"value"]] error:nil];
         }
 
-        else if([type isEqualToString:@"setIdentifier"]) {
-            [editor setIdentifier:[self safeNilValue:action[@"value"]]];
-        }
-
-        else if([type isEqualToString:@"setEmail"]) {
-            [editor setEmail:[self safeNilValue:action[@"value"]] error:nil];
-        }
-
-        else if([type isEqualToString:@"setEmailMarketingSubscriptionState"]) {
+        else if([type isEqualToString:@"setEmailMarketingSubscription"]) {
             NSString* value = action[@"value"];
             if([value isEqualToString:@"SUBSCRIBED"]) {
                 [editor setEmailMarketingSubscriptionState:BatchEmailSubscriptionStateSubscribed];
@@ -318,31 +317,33 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
         }
 
         else if([type isEqualToString:@"setLanguage"]) {
-            [editor setLanguage:[self safeNilValue:action[@"value"]]];
+            [editor setLanguage:[self safeNilValue:action[@"value"]] error:nil];
         }
 
         else if([type isEqualToString:@"setRegion"]) {
-            [editor setRegion:[self safeNilValue:action[@"value"]]];
+            [editor setRegion:[self safeNilValue:action[@"value"]] error:nil];
         }
 
-        else if([type isEqualToString:@"setAttributionId"]) {
-            [editor setAttributionIdentifier:[self safeNilValue:action[@"value"]]];
+        else if([type isEqualToString:@"addToArray"]) {
+            id value = action[@"value"];
+            if ([value isKindOfClass:[NSString class]]) {
+                [editor addItemToStringArrayAttribute:value forKey:key error:nil];
+            } else if ([value isKindOfClass:[NSArray class]]) {
+                for (NSString *item in value) {
+                    [editor addItemToStringArrayAttribute:item forKey:key error:nil];
+                }
+            }
         }
 
-        else if([type isEqualToString:@"addTag"]) {
-            [editor addTag:action[@"tag"] inCollection:action[@"collection"]];
-        }
-
-        else if([type isEqualToString:@"removeTag"]) {
-            [editor removeTag:action[@"tag"] fromCollection:action[@"collection"]];
-        }
-
-        else if([type isEqualToString:@"clearTagCollection"]) {
-            [editor clearTagCollection:action[@"collection"]];
-        }
-
-        else if([type isEqualToString:@"clearTags"]) {
-            [editor clearTags];
+        else if([type isEqualToString:@"removeFromArray"]) {
+            id value = action[@"value"];
+            if ([value isKindOfClass:[NSString class]]) {
+                [editor removeItemFromStringArrayAttribute:value forKey:key error:nil];
+            } else if ([value isKindOfClass:[NSArray class]]) {
+                for (NSString *item in value) {
+                    [editor removeItemFromStringArrayAttribute:item forKey:key error:nil];
+                }
+            }
         }
     }
     [editor save];
@@ -350,107 +351,127 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
 
 // Event tracking
 
-RCT_EXPORT_METHOD(userData_trackEvent:(NSString*)name label:(NSString*)label data:(NSDictionary*)serializedEventData)
+RCT_EXPORT_METHOD(userData_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData)
 {
-    BatchEventData *batchEventData = nil;
+    BatchEventAttributes *batchEventAttributes = nil;
 
-    if ([serializedEventData isKindOfClass:[NSDictionary class]])
-    {
-        batchEventData = [BatchEventData new];
+    if ([serializedEventData isKindOfClass:[NSDictionary class]]) {
 
-        if (![serializedEventData isKindOfClass:[NSDictionary class]])
-        {
-            NSLog(@"RNBatch: Error while tracking event data: event data should be an object or null");
+        batchEventAttributes = [self convertSerializedEventDataToEventAttributes:serializedEventData];
+
+        NSError *err;
+        [batchEventAttributes validateWithError:&err];
+        if (batchEventAttributes != nil && err == nil) {
+            [BatchProfile trackEventWithName:name attributes:batchEventAttributes];
+        } else {
+            NSLog(@"Event validation error: %@", err.description);
             return;
-        }
-
-        NSArray<NSString*>* tags = serializedEventData[@"tags"];
-        NSDictionary<NSString*, NSDictionary*>* attributes = serializedEventData[@"attributes"];
-
-        if (![tags isKindOfClass:[NSArray class]])
-        {
-            NSLog(@"RNBatch: Error while tracking event data: event data.tags should be an array");
-            return;
-        }
-        if (![attributes isKindOfClass:[NSDictionary class]])
-        {
-            NSLog(@"RNBatch: Error while tracking event data: event data.attributes should be a dictionnary");
-            return;
-        }
-
-        for (NSString *tag in tags)
-        {
-            if (![tag isKindOfClass:[NSString class]])
-            {
-                NSLog(@"RNBatch: Error while tracking event data: event data.tag childrens should all be strings");
-                return;
-            }
-            [batchEventData addTag:tag];
-        }
-
-        for (NSString *key in attributes.allKeys)
-        {
-            NSDictionary *typedAttribute = attributes[key];
-            if (![typedAttribute isKindOfClass:[NSDictionary class]])
-            {
-                NSLog(@"RNBatch: Error while tracking event data: event data.attributes childrens should all be String/Dictionary tuples");
-                return;
-            }
-
-            NSString *type = typedAttribute[@"type"];
-            NSObject *value = typedAttribute[@"value"];
-
-            if ([@"string" isEqualToString:type]) {
-                if (![value isKindOfClass:[NSString class]])
-                {
-                    NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected string value, got something else");
-                    return;
-                }
-                [batchEventData putString:(NSString*)value forKey:key];
-            } else if ([@"boolean" isEqualToString:type]) {
-                if (![value isKindOfClass:[NSNumber class]])
-                {
-                    NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number (boolean) value, got something else");
-                    return;
-                }
-                [batchEventData putBool:[(NSNumber*)value boolValue] forKey:key];
-            } else if ([@"integer" isEqualToString:type]) {
-                if (![value isKindOfClass:[NSNumber class]])
-                {
-                    NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number (integer) value, got something else");
-                    return;
-                }
-                [batchEventData putInteger:[(NSNumber*)value integerValue] forKey:key];
-            } else if ([@"float" isEqualToString:type]) {
-                if (![value isKindOfClass:[NSNumber class]])
-                {
-                    NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number (float) value, got something else");
-                    return;
-                }
-                [batchEventData putDouble:[(NSNumber*)value doubleValue] forKey:key];
-            } else if ([@"date" isEqualToString:type]) {
-                if (![value isKindOfClass:[NSNumber class]])
-                {
-                    NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number value, got something else");
-                    return;
-                }
-                NSDate *date = [NSDate dateWithTimeIntervalSince1970:[(NSNumber*)value doubleValue] / 1000.0];
-                [batchEventData putDate:date forKey:key];
-            } else if ([@"url" isEqualToString:type]) {
-                if (![value isKindOfClass:[NSString class]])
-                {
-                    NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected string value, got something else");
-                    return;
-                }
-                [batchEventData putURL:[NSURL URLWithString:(NSString*) value] forKey:key];
-            } else {
-                NSLog(@"RNBatch: Error while tracking event data: Unknown event data.attributes type");
-                return;
-            }
         }
     }
+    [BatchProfile trackEventWithName:name attributes:batchEventAttributes];
+}
 
-    [BatchUser trackEvent:name withLabel:label associatedData:batchEventData];
+- (BatchEventAttributes*) convertSerializedEventDataToEventAttributes:(NSDictionary *) serializedAttributes {
+
+    BatchEventAttributes *eventAttributes = [BatchEventAttributes new];
+
+    if (![serializedAttributes isKindOfClass:[NSDictionary class]]) {
+        NSLog(@"RNBatch: Error while tracking event data: event data.attributes should be a dictionary");
+        return nil;
+    }
+
+    for (NSString *key in serializedAttributes.allKeys) {
+        NSDictionary *typedAttribute = serializedAttributes[key];
+        if (![typedAttribute isKindOfClass:[NSDictionary class]])
+        {
+            NSLog(@"RNBatch: Error while tracking event data: event data.attributes childrens should all be String/Dictionary tuples");
+            return nil;
+        }
+
+        NSString *type = typedAttribute[@"type"];
+        NSObject *value = typedAttribute[@"value"];
+
+        if ([@"string" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSString class]])
+            {
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected string value, got something else");
+                return nil;
+            }
+            [eventAttributes putString:(NSString*)value forKey:key];
+        } else if ([@"boolean" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSNumber class]])
+            {
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number (boolean) value, got something else");
+                return nil;
+            }
+            [eventAttributes putBool:[(NSNumber*)value boolValue] forKey:key];
+        } else if ([@"integer" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSNumber class]])
+            {
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number (integer) value, got something else");
+                return nil;
+            }
+            [eventAttributes putInteger:[(NSNumber*)value integerValue] forKey:key];
+        } else if ([@"float" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSNumber class]])
+            {
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number (float) value, got something else");
+                return nil;
+            }
+            [eventAttributes putDouble:[(NSNumber*)value doubleValue] forKey:key];
+        } else if ([@"date" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSNumber class]])
+            {
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected number value, got something else");
+                return nil;
+            }
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[(NSNumber*)value doubleValue] / 1000.0];
+            [eventAttributes putDate:date forKey:key];
+        } else if ([@"url" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSString class]])
+            {
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected string value, got something else");
+                return nil;
+            }
+            [eventAttributes putURL:[NSURL URLWithString:(NSString*) value] forKey:key];
+        }
+        else if ([@"object" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSDictionary class]]){
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected dictionnary value, got something else");
+                return nil;
+            }
+            BatchEventAttributes *attributes = [self convertSerializedEventDataToEventAttributes:(NSDictionary*)value];
+            if (attributes != nil) {
+                [eventAttributes putObject:attributes forKey:key];
+            }
+        }
+        else if ([@"string_array" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSArray class]]){
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected string array value, got something else");
+                return nil;
+            }
+
+            [eventAttributes putStringArray:(NSArray*)value forKey:key];
+        } else if ([@"object_array" isEqualToString:type]) {
+            if (![value isKindOfClass:[NSArray class]]) {
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected dictionnary value, got something else");
+                return nil;
+            }
+            NSMutableArray<BatchEventAttributes *> *list = [NSMutableArray array];
+            NSArray *array = (NSArray*)value;
+            for (int i = 0; i < array.count; i++) {
+                BatchEventAttributes *object = [self convertSerializedEventDataToEventAttributes:array[i]];
+                if (object != nil) {
+                    [list addObject:object];
+                }
+            }
+            [eventAttributes putObjectArray:list forKey:key];
+        }else {
+            NSLog(@"RNBatch: Error while tracking event data: Unknown event data.attributes type");
+            return nil;
+        }
+    }
+    return eventAttributes;
 }
 
 RCT_EXPORT_METHOD(userData_trackLocation:(NSDictionary*)serializedLocation)
@@ -503,7 +524,7 @@ RCT_EXPORT_METHOD(userData_trackLocation:(NSDictionary*)serializedLocation)
         }
     }
 
-    [BatchUser trackLocation:[[CLLocation alloc] initWithCoordinate:CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue])
+    [BatchProfile trackLocation:[[CLLocation alloc] initWithCoordinate:CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue])
                                                            altitude:0
                                                  horizontalAccuracy:parsedPrecision
                                                    verticalAccuracy:-1
@@ -736,7 +757,6 @@ RCT_EXPORT_METHOD(inbox_fetcher_fetchNextPage:
 
             resolve(result);
         }
-
     }];
 }
 
