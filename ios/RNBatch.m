@@ -349,6 +349,11 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
     [editor save];
 }
 
+RCT_EXPORT_METHOD(profile_identify:(NSString*)identifier)
+{
+    [BatchProfile identify:identifier];
+}
+
 // Event tracking
 
 RCT_EXPORT_METHOD(userData_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData)

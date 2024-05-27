@@ -662,6 +662,11 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void profile_identify(String identifier) {
+        Batch.Profile.identify(identifier);
+    }
+
+    @ReactMethod
     public void userData_trackEvent(String name, ReadableMap serializedEventData) {
         BatchEventAttributes attributes = RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData);
         Batch.Profile.trackEvent(name, attributes);
