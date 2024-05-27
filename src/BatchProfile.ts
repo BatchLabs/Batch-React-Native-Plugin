@@ -43,9 +43,18 @@ export const BatchProfile = {
   editor: (): BatchProfileAttributeEditor => new BatchProfileAttributeEditor(),
 
   /**
+   * Identifies this device with a profile using a Custom User ID.
+   * @param {string | null} identifier - Custom user ID of the profile you want to identify against.
+   * If a profile already exists, this device will be attached to it. Must not be longer than 1024 characters.
+   */
+  identify: (identifier: string | null): void => {
+    RNBatch.profile_identify(identifier);
+  },
+
+  /**
    * Track an event. Batch must be started at some point, or events won't be sent to the server.
    * @param name The event name. Must be a string.
-   * @param data The event data (optional). Must be an object.
+   * @param data The event attributes (optional). Must be an object.
    */
   trackEvent: (name: string, data?: BatchEventAttributes): void => {
     // Since _toInternalRepresentation is private, we have to resort to this little hack to access the method.
