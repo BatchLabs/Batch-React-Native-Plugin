@@ -97,6 +97,12 @@ RCT_EXPORT_METHOD(optOutAndWipeData:(RCTPromiseResolveBlock)resolve
     resolve([NSNull null]);
 }
 
+RCT_EXPORT_METHOD(isOptedOut:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    resolve([NSNumber numberWithBool:BatchSDK.isOptedOut]);
+}
+
 RCT_EXPORT_METHOD(presentDebugViewController)
 {
     dispatch_async(dispatch_get_main_queue(), ^{

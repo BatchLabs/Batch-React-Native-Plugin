@@ -145,6 +145,11 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         promise.resolve(null);
     }
 
+    @ReactMethod
+    public void isOptedOut(Promise promise) {
+        boolean isOptedOut = Batch.isOptedOut(reactContext);
+        promise.resolve(isOptedOut);
+    }
 
     @ReactMethod
     public void addListener(String eventName) {

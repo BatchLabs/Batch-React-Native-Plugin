@@ -62,6 +62,14 @@ export const Batch = {
   optOutAndWipeData: (): Promise<void> => RNBatch.optOutAndWipeData(),
 
   /**
+   * Checks whether Batch has been opted out from or not.
+   *
+   * @returns {Promise<boolean>} A promise that resolves to a boolean value indicating whether Batch has been
+   * opted out from or not.
+   */
+  isOptedOut: (): Promise<boolean> => RNBatch.isOptedOut(),
+
+  /**
    * Shows debug view
    *
    * Android: https://doc.batch.com/android/troubleshooting#implementing-batch-debugger
