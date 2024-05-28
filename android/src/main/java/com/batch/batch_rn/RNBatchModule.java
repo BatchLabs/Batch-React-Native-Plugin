@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.batch.android.Batch;
 import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
+import com.batch.android.BatchDataCollectionConfig;
 import com.batch.android.BatchEventAttributes;
 import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
@@ -149,6 +151,28 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     public void isOptedOut(Promise promise) {
         boolean isOptedOut = Batch.isOptedOut(reactContext);
         promise.resolve(isOptedOut);
+    }
+
+    @ReactMethod
+    public void updateAutomaticDataCollection(@NonNull ReadableMap dataCollectionConfig) {
+        boolean hasDeviceBrand = dataCollectionConfig.hasKey("deviceBrand");
+        boolean hasDeviceModel = dataCollectionConfig.hasKey("deviceModel");
+        boolean hasGeoIP = dataCollectionConfig.hasKey("geoIP");
+        if (hasDeviceBrand || hasDeviceModel || hasGeoIP) {
+            Batch.updateAutomaticDataCollection(batchDataCollectionConfig -> {
+                if (hasDeviceBrand) {
+                    batchDataCollectionConfig.setDeviceBrandEnabled(dataCollectionConfig.getBoolean("deviceBrand"));
+                }
+                if (hasDeviceModel) {
+                    batchDataCollectionConfig.setDeviceModelEnabled(dataCollectionConfig.getBoolean("deviceModel"));
+                }
+                if (hasGeoIP) {
+                    batchDataCollectionConfig.setGeoIPEnabled(dataCollectionConfig.getBoolean("geoIP"));
+                }
+            });
+        } else {
+            Log.e(RNBatchModule.LOGGER_TAG, "Invalid parameter : Data collection config cannot be empty");
+        }
     }
 
     @ReactMethod
