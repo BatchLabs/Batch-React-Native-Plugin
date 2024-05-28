@@ -103,6 +103,24 @@ RCT_EXPORT_METHOD(isOptedOut:(RCTPromiseResolveBlock)resolve
     resolve([NSNumber numberWithBool:BatchSDK.isOptedOut]);
 }
 
+RCT_EXPORT_METHOD(updateAutomaticDataCollection:(NSDictionary *)dataCollectionConfig) {
+    BOOL hasDeviceModel = [dataCollectionConfig objectForKey:@"deviceModel"] != nil;
+    BOOL hasGeoIP = [dataCollectionConfig objectForKey:@"geoIP"] != nil;
+
+    if (hasDeviceModel || hasGeoIP) {
+        [BatchSDK updateAutomaticDataCollection:^(BatchDataCollectionConfig * _Nonnull batchDataCollectionConfig) {
+            if (hasDeviceModel) {
+                batchDataCollectionConfig.deviceModelEnabled = [dataCollectionConfig[@"deviceModel"] boolValue];
+            }
+            if (hasGeoIP) {
+                batchDataCollectionConfig.geoIPEnabled = [dataCollectionConfig[@"geoIP"] boolValue];
+            }
+        }];
+    } else {
+        NSLog(@"BatchBridge - Invalid parameter: Data collection config cannot be empty.");
+    }
+}
+
 RCT_EXPORT_METHOD(presentDebugViewController)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
