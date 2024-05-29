@@ -59,7 +59,7 @@ export const BatchProfile = {
   trackEvent: (name: string, data?: BatchEventAttributes): void => {
     // Since _toInternalRepresentation is private, we have to resort to this little hack to access the method.
     // That syntax keeps the argument type checking, while casting as any would not.
-    RNBatch.userData_trackEvent(name, data instanceof BatchEventAttributes ? data['_toInternalRepresentation']() : null);
+    RNBatch.profile_trackEvent(name, data instanceof BatchEventAttributes ? data['_toInternalRepresentation']() : null);
   },
 
   /**
@@ -93,7 +93,7 @@ export const BatchProfile = {
       return;
     }
 
-    RNBatch.userData_trackLocation({
+    RNBatch.profile_trackLocation({
       date: location.date ? location.date.getTime() : undefined,
       latitude: location.latitude,
       longitude: location.longitude,
