@@ -39,12 +39,27 @@ RCT_EXPORT_MODULE()
 
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
 
+    // Handling do not disturbed initial state
     id doNotDisturbEnabled = [info objectForKey:@"BatchDoNotDisturbInitialState"];
     if (doNotDisturbEnabled != nil) {
         [BatchMessaging setDoNotDisturb:[doNotDisturbEnabled boolValue]];
     } else {
         [BatchMessaging setDoNotDisturb:false];
     }
+
+    // Handling profile migrations state
+    id profileCustomIDMigrationEnabled = [info objectForKey:@"BatchProfileCustomIdMigrationEnabled"];
+    id profileCustomDataMigrationEnabled = [info objectForKey:@"BatchProfileCustomDataMigrationEnabled"];
+    BatchMigration migrations = BatchMigrationNone;
+    if (profileCustomIDMigrationEnabled != nil && [profileCustomIDMigrationEnabled boolValue] == false) {
+        NSLog(@"[BatchBridge] Disabling profile custom id migration");
+        migrations |= BatchMigrationCustomID;
+    }
+    if (profileCustomDataMigrationEnabled != nil && [profileCustomDataMigrationEnabled boolValue] == false) {
+        NSLog(@"[BatchBridge] Disabling profile custom data migration");
+        migrations |= BatchMigrationCustomData;
+    }
+    [BatchSDK setDisabledMigrations:migrations];
 
     NSString *batchAPIKey = [info objectForKey:@"BatchAPIKey"];
     [BatchSDK startWithAPIKey:batchAPIKey];

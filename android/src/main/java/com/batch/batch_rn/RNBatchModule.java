@@ -2,10 +2,13 @@ package com.batch.batch_rn;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
 import com.batch.android.BatchDataCollectionConfig;
 import com.batch.android.BatchEventAttributes;
+import com.batch.android.BatchMigration;
 import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchTagCollectionsFetchListener;
@@ -94,6 +98,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         if (!isInitialized) {
             Resources resources = application.getResources();
             String packageName = application.getPackageName();
+            setDefaultProfileMigrations(application.getApplicationContext(), packageName);
             String batchAPIKey = resources.getString(resources.getIdentifier("BATCH_API_KEY", "string", packageName));
             Batch.start(batchAPIKey);
             Batch.EventDispatcher.addDispatcher(eventDispatcher);
@@ -109,6 +114,31 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
             isInitialized = true;
         }
     }
+
+    private static void setDefaultProfileMigrations(Context context, String packageName) {
+        try {
+            Bundle metaData = context.getPackageManager()
+                    .getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+                    .metaData;
+            if (metaData != null) {
+                boolean profileCustomIdMigrationEnabled = metaData.getBoolean("batch.profile_custom_id_migration_enabled", true);
+                boolean profileCustomDataMigrationEnabled = metaData.getBoolean("batch.profile_custom_data_migration_enabled", true);
+                EnumSet<BatchMigration> migrations = EnumSet.noneOf(BatchMigration.class);
+                if (!profileCustomIdMigrationEnabled) {
+                    Log.d(RNBatchModule.LOGGER_TAG, "Disabling profile custom id migration.");
+                    migrations.add(BatchMigration.CUSTOM_ID);
+                }
+                if (!profileCustomDataMigrationEnabled) {
+                    Log.d(RNBatchModule.LOGGER_TAG, "Disabling profile custom data migration.");
+                    migrations.add(BatchMigration.CUSTOM_DATA);
+                }
+                Batch.disableMigration(migrations);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public RNBatchModule(ReactApplicationContext reactContext) {
         super(reactContext);
