@@ -515,34 +515,34 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         promise.resolve(null);
     }
 
-    // USER DATA EDITOR MODULE
+    // USER MODULE
 
     @ReactMethod
-    public void userData_getInstallationId(Promise promise) {
+    public void user_getInstallationId(Promise promise) {
         String userId = Batch.User.getInstallationID();
         promise.resolve(userId);
     }
 
     @ReactMethod
-    public void userData_getIdentifier(Promise promise) {
+    public void user_getIdentifier(Promise promise) {
         String userId = Batch.User.getIdentifier(reactContext);
         promise.resolve(userId);
     }
 
     @ReactMethod
-    public void userData_getRegion(Promise promise) {
+    public void user_getRegion(Promise promise) {
         String region = Batch.User.getRegion(reactContext);
         promise.resolve(region);
     }
 
     @ReactMethod
-    public void userData_getLanguage(Promise promise) {
+    public void user_getLanguage(Promise promise) {
         String language = Batch.User.getLanguage(reactContext);
         promise.resolve(language);
     }
 
     @ReactMethod
-    public void userData_getAttributes(final Promise promise) {
+    public void user_getAttributes(final Promise promise) {
         Batch.User.fetchAttributes(reactContext, new BatchAttributesFetchListener() {
             @Override
             public void onSuccess(@NonNull Map<String, BatchUserAttribute> map) {
@@ -607,7 +607,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void userData_getTags(final Promise promise) {
+    public void user_getTags(final Promise promise) {
         Batch.User.fetchTagCollections(reactContext, new BatchTagCollectionsFetchListener() {
             @Override
             public void onSuccess(@NonNull Map<String, Set<String>> map) {
@@ -630,7 +630,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void userData_save(ReadableArray actions) {
+    public void user_save(ReadableArray actions) {
         BatchProfileAttributeEditor editor = Batch.Profile.editor();
         for (int i = 0; i < actions.size(); i++) {
             ReadableMap action = actions.getMap(i);
@@ -721,9 +721,11 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void userData_clearInstallationData() {
+    public void user_clearInstallationData() {
         Batch.User.clearInstallationData();
     }
+
+    // PROFILE MODULE
 
     @ReactMethod
     public void profile_identify(String identifier) {
@@ -731,13 +733,13 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void userData_trackEvent(String name, ReadableMap serializedEventData) {
+    public void profile_trackEvent(String name, ReadableMap serializedEventData) {
         BatchEventAttributes attributes = RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData);
         Batch.Profile.trackEvent(name, attributes);
     }
 
     @ReactMethod
-    public void userData_trackLocation(ReadableMap serializedLocation) {
+    public void profile_trackLocation(ReadableMap serializedLocation) {
         Location nativeLocation = new Location("com.batch.batch_rn");
         nativeLocation.setLatitude(serializedLocation.getDouble("latitude"));
         nativeLocation.setLongitude(serializedLocation.getDouble("longitude"));

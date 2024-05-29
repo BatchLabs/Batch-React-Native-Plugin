@@ -193,31 +193,31 @@ RCT_EXPORT_METHOD(push_getInitialDeeplink:(RCTPromiseResolveBlock)resolve reject
 
 // User module
 
-RCT_EXPORT_METHOD(userData_getInstallationId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getInstallationId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString* installationId = [BatchUser installationID];
     resolve(installationId);
 }
 
-RCT_EXPORT_METHOD(userData_getIdentifier:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getIdentifier:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString* userId = [BatchUser identifier];
     resolve(userId);
 }
 
-RCT_EXPORT_METHOD(userData_getRegion:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getRegion:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString* region = [BatchUser region];
     resolve(region);
 }
 
-RCT_EXPORT_METHOD(userData_getLanguage:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getLanguage:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString* language = [BatchUser language];
     resolve(language);
 }
 
-RCT_EXPORT_METHOD(userData_getAttributes:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getAttributes:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     [BatchUser fetchAttributes:^(NSDictionary<NSString *,BatchUserAttribute *> * _Nullable attributes) {
 
@@ -282,7 +282,7 @@ RCT_EXPORT_METHOD(userData_getAttributes:(RCTPromiseResolveBlock)resolve rejecte
     }];
 }
 
-RCT_EXPORT_METHOD(userData_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     [BatchUser fetchTagCollections:^(NSDictionary<NSString *,NSSet<NSString *> *> * _Nullable collections) {
         if (collections == nil) {
@@ -299,7 +299,7 @@ RCT_EXPORT_METHOD(userData_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCT
 
 }
 
-RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
+RCT_EXPORT_METHOD(user_save:(NSArray*)actions)
 {
     BatchProfileEditor *editor = [BatchProfile editor];
     for (NSDictionary* action in actions) {
@@ -388,19 +388,19 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
     [editor save];
 }
 
-RCT_EXPORT_METHOD(userData_clearInstallationData)
+RCT_EXPORT_METHOD(user_clearInstallationData)
 {
     [BatchUser clearInstallationData];
 }
+
+// Profile
 
 RCT_EXPORT_METHOD(profile_identify:(NSString*)identifier)
 {
     [BatchProfile identify:identifier];
 }
 
-// Event tracking
-
-RCT_EXPORT_METHOD(userData_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData)
+RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData)
 {
     BatchEventAttributes *batchEventAttributes = nil;
 
@@ -523,7 +523,7 @@ RCT_EXPORT_METHOD(userData_trackEvent:(NSString*)name data:(NSDictionary*)serial
     return eventAttributes;
 }
 
-RCT_EXPORT_METHOD(userData_trackLocation:(NSDictionary*)serializedLocation)
+RCT_EXPORT_METHOD(profile_trackLocation:(NSDictionary*)serializedLocation)
 {
     if (![serializedLocation isKindOfClass:[NSDictionary class]] || [serializedLocation count]==0)
     {

@@ -170,6 +170,6 @@ export class BatchProfileAttributeEditor {
   }
 
   public save(): void {
-    RNBatch.userData_save(this._settings);
+    RNBatch.user_save(this._settings);
   }
 }
