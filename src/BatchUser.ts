@@ -54,4 +54,10 @@ export const BatchUser = {
    * @returns The tags added with BatchUser.editor().addTag()
    */
   getTagCollections: (): Promise<{ [key: string]: string[] }> => RNBatch.userData_getTags(),
+
+  /**
+   * Clear all tags and attributes set on an installation and their local cache returned by fetchAttributes and fetchTagCollections.
+   * This doesn’t affect data set on profiles using BatchProfile.
+   */
+  clearInstallationData: (): void => RNBatch.userData_clearInstallationData(),
 };

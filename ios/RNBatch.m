@@ -388,6 +388,11 @@ RCT_EXPORT_METHOD(userData_save:(NSArray*)actions)
     [editor save];
 }
 
+RCT_EXPORT_METHOD(userData_clearInstallationData)
+{
+    [BatchUser clearInstallationData];
+}
+
 RCT_EXPORT_METHOD(profile_identify:(NSString*)identifier)
 {
     [BatchProfile identify:identifier];
@@ -481,7 +486,7 @@ RCT_EXPORT_METHOD(userData_trackEvent:(NSString*)name data:(NSDictionary*)serial
         }
         else if ([@"object" isEqualToString:type]) {
             if (![value isKindOfClass:[NSDictionary class]]){
-                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected dictionnary value, got something else");
+                NSLog(@"RNBatch: Error while tracking event data: event data.attributes: expected dictionary value, got something else");
                 return nil;
             }
             BatchEventAttributes *attributes = [self convertSerializedEventDataToEventAttributes:(NSDictionary*)value];

@@ -721,6 +721,11 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void userData_clearInstallationData() {
+        Batch.User.clearInstallationData();
+    }
+
+    @ReactMethod
     public void profile_identify(String identifier) {
         Batch.Profile.identify(identifier);
     }
