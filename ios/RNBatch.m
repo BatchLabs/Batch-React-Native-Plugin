@@ -2,6 +2,7 @@
 # import "RNBatch.h"
 # import "RNBatchOpenedNotificationObserver.h"
 # import "RNBatchEventDispatcher.h"
+# import "BatchBridgeNotificationCenterDelegate.h"
 
 static RNBatchEventDispatcher* dispatcher = nil;
 
@@ -63,6 +64,9 @@ RCT_EXPORT_MODULE()
 
     NSString *batchAPIKey = [info objectForKey:@"BatchAPIKey"];
     [BatchSDK startWithAPIKey:batchAPIKey];
+    if (BatchBridgeNotificationCenterDelegate.automaticallyRegister) {
+        [BatchBridgeNotificationCenterDelegate registerAsDelegate];
+    }
     dispatcher = [[RNBatchEventDispatcher alloc] init];
     [BatchEventDispatcher addDispatcher:dispatcher];
 }
@@ -166,7 +170,9 @@ RCT_EXPORT_METHOD(push_refreshToken)
 
 RCT_EXPORT_METHOD(push_setShowForegroundNotification:(BOOL) enabled)
 {
-    [BatchUNUserNotificationCenterDelegate sharedInstance].showForegroundNotifications = enabled;
+    BatchBridgeNotificationCenterDelegate *delegate = [BatchBridgeNotificationCenterDelegate sharedInstance];
+    delegate.showForegroundNotifications = enabled;
+    delegate.shouldUseChainedCompletionHandlerResponse = false;
 }
 
 RCT_EXPORT_METHOD(push_clearBadge)
