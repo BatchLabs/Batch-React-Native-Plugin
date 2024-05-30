@@ -1,11 +1,11 @@
 import { ConfigPlugin, withAppBuildGradle } from '@expo/config-plugins';
 
-import { BATCH_SDK_VERISON, BATCH_DO_NOT_DISTURB_INITIAL_STATE } from '../constants';
+import { BATCH_SDK_VERSION, BATCH_DO_NOT_DISTURB_INITIAL_STATE } from '../constants';
 import { Props } from '../withReactNativeBatch';
 
 export const pushDependencies = (contents: string, props: Props): string => {
   let newContents = contents;
-  const doNotDisturb = props.enableDoNotDisturb || props.enableDoNotDistrub || BATCH_DO_NOT_DISTURB_INITIAL_STATE;
+  const doNotDisturb = props.enableDoNotDisturb !== undefined ? props.enableDoNotDisturb : BATCH_DO_NOT_DISTURB_INITIAL_STATE;
   const versionNameLine = newContents.match(/versionName "([^"]*)"/);
 
   if (versionNameLine) {
@@ -33,7 +33,7 @@ export const pushDependencies = (contents: string, props: Props): string => {
       start +
       `\n    implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation "com.google.firebase:firebase-messaging"
-    api "com.batch.android:batch-sdk:${BATCH_SDK_VERISON}"` +
+    api "com.batch.android:batch-sdk:${BATCH_SDK_VERSION}"` +
       end;
   }
   return newContents;

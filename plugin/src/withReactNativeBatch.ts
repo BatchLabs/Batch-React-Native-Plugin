@@ -3,10 +3,18 @@ import { withClassPath, withApplyPlugin, withGoogleServicesFile } from '@expo/co
 
 import { withReactNativeBatchAppBuildGradle } from './android/withReactNativeBatchAppBuildGradle';
 import { withReactNativeBatchMainActivity } from './android/withReactNativeBatchMainActivity';
+import { withReactNativeBatchManifest } from './android/withReactNativeBatchManifest';
 import { withReactNativeBatchAppDelegate } from './ios/withReactNativeBatchAppDelegate';
 import { withReactNativeBatchInfoPlist } from './ios/withReactNativeBatchInfoPlist';
 
-export type Props = { androidApiKey: string; iosApiKey: string; enableDoNotDisturb?: boolean; enableDoNotDistrub?: boolean };
+export type Props = {
+  androidApiKey: string;
+  iosApiKey: string;
+  enableDoNotDisturb?: boolean;
+  enableDefaultOptOut?: boolean;
+  enableProfileCustomIDMigration?: boolean;
+  enableProfileCustomDataMigration?: boolean;
+};
 /**
  * Apply react-native-batch configuration for Expo SDK 42 projects.
  */
@@ -16,6 +24,7 @@ const withReactNativeBatch: ConfigPlugin<Props | void> = (config, props) => {
   let newConfig = withGoogleServicesFile(config);
   newConfig = withClassPath(newConfig);
   newConfig = withApplyPlugin(newConfig);
+  newConfig = withReactNativeBatchManifest(newConfig, _props);
   newConfig = withReactNativeBatchAppBuildGradle(newConfig, _props);
   newConfig = withReactNativeBatchMainActivity(newConfig);
   newConfig = withReactNativeBatchInfoPlist(newConfig, _props);

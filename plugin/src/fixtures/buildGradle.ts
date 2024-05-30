@@ -1,4 +1,4 @@
-import { BATCH_SDK_VERISON } from "../constants";
+import { BATCH_SDK_VERSION } from "../constants";
 
 const FLIPPER_VERSION = '1.0.0';
 export const buildGradleFixture = `
@@ -213,7 +213,7 @@ android {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation "com.google.firebase:firebase-messaging"
-    api "com.batch.android:batch-sdk:${BATCH_SDK_VERISON}"
+    api "com.batch.android:batch-sdk:${BATCH_SDK_VERSION}"
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
