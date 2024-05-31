@@ -56,10 +56,10 @@ export const BatchProfile = {
    * @param name The event name. Must be a string.
    * @param data The event attributes (optional). Must be an object.
    */
-  trackEvent: (name: string, data?: BatchEventAttributes): void => {
+  trackEvent: (name: string, data?: BatchEventAttributes): Promise<void> => {
     // Since _toInternalRepresentation is private, we have to resort to this little hack to access the method.
     // That syntax keeps the argument type checking, while casting as any would not.
-    RNBatch.profile_trackEvent(name, data instanceof BatchEventAttributes ? data['_toInternalRepresentation']() : null);
+    return RNBatch.profile_trackEvent(name, data instanceof BatchEventAttributes ? data['_toInternalRepresentation']() : null);
   },
 
   /**
