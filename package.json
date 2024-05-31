@@ -1,6 +1,6 @@
 {
   "name": "@batch.com/react-native-plugin",
-  "version": "8.2.0",
+  "version": "9.0.0",
   "description": "Batch.com React-Native Plugin",
   "homepage": "https://github.com/BatchLabs/Batch-React-Native-Plugin",
   "main": "dist/Batch.js",
