@@ -1,14 +1,5 @@
 import { Log } from './helpers/Logger';
 import { isBoolean, isNumber, isObject, isObjectArray, isString, isStringArray } from './helpers/TypeHelpers';
-
-export const Consts = {
-  AttributeKeyRegexp: /^[a-zA-Z0-9_]{1,30}$/,
-  EventDataMaxTags: 10,
-  EventDataMaxValues: 15,
-  EventDataStringMaxLength: 64,
-  EventDataURLMaxLength: 2048,
-};
-
 export enum TypedEventAttributeType {
   String = 'string',
   Boolean = 'boolean',
@@ -21,7 +12,7 @@ export enum TypedEventAttributeType {
   Object = 'object',
 }
 
-export type TypedEventAttributeValue = string | boolean | number | TypedEventAttributes | Array<string | TypedEventAttributes>;
+export type TypedEventAttributeValue = string | boolean | number | string[] | TypedEventAttributes | TypedEventAttributes[];
 
 export type TypedEventAttributes = { [key: string]: ITypedEventAttribute };
 
@@ -64,7 +55,7 @@ export class BatchEventAttributes {
 
   public put(
     key: string,
-    value: string | number | boolean | Array<string | BatchEventAttributes> | BatchEventAttributes
+    value: string | number | boolean | string[] | BatchEventAttributes | BatchEventAttributes[]
   ): BatchEventAttributes {
     key = this.prepareAttributeKey(key);
 

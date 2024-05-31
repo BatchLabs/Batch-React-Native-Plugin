@@ -16,14 +16,14 @@ export const isObject = (value: unknown): value is BatchEventAttributes => {
   return value instanceof BatchEventAttributes;
 };
 
-export function isArray(value: unknown): value is Array<unknown> {
+export function isArray(value: unknown): value is unknown[] {
   return Array.isArray(value);
 }
 
-export function isStringArray(value: unknown): value is Array<string> {
+export function isStringArray(value: unknown): value is string[] {
   return isArray(value) && value.every(it => isString(it));
 }
 
-export function isObjectArray(value: unknown): value is Array<BatchEventAttributes> {
+export function isObjectArray(value: unknown): value is BatchEventAttributes[] {
   return isArray(value) && value.every(it => isObject(it));
 }

@@ -64,7 +64,6 @@ interface IUserSettingsRemoveFromArrayAction {
   value: string | string[];
 }
 
-
 type IUserSettingsAction =
   | IUserSettingsSetAttributeAction
   | IUserSettingsRemoveAttributeAction
