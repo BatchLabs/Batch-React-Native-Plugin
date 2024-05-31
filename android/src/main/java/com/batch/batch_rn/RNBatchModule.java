@@ -733,9 +733,17 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void profile_trackEvent(String name, ReadableMap serializedEventData) {
+    public void profile_trackEvent(@NonNull String name, @Nullable ReadableMap serializedEventData, @NonNull Promise promise) {
         BatchEventAttributes attributes = RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData);
+        if (attributes != null) {
+            List<String> errors = attributes.validateEventAttributes();
+            if (!errors.isEmpty()) {
+                promise.reject(BATCH_BRIDGE_ERROR_CODE, errors.toString());
+                return;
+            }
+        }
         Batch.Profile.trackEvent(name, attributes);
+        promise.resolve(null);
     }
 
     @ReactMethod

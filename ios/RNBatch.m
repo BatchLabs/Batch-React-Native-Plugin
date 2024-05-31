@@ -406,7 +406,7 @@ RCT_EXPORT_METHOD(profile_identify:(NSString*)identifier)
     [BatchProfile identify:identifier];
 }
 
-RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData)
+RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData resolver: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     BatchEventAttributes *batchEventAttributes = nil;
 
@@ -418,12 +418,14 @@ RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)seriali
         [batchEventAttributes validateWithError:&err];
         if (batchEventAttributes != nil && err == nil) {
             [BatchProfile trackEventWithName:name attributes:batchEventAttributes];
+            resolve([NSNull null]);
         } else {
-            NSLog(@"Event validation error: %@", err.description);
+            reject(@"BatchBridgeError", @"Event attributes validation failed:", err);
             return;
         }
     }
     [BatchProfile trackEventWithName:name attributes:batchEventAttributes];
+    resolve([NSNull null]);
 }
 
 - (BatchEventAttributes*) convertSerializedEventDataToEventAttributes:(NSDictionary *) serializedAttributes {
