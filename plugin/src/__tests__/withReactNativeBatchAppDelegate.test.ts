@@ -1,8 +1,5 @@
+import { appDelegateExpectedFixture, appDelegateFixture } from '../fixtures/appDelegate';
 import { modifyAppDelegate } from '../ios/withReactNativeBatchAppDelegate';
-import {
-  appDelegateExpectedFixture,
-  appDelegateFixture,
-} from '../fixtures/appDelegate';
 
 describe(modifyAppDelegate, () => {
   it('should modify the AppDelegate', () => {
