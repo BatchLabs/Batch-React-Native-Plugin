@@ -1,15 +1,50 @@
 9.0.0
 ----
 
-**Plugin**
+This is a major release, please see our [migration guide](https://doc.batch.com/react-native/advanced/8x-migration/) for more info on how to update your current Batch implementation.
 
-* Updated Batch 2.0
+**Plugin**
+* Updated Batch to 2.0. For more information see the [ios](https://doc.batch.com/ios/sdk-changelog/#2_0_0) and [android](https://doc.batch.com/android/sdk-changelog/#2_0_0) changelog .
 * Batch requires iOS 13.0 or higher.
 * Batch requires a `minSdk` level of 21 or higher.
 
-**User**
+**iOS**
+- The Batch React-Native plugin now automatically registers its own `UNUserNotificationCenterDelegate` and forwards it to the previous one if it exists. 
+This means you no longer need to add `[BatchUNUserNotificationCenterDelegate registerAsDelegate]` in your `AppDelegate`, please delete it. 
+It can be disabled by calling `BatchBridgeNotificationCenterDelegate.automaticallyRegister = false` before `[RNBatch start]`.
 
+
+**Core**
+- Added method `isOptedOut` to checks whether Batch has been opted out from or not.
+- Added method `updateAutomaticDataCollection` to fine-tune the data you authorize to be tracked by Batch.
+
+**User**
 - Removed method `trackTransaction` with no equivalent.
+- Removed method `BatchUser.editor` and the related class `BatchUserEditor`, you should now use `BatchProfile.editor` which return an instance of `BatchProfileAttributeEditor`.
+- Added method `clearInstallationData` which allows you to remove the installation data without modifying the current profile.
+
+**Event**
+
+This version introduced two new types of attribute that can be attached to an event : Array and Object.
+
+- Removed `trackEvent` APIs from the user module. You should now use `BatchProfile.trackEvent`.
+- `BatchEventData` has been renamed into `BatchEventAttributes`.
+- Removed `addTag` API from `BatchEventData` You should now use the `$tags` key with `put` method.
+- Removed parameter `label` from `trackEvent` API. You should now use the `$label` key in `BatchEventAttributes` with the `put(string, string)` method.
+- Added support for values of type: Array and Object to the `put` method.
+
+**Profile**
+
+Introduced `BatchProfile`, a new module that enables interacting with profiles. Its functionality replaces most of BatchUser used to do.
+
+- Added `identify` API as replacement of `BatchUser.editor().setIdentifier`.
+- Added `editor` method to get a new instance of a `BatchProfileAttributeEditor` as replacement of `BatchUserEditor`.
+- Added `trackEvent` API as replacement of the `BatchUser.trackEvent` methods.
+- Added `trackLocation` API as replacement of the `BatchUser.trackLocation` method.
+
+**Expo**
+- Added configuration field `enableDefaultOptOut` to control whether Batch is opted out from by default. (default: false)
+- Added configuration fields `enableProfileCustomIDMigration` and `enableProfileCustomDataMigration` to control whether Batch should trigger the profile migrations (default: true).
 
 8.2.0
 ----
