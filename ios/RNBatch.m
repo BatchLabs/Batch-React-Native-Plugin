@@ -421,8 +421,8 @@ RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)seriali
             resolve([NSNull null]);
         } else {
             reject(@"BatchBridgeError", @"Event attributes validation failed:", err);
-            return;
         }
+        return;
     }
     [BatchProfile trackEventWithName:name attributes:batchEventAttributes];
     resolve([NSNull null]);
