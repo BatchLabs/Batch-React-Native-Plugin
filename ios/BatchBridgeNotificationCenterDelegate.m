@@ -51,12 +51,12 @@ static BOOL _batBridgeNotifDelegateShouldAutomaticallyRegister = true;
 - (void)setPreviousDelegate:(nullable id<UNUserNotificationCenterDelegate>)delegate
 {
     // Do not register default Batch delegate as previous one
-    if (delegate == self || [delegate isKindOfClass:BatchUNUserNotificationCenterDelegate.class]) {
+    if ([delegate isKindOfClass:BatchUNUserNotificationCenterDelegate.class]) {
         NSLog(@"RNBatch: It looks like you are still using [BatchUNUserNotificationCenterDelegate registerAsDelegate]. Please remove it or set `BatchBridgeNotificationCenterDelegate.automaticallyRegister = false` before [RNBatch start] but calling `setShowForegroundNotification` will not work anymore.");
         _previousDelegate = nil;
         return;
     }
-    // Do not register ourserlves as previous delegate to avoid
+    // Do not register ourselves as previous delegate to avoid
     // an infinite loop
     if (delegate == self || [delegate isKindOfClass:[self class]]) {
         _previousDelegate = nil;
