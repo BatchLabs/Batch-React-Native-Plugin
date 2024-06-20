@@ -157,6 +157,8 @@ static void InitializeFlipper(UIApplication *application) {
 
 export const appDelegateExpectedFixture = `#import "AppDelegate.h"
 
+#import <RNBatchPush/RNBatch.h>
+
 #if defined(EX_DEV_MENU_ENABLED)
 @import EXDevMenu;
 #endif

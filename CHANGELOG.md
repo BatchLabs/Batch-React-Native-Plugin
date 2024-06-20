@@ -1,3 +1,10 @@
+9.0.1
+----
+
+**Expo**
+
+* Fixed an issue on iOS where the `RNBatch` import was not added during the Expo pre-build.
+
 9.0.0
 ----
 
