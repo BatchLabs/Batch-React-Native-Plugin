@@ -8,7 +8,10 @@ export enum BatchUserAttributeType {
 }
 
 export class BatchUserAttribute {
-  public constructor(private _type: BatchUserAttributeType, private _value: unknown) {}
+  public constructor(
+    private _type: BatchUserAttributeType,
+    private _value: unknown
+  ) {}
 
   public getType(): BatchUserAttributeType {
     return this._type;
