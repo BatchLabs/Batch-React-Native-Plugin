@@ -1,3 +1,10 @@
+UPCOMING
+----
+
+**Expo**
+
+* Fixed an issue where Batch could miss the first activity start.
+
 9.0.1
 ----
 
