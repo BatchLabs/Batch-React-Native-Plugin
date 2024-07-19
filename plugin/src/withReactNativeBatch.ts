@@ -3,6 +3,7 @@ import { withClassPath, withApplyPlugin, withGoogleServicesFile } from '@expo/co
 
 import { withReactNativeBatchAppBuildGradle } from './android/withReactNativeBatchAppBuildGradle';
 import { withReactNativeBatchMainActivity } from './android/withReactNativeBatchMainActivity';
+import { withReactNativeBatchMainApplication } from './android/withReactNativeBatchMainApplication';
 import { withReactNativeBatchManifest } from './android/withReactNativeBatchManifest';
 import { withReactNativeBatchAppDelegate } from './ios/withReactNativeBatchAppDelegate';
 import { withReactNativeBatchInfoPlist } from './ios/withReactNativeBatchInfoPlist';
@@ -26,6 +27,7 @@ const withReactNativeBatch: ConfigPlugin<Props | void> = (config, props) => {
   newConfig = withApplyPlugin(newConfig);
   newConfig = withReactNativeBatchManifest(newConfig, _props);
   newConfig = withReactNativeBatchAppBuildGradle(newConfig, _props);
+  newConfig = withReactNativeBatchMainApplication(newConfig);
   newConfig = withReactNativeBatchMainActivity(newConfig);
   newConfig = withReactNativeBatchInfoPlist(newConfig, _props);
   newConfig = withReactNativeBatchAppDelegate(newConfig);
