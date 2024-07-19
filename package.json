@@ -51,7 +51,7 @@
     "prettier": "^3.3.3",
     "react-native": "^0.66.1",
     "ts-jest": "^27.0.7",
-    "typedoc": "^0.22.7",
+    "typedoc": "^0.26.4",
     "typescript": "^5.5.3"
   }
 }
