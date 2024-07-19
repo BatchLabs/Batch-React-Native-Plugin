@@ -8,7 +8,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-            node-version: '17'
+            node-version: '18'
             cache: 'yarn'
       # Disable eslint annotations, which are already appended by the build action
       - run: |
@@ -16,7 +16,7 @@ jobs:
             echo "::remove-matcher owner=eslint-stylish::"
       - name: Install dependencies
         run: yarn
-      # TODO: Remplace this with a github action that parses the output of eslint
+      # TODO: Replace this with a github action that parses the output of eslint
       # and annotates the files: this step doesn't have all annotations working
       # Or, wait for github to fix it.
       - name: Lint
