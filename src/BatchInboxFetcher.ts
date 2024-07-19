@@ -102,7 +102,7 @@ const parseNotifications = (notifications: IInboxNotification[]): IInboxNotifica
   return notifications.map(notification => {
     if (!notification.payload) return notification;
 
-    const batchPayload = notification.payload['com.batch'];
+    const batchPayload = notification.payload['com.batch'] as string;
 
     // Try parsing the raw batch payload
     try {
@@ -114,6 +114,7 @@ const parseNotifications = (notifications: IInboxNotification[]): IInboxNotifica
         },
       };
     } catch (error) {
+      console.warn('Failed parsing notification.', error);
       return notification;
     }
   });
