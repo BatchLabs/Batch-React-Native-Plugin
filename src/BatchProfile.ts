@@ -48,6 +48,9 @@ export const BatchProfile = {
    * If a profile already exists, this device will be attached to it. Must not be longer than 1024 characters.
    */
   identify: (identifier: string | null): void => {
+    if (typeof identifier === 'undefined') {
+      return;
+    }
     RNBatch.profile_identify(identifier);
   },
 
