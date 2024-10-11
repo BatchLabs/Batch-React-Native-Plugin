@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1E4AD39B28EF23220095227A /* RNBatchEventDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E4AD39A28EF23220095227A /* RNBatchEventDispatcher.m */; };
-		AA04798A214AA8EA0049BDB2 /* RNBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = AA047989214AA8EA0049BDB2 /* RNBatch.m */; };
+		AA04798A214AA8EA0049BDB2 /* RNBatch.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA047989214AA8EA0049BDB2 /* RNBatch.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,7 +26,7 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNBatchPush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNBatchPush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E4AD39A28EF23220095227A /* RNBatchEventDispatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNBatchEventDispatcher.m; sourceTree = "<group>"; };
-		AA047989214AA8EA0049BDB2 /* RNBatch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNBatch.m; sourceTree = "<group>"; };
+		AA047989214AA8EA0049BDB2 /* RNBatch.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RNBatch.mm; sourceTree = "<group>"; };
 		AA04798B214AA8FF0049BDB2 /* RNBatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNBatch.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,7 +54,7 @@
 			children = (
 				1E4AD39A28EF23220095227A /* RNBatchEventDispatcher.m */,
 				AA04798B214AA8FF0049BDB2 /* RNBatch.h */,
-				AA047989214AA8EA0049BDB2 /* RNBatch.m */,
+				AA047989214AA8EA0049BDB2 /* RNBatch.mm */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -117,7 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E4AD39B28EF23220095227A /* RNBatchEventDispatcher.m in Sources */,
-				AA04798A214AA8EA0049BDB2 /* RNBatch.m in Sources */,
+				AA04798A214AA8EA0049BDB2 /* RNBatch.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

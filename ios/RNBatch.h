@@ -1,20 +1,15 @@
-#if __has_include(<React/RCTBridgeModule.h>)
-  #import <React/RCTBridgeModule.h>
-#else
-  #import <React/RCTBridgeModule.h>
-#endif
-
-#if __has_include(<React/RCTEventEmitter.h>)
-  #import <React/RCTEventEmitter.h>
-#else
-  #import <React/RCTEventEmitter.h>
-#endif
-
+#import <React/RCTEventEmitter.h>
 #import <Batch/Batch.h>
 
 #define PluginVersion "ReactNative/9.0.2"
 
-@interface RNBatch : RCTEventEmitter <RCTBridgeModule>
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <RNBatchSpec/RNBatchSpec.h>
+@interface RNBatch: RCTEventEmitter <NativeRNBatchModuleSpec>
+#else
+#import <React/RCTBridgeModule.h>
+@interface RNBatch: RCTEventEmitter <RCTBridgeModule>
+#endif
 
 + (void)start;
 
