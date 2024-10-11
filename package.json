@@ -38,8 +38,9 @@
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.7.0",
     "@types/jest": "^27.0.2",
+    "@types/node": "^22.7.5",
     "@types/react": "^17.0.33",
-    "@types/react-native": "^0.66.1",
+    "@types/react-native": "^0.73.0",
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "@typescript-eslint/parser": "^7.16.1",
     "eslint": "^9.7.0",
@@ -53,5 +54,13 @@
     "ts-jest": "^27.0.7",
     "typedoc": "^0.26.4",
     "typescript": "^5.5.3"
+  },
+  "codegenConfig": {
+    "name": "RNBatchSpec",
+    "type": "modules",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "com.batch.batch_rn"
+    }
   }
 }

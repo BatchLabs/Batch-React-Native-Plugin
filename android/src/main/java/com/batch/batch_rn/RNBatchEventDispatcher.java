@@ -53,7 +53,7 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
      */
     private void sendEvent(@NonNull RNBatchEvent event) {
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
-            Log.d(RNBatchModule.LOGGER_TAG,
+            Log.d(RNBatchModuleImpl.LOGGER_TAG,
                     "Trying to send an event while react context is null" +
                             " or has no active catalyst instance. Aborting.");
             return;
@@ -85,7 +85,7 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
 
             RNBatchEvent event = new RNBatchEvent(eventName, params);
             if (!isModuleReady() || !hasListener) {
-                Log.d(RNBatchModule.LOGGER_TAG,
+                Log.d(RNBatchModuleImpl.LOGGER_TAG,
                         "Module is not ready or no listener registered yet. Queuing event: ".concat(eventName));
                 queueEvent(event);
                 return;

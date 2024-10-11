@@ -8,6 +8,10 @@ def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
+def isNewArchitectureEnabled() {
+    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
+
 buildscript {
     if (project == rootProject) {
         repositories {
@@ -22,6 +26,9 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+if (isNewArchitectureEnabled()) {
+    apply plugin: 'com.facebook.react'
+}
 
 android {
     namespace 'com.batch.batch_rn'
@@ -34,9 +41,25 @@ android {
         targetSdkVersion safeExtGet('targetSdkVersion', DEFAULT_TARGET_SDK_VERSION)
         versionCode 1
         versionName "1.0"
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     }
+
+    sourceSets {
+        main {
+            if (isNewArchitectureEnabled()) {
+                java.srcDirs += ['src/newarch']
+            } else {
+                java.srcDirs += ['src/oldarch']
+            }
+        }
+    }
+
     lintOptions {
         abortOnError false
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 }
 
@@ -48,5 +71,13 @@ repositories {
 dependencies {
     implementation "com.facebook.react:react-native:+"
     api "com.batch.android:batch-sdk:${safeExtGet('batchSdkVersion', DEFAULT_BATCH_SDK_VERSION)}"
+}
+
+if (isNewArchitectureEnabled()) {
+    react {
+        jsRootDir = file("../src/")
+        libraryName = "RNBatch"
+        codegenJavaPackageName = "com.batch.batch_rn"
+    }
 }
 

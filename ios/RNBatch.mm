@@ -4,6 +4,10 @@
 # import "RNBatchEventDispatcher.h"
 # import "BatchBridgeNotificationCenterDelegate.h"
 
+#ifdef RCT_NEW_ARCH_ENABLED
+#import "RNBatchSpec.h"
+#endif
+
 static RNBatchEventDispatcher* dispatcher = nil;
 
 @implementation RNBatch
@@ -85,7 +89,7 @@ RCT_EXPORT_MODULE()
     NSMutableArray *events = [NSMutableArray new];
 
     for (int i = BatchEventDispatcherTypeNotificationOpen; i <= BatchEventDispatcherTypeMessagingWebViewClick; i++) {
-        NSString* eventName = [RNBatchEventDispatcher mapBatchEventDispatcherTypeToRNEvent:i];
+        NSString* eventName = [RNBatchEventDispatcher mapBatchEventDispatcherTypeToRNEvent:(BatchEventDispatcherType)i];
         if (eventName != nil) {
             [events addObject:eventName];
         }
@@ -94,30 +98,48 @@ RCT_EXPORT_MODULE()
     return events;
 }
 
+- (NSDictionary*)constantsToExport {
+    return @{
+        @"NOTIFICATION_TYPES": @{
+            @"NONE":@0,
+            @"SOUND":@1,
+            @"VIBRATE":@2,
+            @"LIGHTS":@3,
+            @"ALERT":@4,
+        }
+    };
+}
+
+- (NSDictionary*)getConstants {
+    return [self constantsToExport];
+}
+
 RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     [BatchSDK optIn];
-    [RNBatch start];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [RNBatch start];
+    });
     resolve([NSNull null]);
 }
 
 RCT_EXPORT_METHOD(optOut:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     [BatchSDK optOut];
     resolve([NSNull null]);
 }
 
 RCT_EXPORT_METHOD(optOutAndWipeData:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     [BatchSDK optOutAndWipeData];
     resolve([NSNull null]);
 }
 
 RCT_EXPORT_METHOD(isOptedOut:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     resolve([NSNumber numberWithBool:BatchSDK.isOptedOut]);
 }
@@ -140,7 +162,7 @@ RCT_EXPORT_METHOD(updateAutomaticDataCollection:(NSDictionary *)dataCollectionCo
     }
 }
 
-RCT_EXPORT_METHOD(presentDebugViewController)
+RCT_EXPORT_METHOD(showDebugView)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *debugVC = [BatchSDK makeDebugViewController];
@@ -185,45 +207,49 @@ RCT_EXPORT_METHOD(push_dismissNotifications)
     [BatchPush dismissNotifications];
 }
 
-RCT_EXPORT_METHOD(push_getLastKnownPushToken:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(push_getLastKnownPushToken:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     NSString* lastKnownPushToken = [BatchPush lastKnownPushToken];
     resolve(lastKnownPushToken);
 }
 
-RCT_EXPORT_METHOD(push_getInitialDeeplink:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(push_getInitialDeeplink:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     resolve([RNBatchOpenedNotificationObserver getInitialDeeplink]);
+}
+
+RCT_EXPORT_METHOD(push_setNotificationTypes:(double)notifType) {
+    // Android only
 }
 
 
 // User module
 
-RCT_EXPORT_METHOD(user_getInstallationId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getInstallationId:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     NSString* installationId = [BatchUser installationID];
     resolve(installationId);
 }
 
-RCT_EXPORT_METHOD(user_getIdentifier:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getIdentifier:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     NSString* userId = [BatchUser identifier];
     resolve(userId);
 }
 
-RCT_EXPORT_METHOD(user_getRegion:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getRegion:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     NSString* region = [BatchUser region];
     resolve(region);
 }
 
-RCT_EXPORT_METHOD(user_getLanguage:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getLanguage:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     NSString* language = [BatchUser language];
     resolve(language);
 }
 
-RCT_EXPORT_METHOD(user_getAttributes:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getAttributes:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     [BatchUser fetchAttributes:^(NSDictionary<NSString *,BatchUserAttribute *> * _Nullable attributes) {
 
@@ -288,7 +314,7 @@ RCT_EXPORT_METHOD(user_getAttributes:(RCTPromiseResolveBlock)resolve rejecter:(R
     }];
 }
 
-RCT_EXPORT_METHOD(user_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(user_getTags:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     [BatchUser fetchTagCollections:^(NSDictionary<NSString *,NSSet<NSString *> *> * _Nullable collections) {
         if (collections == nil) {
@@ -305,95 +331,6 @@ RCT_EXPORT_METHOD(user_getTags:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
 
 }
 
-RCT_EXPORT_METHOD(user_save:(NSArray*)actions)
-{
-    BatchProfileEditor *editor = [BatchProfile editor];
-    for (NSDictionary* action in actions) {
-        NSString* type = action[@"type"];
-        NSString* key = action[@"key"];
-
-        // Set double, long, NSString, bool class values
-        if([type isEqualToString:@"setAttribute"]) {
-            id value = action[@"value"];
-            if ([value isKindOfClass:[NSString class]]) {
-                [editor setStringAttribute:value forKey:key error:nil];
-            } else if([value isKindOfClass:[NSNumber class]]) {
-                if (value == (id)kCFBooleanTrue || value == (id)kCFBooleanFalse) {
-                    [editor setBooleanAttribute:[value boolValue] forKey:key error:nil];
-                } else {
-                    [editor setDoubleAttribute:[value doubleValue] forKey:key error:nil];
-                }
-            } else if([value isKindOfClass:[NSString class]]) {
-                [editor setStringAttribute:value forKey:key error:nil];
-            } else if([value isKindOfClass:[NSArray class]]) {
-                [editor setStringArrayAttribute:value forKey:key error:nil];
-            } else if([value isKindOfClass:[NSNull class]]) {
-                [editor removeAttributeForKey:key error:nil];
-            }
-        }
-        // Handle dates
-        // @TODO: prevent date parsing from erroring
-        else if([type isEqualToString:@"setDateAttribute"]) {
-            double timestamp = [action[@"value"] doubleValue];
-            NSTimeInterval unixTimeStamp = timestamp / 1000.0;
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
-            [editor setDateAttribute:date forKey:key error:nil];
-        }
-        else if([type isEqualToString:@"setURLAttribute"]) {
-            NSURL *url = [NSURL URLWithString:[self safeNilValue:action[@"value"]]];
-            [editor setURLAttribute:url forKey:action[@"key"] error:nil];
-
-        }
-        else if([type isEqualToString:@"removeAttribute"]) {
-            [editor removeAttributeForKey:action[@"key"] error:nil];
-        }
-
-        else if([type isEqualToString:@"setEmailAddress"]) {
-            [editor setEmailAddress:[self safeNilValue:action[@"value"]] error:nil];
-        }
-
-        else if([type isEqualToString:@"setEmailMarketingSubscription"]) {
-            NSString* value = action[@"value"];
-            if([value isEqualToString:@"SUBSCRIBED"]) {
-                [editor setEmailMarketingSubscriptionState:BatchEmailSubscriptionStateSubscribed];
-            } else if ([value isEqualToString:@"UNSUBSCRIBED"]) {
-                 [editor setEmailMarketingSubscriptionState: BatchEmailSubscriptionStateUnsubscribed];
-            }
-        }
-
-        else if([type isEqualToString:@"setLanguage"]) {
-            [editor setLanguage:[self safeNilValue:action[@"value"]] error:nil];
-        }
-
-        else if([type isEqualToString:@"setRegion"]) {
-            [editor setRegion:[self safeNilValue:action[@"value"]] error:nil];
-        }
-
-        else if([type isEqualToString:@"addToArray"]) {
-            id value = action[@"value"];
-            if ([value isKindOfClass:[NSString class]]) {
-                [editor addItemToStringArrayAttribute:value forKey:key error:nil];
-            } else if ([value isKindOfClass:[NSArray class]]) {
-                for (NSString *item in value) {
-                    [editor addItemToStringArrayAttribute:item forKey:key error:nil];
-                }
-            }
-        }
-
-        else if([type isEqualToString:@"removeFromArray"]) {
-            id value = action[@"value"];
-            if ([value isKindOfClass:[NSString class]]) {
-                [editor removeItemFromStringArrayAttribute:value forKey:key error:nil];
-            } else if ([value isKindOfClass:[NSArray class]]) {
-                for (NSString *item in value) {
-                    [editor removeItemFromStringArrayAttribute:item forKey:key error:nil];
-                }
-            }
-        }
-    }
-    [editor save];
-}
-
 RCT_EXPORT_METHOD(user_clearInstallationData)
 {
     [BatchUser clearInstallationData];
@@ -406,7 +343,7 @@ RCT_EXPORT_METHOD(profile_identify:(NSString*)identifier)
     [BatchProfile identify:identifier];
 }
 
-RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData resolver: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData resolve: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
     BatchEventAttributes *batchEventAttributes = nil;
 
@@ -590,6 +527,95 @@ RCT_EXPORT_METHOD(profile_trackLocation:(NSDictionary*)serializedLocation)
                                                           timestamp:parsedDate]];
 }
 
+RCT_EXPORT_METHOD(profile_saveEditor:(NSArray*)actions)
+{
+    BatchProfileEditor *editor = [BatchProfile editor];
+    for (NSDictionary* action in actions) {
+        NSString* type = action[@"type"];
+        NSString* key = action[@"key"];
+
+        // Set double, long, NSString, bool class values
+        if([type isEqualToString:@"setAttribute"]) {
+            id value = action[@"value"];
+            if ([value isKindOfClass:[NSString class]]) {
+                [editor setStringAttribute:value forKey:key error:nil];
+            } else if([value isKindOfClass:[NSNumber class]]) {
+                if (value == (id)kCFBooleanTrue || value == (id)kCFBooleanFalse) {
+                    [editor setBooleanAttribute:[value boolValue] forKey:key error:nil];
+                } else {
+                    [editor setDoubleAttribute:[value doubleValue] forKey:key error:nil];
+                }
+            } else if([value isKindOfClass:[NSString class]]) {
+                [editor setStringAttribute:value forKey:key error:nil];
+            } else if([value isKindOfClass:[NSArray class]]) {
+                [editor setStringArrayAttribute:value forKey:key error:nil];
+            } else if([value isKindOfClass:[NSNull class]]) {
+                [editor removeAttributeForKey:key error:nil];
+            }
+        }
+        // Handle dates
+        // @TODO: prevent date parsing from erroring
+        else if([type isEqualToString:@"setDateAttribute"]) {
+            double timestamp = [action[@"value"] doubleValue];
+            NSTimeInterval unixTimeStamp = timestamp / 1000.0;
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:unixTimeStamp];
+            [editor setDateAttribute:date forKey:key error:nil];
+        }
+        else if([type isEqualToString:@"setURLAttribute"]) {
+            NSURL *url = [NSURL URLWithString:[self safeNilValue:action[@"value"]]];
+            [editor setURLAttribute:url forKey:action[@"key"] error:nil];
+
+        }
+        else if([type isEqualToString:@"removeAttribute"]) {
+            [editor removeAttributeForKey:action[@"key"] error:nil];
+        }
+
+        else if([type isEqualToString:@"setEmailAddress"]) {
+            [editor setEmailAddress:[self safeNilValue:action[@"value"]] error:nil];
+        }
+
+        else if([type isEqualToString:@"setEmailMarketingSubscription"]) {
+            NSString* value = action[@"value"];
+            if([value isEqualToString:@"SUBSCRIBED"]) {
+                [editor setEmailMarketingSubscriptionState:BatchEmailSubscriptionStateSubscribed];
+            } else if ([value isEqualToString:@"UNSUBSCRIBED"]) {
+                 [editor setEmailMarketingSubscriptionState: BatchEmailSubscriptionStateUnsubscribed];
+            }
+        }
+
+        else if([type isEqualToString:@"setLanguage"]) {
+            [editor setLanguage:[self safeNilValue:action[@"value"]] error:nil];
+        }
+
+        else if([type isEqualToString:@"setRegion"]) {
+            [editor setRegion:[self safeNilValue:action[@"value"]] error:nil];
+        }
+
+        else if([type isEqualToString:@"addToArray"]) {
+            id value = action[@"value"];
+            if ([value isKindOfClass:[NSString class]]) {
+                [editor addItemToStringArrayAttribute:value forKey:key error:nil];
+            } else if ([value isKindOfClass:[NSArray class]]) {
+                for (NSString *item in value) {
+                    [editor addItemToStringArrayAttribute:item forKey:key error:nil];
+                }
+            }
+        }
+
+        else if([type isEqualToString:@"removeFromArray"]) {
+            id value = action[@"value"];
+            if ([value isKindOfClass:[NSString class]]) {
+                [editor removeItemFromStringArrayAttribute:value forKey:key error:nil];
+            } else if ([value isKindOfClass:[NSArray class]]) {
+                for (NSString *item in value) {
+                    [editor removeItemFromStringArrayAttribute:item forKey:key error:nil];
+                }
+            }
+        }
+    }
+    [editor save];
+}
+
 // Inbox module
 
 - (BatchInboxFetcher*) getFetcherFromOptions:(NSDictionary *) options {
@@ -604,9 +630,9 @@ RCT_EXPORT_METHOD(profile_trackLocation:(NSDictionary*)serializedLocation)
 
 RCT_EXPORT_METHOD(inbox_getFetcher:
                   (NSDictionary *) options
-                  resolver:
+                  resolve:
                   (RCTPromiseResolveBlock) resolve
-                  rejecter:
+                  reject:
                   (RCTPromiseRejectBlock) reject) {
 
     BatchInboxFetcher* fetcher = [self getFetcherFromOptions:options];
@@ -627,9 +653,9 @@ RCT_EXPORT_METHOD(inbox_getFetcher:
 
 RCT_EXPORT_METHOD(inbox_fetcher_destroy:
                   (NSString *) fetcherIdentifier
-                  resolver:
+                  resolve:
                   (RCTPromiseResolveBlock) resolve
-                  rejecter:
+                  reject:
                   (RCTPromiseRejectBlock) reject) {
     [_batchInboxFetcherMap removeObjectForKey:fetcherIdentifier];
     resolve([NSNull null]);
@@ -637,9 +663,9 @@ RCT_EXPORT_METHOD(inbox_fetcher_destroy:
 
 RCT_EXPORT_METHOD(inbox_fetcher_hasMore:
                   (NSString *) fetcherIdentifier
-                  resolver:
+                  resolve:
                   (RCTPromiseResolveBlock) resolve
-                  rejecter:
+                  reject:
                   (RCTPromiseRejectBlock) reject) {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -651,9 +677,9 @@ RCT_EXPORT_METHOD(inbox_fetcher_hasMore:
 
 RCT_EXPORT_METHOD(inbox_fetcher_markAllAsRead:
                   (NSString *) fetcherIdentifier
-                  resolver:
+                  resolve:
                   (RCTPromiseResolveBlock) resolve
-                  rejecter:
+                  reject:
                   (RCTPromiseRejectBlock) reject) {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -679,11 +705,11 @@ RCT_EXPORT_METHOD(inbox_fetcher_markAllAsRead:
 
 RCT_EXPORT_METHOD(inbox_fetcher_markAsRead:
                   (NSString *) fetcherIdentifier
-                  notification:
+                  notificationIdentifier:
                   (NSString *) notificationIdentifier
-                  resolver:
+                  resolve:
                   (RCTPromiseResolveBlock) resolve
-                  rejecter:
+                  reject:
                   (RCTPromiseRejectBlock) reject) {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -704,11 +730,11 @@ RCT_EXPORT_METHOD(inbox_fetcher_markAsRead:
 
 RCT_EXPORT_METHOD(inbox_fetcher_markAsDeleted:
                   (NSString *) fetcherIdentifier
-                  notification:
+                  notificationIdentifier:
                   (NSString *) notificationIdentifier
-                  resolver:
+                  resolve:
                   (RCTPromiseResolveBlock) resolve
-                  rejecter:
+                  reject:
                   (RCTPromiseRejectBlock) reject) {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -729,11 +755,11 @@ RCT_EXPORT_METHOD(inbox_fetcher_markAsDeleted:
 
 RCT_EXPORT_METHOD(inbox_fetcher_displayLandingMessage:
                   (NSString *) fetcherIdentifier
-                  notification:
+                  notificationIdentifier:
                   (NSString *) notificationIdentifier
-                  resolver:
+                  resolve:
                   (RCTPromiseResolveBlock) resolve
-                  rejecter:
+                  reject:
                   (RCTPromiseRejectBlock) reject) {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -755,8 +781,8 @@ RCT_EXPORT_METHOD(inbox_fetcher_displayLandingMessage:
 
 RCT_EXPORT_METHOD(inbox_fetcher_fetchNewNotifications:
                   (NSString *) fetcherIdentifier
-                  resolver: (RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  resolve: (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -788,8 +814,8 @@ RCT_EXPORT_METHOD(inbox_fetcher_fetchNewNotifications:
 
 RCT_EXPORT_METHOD(inbox_fetcher_fetchNextPage:
                   (NSString *) fetcherIdentifier
-                  resolver: (RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  resolve: (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -854,15 +880,15 @@ RCT_EXPORT_METHOD(inbox_fetcher_fetchNextPage:
 // Messaging module
 
 RCT_EXPORT_METHOD(messaging_setNotDisturbed:(BOOL) active
-                  resolver: (RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  resolve: (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     [BatchMessaging setDoNotDisturb:active];
     resolve([NSNull null]);
 }
 
 RCT_EXPORT_METHOD(messaging_showPendingMessage:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [BatchMessaging showPendingMessage];
         resolve([NSNull null]);
@@ -870,7 +896,7 @@ RCT_EXPORT_METHOD(messaging_showPendingMessage:(RCTPromiseResolveBlock)resolve
 }
 
 RCT_EXPORT_METHOD(messaging_disableDoNotDisturbAndShowPendingMessage:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
+                  reject:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [BatchMessaging setDoNotDisturb:false];
         [BatchMessaging showPendingMessage];
@@ -879,8 +905,8 @@ RCT_EXPORT_METHOD(messaging_disableDoNotDisturbAndShowPendingMessage:(RCTPromise
 }
 
 RCT_EXPORT_METHOD(messaging_setFontOverride:(nullable NSString*) normalFontName boldFontName:(nullable NSString*) boldFontName italicFontName:(nullable NSString*) italicFontName italicBoldFontName:(nullable NSString*) italicBoldFontName
-                  resolver: (RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
+                  resolve: (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     UIFont* normalFont = normalFontName != nil ? [UIFont fontWithName:normalFontName size: 14] : nil;
     UIFont* boldFont = boldFontName != nil ? [UIFont fontWithName:boldFontName size: 14] : nil;
@@ -891,5 +917,13 @@ RCT_EXPORT_METHOD(messaging_setFontOverride:(nullable NSString*) normalFontName 
 
     resolve([NSNull null]);
 }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params
+{
+    return std::make_shared<facebook::react::NativeRNBatchModuleSpecJSI>(params);
+}
+#endif
 
 @end

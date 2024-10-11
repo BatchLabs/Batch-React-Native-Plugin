@@ -125,7 +125,7 @@ public class RNUtils {
                 }
                 eventAttributes.putObjectList(key, list);
             } else {
-                Log.e(RNBatchModule.LOGGER_TAG, "Invalid parameter : Unknown event_data.attributes type (" + type + ")");
+                Log.e(RNBatchModuleImpl.LOGGER_TAG, "Invalid parameter : Unknown event_data.attributes type (" + type + ")");
             }
         }
         return eventAttributes;
