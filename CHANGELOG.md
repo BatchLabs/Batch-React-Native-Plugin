@@ -1,3 +1,12 @@
+UPCOMING
+----
+
+**Plugin**
+
+* Added support for React-Native [New Architecture](https://reactnative.dev/docs/the-new-architecture/landing-page) Turbo Module. This requires React-Native 0.71+ when running with new architecture enabled, as Codegen and Turbo Module are fully supported. Batch is still backwards compatible with legacy Native Modules.
+
+
+
 9.0.2
 ----
 
