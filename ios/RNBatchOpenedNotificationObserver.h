@@ -1,4 +1,4 @@
-@import Batch;
+#import <Batch/Batch.h>
 
 @interface RNBatchOpenedNotificationObserver : NSObject
 

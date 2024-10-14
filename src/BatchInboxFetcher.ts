@@ -1,7 +1,6 @@
-import { NativeModules } from 'react-native';
-
 import { IInboxNotification } from './BatchInbox';
-const RNBatch = NativeModules.RNBatch;
+
+const RNBatch = require('./NativeRNBatchModule').default;
 
 export class BatchInboxFetcher {
   private readonly identifier: string;

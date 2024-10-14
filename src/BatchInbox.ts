@@ -1,7 +1,6 @@
-import { NativeModules } from 'react-native';
-
 import { BatchInboxFetcher } from './BatchInboxFetcher';
-const RNBatch = NativeModules.RNBatch;
+
+const RNBatch = require('./NativeRNBatchModule').default;
 
 export enum NotificationSource {
   UNKNOWN = 0,

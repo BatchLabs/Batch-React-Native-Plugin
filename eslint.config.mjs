@@ -83,6 +83,7 @@ export default [...compat.extends(
         "@typescript-eslint/no-unused-vars": ["warn", {
             argsIgnorePattern: "^_",
         }],
+        "@typescript-eslint/no-var-requires": "off",
 
         "prettier/prettier": "warn",
     },

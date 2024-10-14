@@ -1,8 +1,6 @@
-import { NativeModules } from 'react-native';
-
 import { BatchUserAttribute } from './BatchUserAttribute';
 
-const RNBatch = NativeModules.RNBatch;
+const RNBatch = require('./NativeRNBatchModule').default;
 
 /**
  * Batch's user module

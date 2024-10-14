@@ -1,7 +1,6 @@
-import { NativeModules, Platform } from 'react-native';
-
 import { BatchEventEmitter, EmitterSubscription } from './BatchEventEmitter';
-const RNBatch = NativeModules.RNBatch;
+
+const RNBatch = require('./NativeRNBatchModule').default;
 
 export interface BatchMessagingEventPayload {
   isPositiveAction: boolean;
@@ -44,10 +43,6 @@ export const BatchMessaging = {
     italicFontName?: string | null,
     italicBoldFontName?: string | null
   ): Promise<void> => {
-    if (Platform.OS === 'android') {
-      return RNBatch.messaging_setTypefaceOverride(normalFontName, boldFontName);
-    }
-
     return RNBatch.messaging_setFontOverride(normalFontName, boldFontName, italicFontName, italicBoldFontName);
   },
 

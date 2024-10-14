@@ -1,10 +1,7 @@
-import { NativeModules } from 'react-native';
-
 import { BatchEventAttributes } from './BatchEventAttributes';
 import { BatchProfileAttributeEditor } from './BatchProfileAttributeEditor';
 import Log from './helpers/Logger';
-
-const RNBatch = NativeModules.RNBatch;
+const RNBatch = require('./NativeRNBatchModule').default;
 
 /**
  * Represents a locations, using lat/lng coordinates

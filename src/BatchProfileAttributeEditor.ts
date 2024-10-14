@@ -1,5 +1,4 @@
-import { NativeModules } from 'react-native';
-const RNBatch = NativeModules.RNBatch;
+const RNBatch = require('./NativeRNBatchModule').default;
 
 /**
  * Enum defining the state of an email subscription
@@ -169,6 +168,6 @@ export class BatchProfileAttributeEditor {
   }
 
   public save(): void {
-    RNBatch.user_save(this._settings);
+    RNBatch.profile_saveEditor(this._settings);
   }
 }

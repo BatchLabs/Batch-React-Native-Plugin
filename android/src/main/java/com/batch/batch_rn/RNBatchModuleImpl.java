@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import com.batch.android.Batch;
 import com.batch.android.BatchActivityLifecycleHelper;
 import com.batch.android.BatchAttributesFetchListener;
-import com.batch.android.BatchDataCollectionConfig;
 import com.batch.android.BatchEventAttributes;
 import com.batch.android.BatchMigration;
 import com.batch.android.BatchProfileAttributeEditor;
@@ -31,8 +30,6 @@ import com.batch.android.BatchInboxNotificationContent;
 import com.batch.android.BatchMessage;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
@@ -42,7 +39,6 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -51,11 +47,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class RNBatchModule extends ReactContextBaseJavaModule {
+public class RNBatchModuleImpl {
 
-    private static final String NAME = "RNBatch";
+    public static final String NAME = "RNBatch";
+
     private static final String PLUGIN_VERSION_ENVIRONMENT_VARIABLE = "batch.plugin.version";
-    private static final String PLUGIN_VERSION = "ReactNative/9.0.2";
+
+    public static final String PLUGIN_VERSION = "ReactNative/9.0.2";
 
     public static final String LOGGER_TAG = "RNBatchBridge";
 
@@ -71,15 +69,9 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         System.setProperty("batch.plugin.version", PLUGIN_VERSION);
     }
 
-    // REACT NATIVE PLUGIN SETUP
+    private static boolean isInitialized = false;
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public Map<String, Object> getConstants() {
+    public static Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
 
         // Add push notification types
@@ -91,8 +83,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
         return constants;
     }
-
-    private static boolean isInitialized = false;
 
     public static void initialize(Application application) {
         if (!isInitialized) {
@@ -115,7 +105,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private static void setDefaultProfileMigrations(Context context, String packageName) {
+    public static void setDefaultProfileMigrations(Context context, String packageName) {
         try {
             Bundle metaData = context.getPackageManager()
                     .getApplicationInfo(packageName, PackageManager.GET_META_DATA)
@@ -125,11 +115,11 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                 boolean profileCustomDataMigrationEnabled = metaData.getBoolean("batch.profile_custom_data_migration_enabled", true);
                 EnumSet<BatchMigration> migrations = EnumSet.noneOf(BatchMigration.class);
                 if (!profileCustomIdMigrationEnabled) {
-                    Log.d(RNBatchModule.LOGGER_TAG, "Disabling profile custom id migration.");
+                    Log.d(LOGGER_TAG, "Disabling profile custom id migration.");
                     migrations.add(BatchMigration.CUSTOM_ID);
                 }
                 if (!profileCustomDataMigrationEnabled) {
-                    Log.d(RNBatchModule.LOGGER_TAG, "Disabling profile custom data migration.");
+                    Log.d(LOGGER_TAG, "Disabling profile custom data migration.");
                     migrations.add(BatchMigration.CUSTOM_DATA);
                 }
                 Batch.disableMigration(migrations);
@@ -140,50 +130,42 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
 
-    public RNBatchModule(ReactApplicationContext reactContext) {
-        super(reactContext);
+    public RNBatchModuleImpl(ReactApplicationContext reactContext) {
         this.reactContext = reactContext;
         this.batchInboxFetcherMap = new HashMap<>();
         eventDispatcher.setReactContext(reactContext);
     }
 
-    public void start() {
-        Activity activity = getCurrentActivity();
+    public void start(Activity activity) {
         if (activity == null) {
             return;
         }
-
         Batch.onStart(activity);
     }
 
     // BASE MODULE
 
-    @ReactMethod
-    public void optIn(Promise promise) {
+    public void optIn(Activity activity, Promise promise) {
         Batch.optIn(reactContext);
-        start();
+        start(activity);
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void optOut(Promise promise) {
         Batch.optOut(reactContext);
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void optOutAndWipeData(Promise promise) {
         Batch.optOutAndWipeData(reactContext);
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void isOptedOut(Promise promise) {
         boolean isOptedOut = Batch.isOptedOut(reactContext);
         promise.resolve(isOptedOut);
     }
 
-    @ReactMethod
     public void updateAutomaticDataCollection(@NonNull ReadableMap dataCollectionConfig) {
         boolean hasDeviceBrand = dataCollectionConfig.hasKey("deviceBrand");
         boolean hasDeviceModel = dataCollectionConfig.hasKey("deviceModel");
@@ -201,84 +183,70 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
                 }
             });
         } else {
-            Log.e(RNBatchModule.LOGGER_TAG, "Invalid parameter : Data collection config cannot be empty");
+            Log.e(LOGGER_TAG, "Invalid parameter : Data collection config cannot be empty");
         }
     }
 
-    @ReactMethod
+    public void showDebugView(Activity currentActivity) {
+        if (currentActivity != null) {
+            Batch.Debug.startDebugActivity(currentActivity);
+        }
+    }
+
     public void addListener(String eventName) {
         eventDispatcher.setHasListener(true);
     }
 
-    @ReactMethod
     public void removeListeners(double count) {
     }
 
     // PUSH MODULE
 
-    @ReactMethod
-    public void push_registerForRemoteNotifications() { /* No effect on android */ }
-
-    @ReactMethod
     public void push_setNotificationTypes(Integer notifType) {
         EnumSet<PushNotificationType> pushTypes = PushNotificationType.fromValue(notifType);
         Batch.Push.setNotificationsType(pushTypes);
     }
 
-    @ReactMethod
-    public void push_clearBadge() { /* No effect on android */ }
-
-    @ReactMethod
-    public void push_dismissNotifications() { /* No effect on android */ }
-
-    @ReactMethod
     public void push_getLastKnownPushToken(Promise promise) {
         BatchPushRegistration registration = Batch.Push.getRegistration();
         promise.resolve(registration != null ? registration.getToken() : null);
     }
 
-    @ReactMethod
     public void push_requestNotificationAuthorization() {
         Batch.Push.requestNotificationPermission(reactContext);
     }
 
     // MESSAGING MODULE
 
-    private void showPendingMessage() {
-        Activity activity = getCurrentActivity();
-        if (activity == null) {
+    private void showPendingMessage(Activity currentActivity) {
+        if (currentActivity == null) {
             return;
         }
 
         BatchMessage message = Batch.Messaging.popPendingMessage();
         if (message != null) {
-            Batch.Messaging.show(activity, message);
+            Batch.Messaging.show(currentActivity, message);
         }
     }
 
-    @ReactMethod
-    public void messaging_showPendingMessage(Promise promise) {
-        showPendingMessage();
-
+    public void messaging_showPendingMessage(Activity activity, Promise promise) {
+        showPendingMessage(activity);
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void messaging_setNotDisturbed(final boolean active, Promise promise) {
         Batch.Messaging.setDoNotDisturbEnabled(active);
 
         promise.resolve(null);
     }
 
-    @ReactMethod
-    public void messaging_disableDoNotDisturbAndShowPendingMessage(Promise promise) {
+    public void messaging_disableDoNotDisturbAndShowPendingMessage(Activity activity, Promise promise) {
         Batch.Messaging.setDoNotDisturbEnabled(false);
-        showPendingMessage();
+        showPendingMessage(activity);
 
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void messaging_setTypefaceOverride(@Nullable String normalTypefaceName, @Nullable String boldTypefaceName, Promise promise) {
         AssetManager assetManager = this.reactContext.getAssets();
         @Nullable Typeface normalTypeface = normalTypefaceName != null ? createTypeface(normalTypefaceName, Typeface.NORMAL, assetManager) : null;
@@ -319,38 +287,24 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         return null;
     }
 
-
-    // DEBUG MODULE
-
-    @ReactMethod
-    public void debug_startDebugActivity() {
-        Activity currentActivity = getCurrentActivity();
-        if (currentActivity != null) {
-            Batch.Debug.startDebugActivity(currentActivity);
-        }
-    }
-
-
     // INBOX MODULE
 
-    private BatchInboxFetcher getFetcherFromOptions(final ReadableMap options, Activity activity) {
+    private BatchInboxFetcher getFetcherFromOptions(final ReadableMap options) {
         if (!options.hasKey("user")) {
-            return Batch.Inbox.getFetcher(activity);
+            return Batch.Inbox.getFetcher(reactContext);
         }
 
         final ReadableMap userOptions = options.getMap("user");
-        return Batch.Inbox.getFetcher(activity, userOptions.getString("identifier"), userOptions.getString("authenticationKey"));
+        return Batch.Inbox.getFetcher(reactContext, userOptions.getString("identifier"), userOptions.getString("authenticationKey"));
     }
 
-    @ReactMethod
     public void inbox_getFetcher(final ReadableMap options, final Promise promise) {
-        Activity activity = getCurrentActivity();
-        if (activity == null) {
-            promise.reject("InboxError", "NO_ACTIVITY");
+        if (reactContext == null) {
+            promise.reject("InboxError", "No Context");
             return;
         }
 
-        BatchInboxFetcher fetcher = getFetcherFromOptions(options, activity);
+        BatchInboxFetcher fetcher = getFetcherFromOptions(options);
 
         if (options.hasKey("fetchLimit")) {
             fetcher.setFetchLimit(options.getInt("fetchLimit"));
@@ -362,17 +316,14 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
         String fetcherIdentifier = UUID.randomUUID().toString();
         this.batchInboxFetcherMap.put(fetcherIdentifier, fetcher);
-
         promise.resolve(fetcherIdentifier);
     }
 
-    @ReactMethod
     public void inbox_fetcher_destroy(String fetcherIdentifier, final Promise promise) {
         this.batchInboxFetcherMap.remove(fetcherIdentifier);
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void inbox_fetcher_hasMore(String fetcherIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
@@ -383,7 +334,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         promise.resolve(fetcher.hasMore());
     }
 
-    @ReactMethod
     public void inbox_fetcher_markAllAsRead(String fetcherIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
@@ -394,7 +344,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         promise.resolve(null);
     }
 
-    private @Nullable
     BatchInboxNotificationContent findNotificationInList(List<BatchInboxNotificationContent> list, String identifier) {
         for (BatchInboxNotificationContent notification : list) {
             if (notification.getNotificationIdentifier().equals(identifier)) {
@@ -404,7 +353,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         return null;
     }
 
-    @ReactMethod
     public void inbox_fetcher_markAsRead(String fetcherIdentifier, String notificationIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
@@ -423,7 +371,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void inbox_fetcher_markAsDeleted(String fetcherIdentifier, String notificationIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
@@ -442,7 +389,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         promise.resolve(null);
     }
 
-    @ReactMethod
     public void inbox_fetcher_fetchNewNotifications(String fetcherIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
@@ -450,7 +396,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         }
 
         BatchInboxFetcher fetcher = this.batchInboxFetcherMap.get(fetcherIdentifier);
-
         fetcher.fetchNewNotifications(new BatchInboxFetcher.OnNewNotificationsFetchedListener() {
             @Override
             public void onFetchSuccess(@NonNull List<BatchInboxNotificationContent> notifications,
@@ -471,7 +416,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         });
     }
 
-    @ReactMethod
     public void inbox_fetcher_fetchNextPage(String fetcherIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
@@ -497,7 +441,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         });
     }
 
-    @ReactMethod
     public void inbox_fetcher_displayLandingMessage(String fetcherIdentifier, String notificationIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
@@ -517,31 +460,26 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     // USER MODULE
 
-    @ReactMethod
     public void user_getInstallationId(Promise promise) {
         String userId = Batch.User.getInstallationID();
         promise.resolve(userId);
     }
 
-    @ReactMethod
     public void user_getIdentifier(Promise promise) {
         String userId = Batch.User.getIdentifier(reactContext);
         promise.resolve(userId);
     }
 
-    @ReactMethod
     public void user_getRegion(Promise promise) {
         String region = Batch.User.getRegion(reactContext);
         promise.resolve(region);
     }
 
-    @ReactMethod
     public void user_getLanguage(Promise promise) {
         String language = Batch.User.getLanguage(reactContext);
         promise.resolve(language);
     }
 
-    @ReactMethod
     public void user_getAttributes(final Promise promise) {
         Batch.User.fetchAttributes(reactContext, new BatchAttributesFetchListener() {
             @Override
@@ -606,7 +544,6 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         });
     }
 
-    @ReactMethod
     public void user_getTags(final Promise promise) {
         Batch.User.fetchTagCollections(reactContext, new BatchTagCollectionsFetchListener() {
             @Override
@@ -629,8 +566,46 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
         });
     }
 
-    @ReactMethod
-    public void user_save(ReadableArray actions) {
+    public void user_clearInstallationData() {
+        Batch.User.clearInstallationData();
+    }
+
+    // PROFILE MODULE
+
+    public void profile_identify(String identifier) {
+        Batch.Profile.identify(identifier);
+    }
+
+    public void profile_trackEvent(@NonNull String name, @Nullable ReadableMap serializedEventData, @NonNull Promise promise) {
+        BatchEventAttributes attributes = RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData);
+        if (attributes != null) {
+            List<String> errors = attributes.validateEventAttributes();
+            if (!errors.isEmpty()) {
+                promise.reject(BATCH_BRIDGE_ERROR_CODE, errors.toString());
+                return;
+            }
+        }
+        Batch.Profile.trackEvent(name, attributes);
+        promise.resolve(null);
+    }
+
+    public void profile_trackLocation(ReadableMap serializedLocation) {
+        Location nativeLocation = new Location("com.batch.batch_rn");
+        nativeLocation.setLatitude(serializedLocation.getDouble("latitude"));
+        nativeLocation.setLongitude(serializedLocation.getDouble("longitude"));
+
+        if (serializedLocation.hasKey("precision")) {
+            nativeLocation.setAccuracy((float) serializedLocation.getDouble("precision"));
+        }
+
+        if (serializedLocation.hasKey("date")) {
+            nativeLocation.setTime((long) serializedLocation.getDouble("date"));
+        }
+
+        Batch.Profile.trackLocation(nativeLocation);
+    }
+
+    public void profile_saveEditor(ReadableArray actions) {
         BatchProfileAttributeEditor editor = Batch.Profile.editor();
         for (int i = 0; i < actions.size(); i++) {
             ReadableMap action = actions.getMap(i);
@@ -718,48 +693,5 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
             }
         }
         editor.save();
-    }
-
-    @ReactMethod
-    public void user_clearInstallationData() {
-        Batch.User.clearInstallationData();
-    }
-
-    // PROFILE MODULE
-
-    @ReactMethod
-    public void profile_identify(String identifier) {
-        Batch.Profile.identify(identifier);
-    }
-
-    @ReactMethod
-    public void profile_trackEvent(@NonNull String name, @Nullable ReadableMap serializedEventData, @NonNull Promise promise) {
-        BatchEventAttributes attributes = RNUtils.convertSerializedEventDataToEventAttributes(serializedEventData);
-        if (attributes != null) {
-            List<String> errors = attributes.validateEventAttributes();
-            if (!errors.isEmpty()) {
-                promise.reject(BATCH_BRIDGE_ERROR_CODE, errors.toString());
-                return;
-            }
-        }
-        Batch.Profile.trackEvent(name, attributes);
-        promise.resolve(null);
-    }
-
-    @ReactMethod
-    public void profile_trackLocation(ReadableMap serializedLocation) {
-        Location nativeLocation = new Location("com.batch.batch_rn");
-        nativeLocation.setLatitude(serializedLocation.getDouble("latitude"));
-        nativeLocation.setLongitude(serializedLocation.getDouble("longitude"));
-
-        if (serializedLocation.hasKey("precision")) {
-            nativeLocation.setAccuracy((float) serializedLocation.getDouble("precision"));
-        }
-
-        if (serializedLocation.hasKey("date")) {
-            nativeLocation.setTime((long) serializedLocation.getDouble("date"));
-        }
-
-        Batch.Profile.trackLocation(nativeLocation);
     }
 }

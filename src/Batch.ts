@@ -1,4 +1,3 @@
-import { NativeModules, Platform } from 'react-native';
 export * from './BatchEventAttributes';
 export * from './BatchInbox';
 export * from './BatchInboxFetcher';
@@ -9,7 +8,7 @@ export * from './BatchUserAttribute';
 export * from './BatchEventEmitter';
 export * from './BatchProfile';
 
-const RNBatch = NativeModules.RNBatch;
+const RNBatch = require('./NativeRNBatchModule').default;
 
 /**
  * Object holding the configuration parameters for the automatic data collect.
@@ -114,14 +113,5 @@ export const Batch = {
    * Android: https://doc.batch.com/android/troubleshooting#implementing-batch-debugger
    * iOS: https://doc.batch.com/ios/troubleshooting#implementing-batch-debugger
    */
-  showDebugView: (): void => {
-    switch (Platform.OS) {
-      case 'android':
-        RNBatch.debug_startDebugActivity();
-        break;
-      default:
-        RNBatch.presentDebugViewController();
-        break;
-    }
-  },
+  showDebugView: (): void => RNBatch.showDebugView(),
 };

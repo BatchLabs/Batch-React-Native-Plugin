@@ -1,7 +1,8 @@
-import { Linking, NativeModules, Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 
 import { BatchEventEmitter, EmitterSubscription } from './BatchEventEmitter';
-const RNBatch = NativeModules.RNBatch;
+
+const RNBatch = require('./NativeRNBatchModule').default;
 
 export interface IAndroidNotificationTypes {
   NONE: number;
@@ -17,27 +18,13 @@ export interface BatchPushEventPayload {
   deeplink?: string | null;
 }
 
-export const AndroidNotificationTypes: IAndroidNotificationTypes = RNBatch.NOTIFICATION_TYPES;
+export const AndroidNotificationTypes: IAndroidNotificationTypes = RNBatch.getConstants().NOTIFICATION_TYPES;
 
 /**
  * Batch's push module
  */
 export const BatchPush = {
   AndroidNotificationTypes,
-
-  /**
-   * Ask iOS users if they want to accept push notifications. Required to be able to push users.
-   *
-   *
-   * No effect on Android.
-   *
-   * @deprecated Please use requestNotificationAuthorization to request permission when needed, and requestToken at each app launch
-   */
-  registerForRemoteNotifications: (): void => {
-    if (Platform.OS === 'ios') {
-      RNBatch.push_registerForRemoteNotifications();
-    }
-  },
 
   /**
    * Ask users if they want to accept push notifications.

@@ -1,6 +1,8 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter } from 'react-native';
 
-export const BatchEventEmitter = new NativeEventEmitter(NativeModules.RNBatch);
+const RNBatch = require('./NativeRNBatchModule').default;
+
+export const BatchEventEmitter = new NativeEventEmitter(RNBatch);
 
 export interface EmitterSubscription {
   remove: () => void;
