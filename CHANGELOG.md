@@ -5,6 +5,9 @@ UPCOMING
 
 * Added support for React-Native [New Architecture](https://reactnative.dev/docs/the-new-architecture/landing-page) Turbo Module. This requires React-Native 0.71+ when running with new architecture enabled, as Codegen and Turbo Module are fully supported. Batch is still backwards compatible with legacy Native Modules.
 
+**Push**
+
+* Removed deprecated API `registerForRemoteNotifications`. Please use `requestNotificationAuthorization` to request permission when needed, and `requestToken` at each app launch.
 
 
 9.0.2
