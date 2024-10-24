@@ -9,6 +9,10 @@ UPCOMING
 
 * Removed deprecated API `registerForRemoteNotifications`. Please use `requestNotificationAuthorization` to request permission when needed, and `requestToken` at each app launch.
 
+**Expo**
+
+* Batch now automatically adds Apple push notification entitlement since it was removed from Expo SDK 51.
+
 
 9.0.2
 ----

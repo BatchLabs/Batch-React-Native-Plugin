@@ -1,11 +1,12 @@
 import { ConfigPlugin, createRunOncePlugin } from '@expo/config-plugins';
-import { withClassPath, withApplyPlugin, withGoogleServicesFile } from '@expo/config-plugins/build/android/GoogleServices';
+import { withApplyPlugin, withClassPath, withGoogleServicesFile } from '@expo/config-plugins/build/android/GoogleServices';
 
 import { withReactNativeBatchAppBuildGradle } from './android/withReactNativeBatchAppBuildGradle';
 import { withReactNativeBatchMainActivity } from './android/withReactNativeBatchMainActivity';
 import { withReactNativeBatchMainApplication } from './android/withReactNativeBatchMainApplication';
 import { withReactNativeBatchManifest } from './android/withReactNativeBatchManifest';
 import { withReactNativeBatchAppDelegate } from './ios/withReactNativeBatchAppDelegate';
+import { withReactNativeBatchEntitlements } from './ios/withReactNativeBatchEntitlements';
 import { withReactNativeBatchInfoPlist } from './ios/withReactNativeBatchInfoPlist';
 
 export type Props = {
@@ -30,6 +31,7 @@ const withReactNativeBatch: ConfigPlugin<Props | void> = (config, props) => {
   newConfig = withReactNativeBatchMainApplication(newConfig);
   newConfig = withReactNativeBatchMainActivity(newConfig);
   newConfig = withReactNativeBatchInfoPlist(newConfig, _props);
+  newConfig = withReactNativeBatchEntitlements(newConfig);
   newConfig = withReactNativeBatchAppDelegate(newConfig);
   // Return the modified config.
   return newConfig;
