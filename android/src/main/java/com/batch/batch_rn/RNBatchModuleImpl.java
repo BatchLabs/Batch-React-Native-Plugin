@@ -23,6 +23,7 @@ import com.batch.android.BatchProfileAttributeEditor;
 import com.batch.android.BatchPushRegistration;
 import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchEmailSubscriptionState;
+import com.batch.android.BatchSMSSubscriptionState;
 import com.batch.android.BatchUserAttribute;
 import com.batch.android.PushNotificationType;
 import com.batch.android.BatchInboxFetcher;
@@ -654,6 +655,17 @@ public class RNBatchModuleImpl {
             } else if (type.equals("setEmailMarketingSubscription")) {
                 String value = action.getString("value");
                 editor.setEmailMarketingSubscription(BatchEmailSubscriptionState.valueOf(value));
+            } else if (type.equals("setPhoneNumber")) {
+                ReadableType valueType = action.getType("value");
+                if (valueType.equals(ReadableType.Null)) {
+                    editor.setPhoneNumber(null);
+                } else {
+                    String value = action.getString("value");
+                    editor.setPhoneNumber(value);
+                }
+            } else if (type.equals("setSMSMarketingSubscription")) {
+                String value = action.getString("value");
+                editor.setSMSMarketingSubscription(BatchSMSSubscriptionState.valueOf(value));
             } else if (type.equals("setLanguage")) {
                 ReadableType valueType = action.getType("value");
                 if (valueType.equals(ReadableType.Null)) {
