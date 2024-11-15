@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
   install_modules_dependencies(s)
 
   s.dependency "React"
-  s.dependency 'Batch', '~> 2.0.0'
+  s.dependency 'Batch', '~> 2.1.0'
 
 end
