@@ -2,16 +2,20 @@ UPCOMING
 ----
 
 **Plugin**
-
+* Updated Batch to 2.1
+* Batch requires iOS 13.0 or higher.
+* Batch requires to compile with SDK 35 (Android 15).
 * Added support for React-Native [New Architecture](https://reactnative.dev/docs/the-new-architecture/landing-page) Turbo Module. This requires React-Native 0.71+ when running with new architecture enabled, as Codegen and Turbo Module are fully supported. Batch is still backwards compatible with legacy Native Modules.
 
-**Push**
+**Expo**
+* Batch now automatically adds Apple push notification entitlement since it was removed from Expo SDK 51.
 
+**Push**
 * Removed deprecated API `registerForRemoteNotifications`. Please use `requestNotificationAuthorization` to request permission when needed, and `requestToken` at each app launch.
 
-**Expo**
-
-* Batch now automatically adds Apple push notification entitlement since it was removed from Expo SDK 51.
+**Profile**
+- Added `setPhoneNumber` API to the `BatchProfileAttributeEditor` class. This requires to have a user identifier registered or to call the `identify` method beforehand.
+- Added `setSMSMarketingSubscription` API to the `BatchProfileAttributeEditor` class.
 
 
 9.0.2
