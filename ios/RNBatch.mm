@@ -583,6 +583,19 @@ RCT_EXPORT_METHOD(profile_saveEditor:(NSArray*)actions)
             }
         }
 
+        else if([type isEqualToString:@"setPhoneNumber"]) {
+            [editor setPhoneNumber:[self safeNilValue:action[@"value"]] error:nil];
+        }
+
+        else if([type isEqualToString:@"setSMSMarketingSubscription"]) {
+            NSString* value = action[@"value"];
+            if([value isEqualToString:@"SUBSCRIBED"]) {
+                [editor setSMSMarketingSubscriptionState:BatchSMSSubscriptionStateSubscribed];
+            } else if ([value isEqualToString:@"UNSUBSCRIBED"]) {
+                 [editor setSMSMarketingSubscriptionState: BatchSMSSubscriptionStateUnsubscribed];
+            }
+        }
+
         else if([type isEqualToString:@"setLanguage"]) {
             [editor setLanguage:[self safeNilValue:action[@"value"]] error:nil];
         }

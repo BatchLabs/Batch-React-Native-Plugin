@@ -8,6 +8,14 @@ export enum BatchEmailSubscriptionState {
   UNSUBSCRIBED = 'UNSUBSCRIBED',
 }
 
+/**
+ * Enum defining the state of an SMS subscription
+ */
+export enum BatchSMSSubscriptionState {
+  SUBSCRIBED = 'SUBSCRIBED',
+  UNSUBSCRIBED = 'UNSUBSCRIBED',
+}
+
 interface IUserSettingsSetAttributeAction {
   type: 'setAttribute';
   key: string;
@@ -51,6 +59,16 @@ interface IUserSettingsSetEmailMarketingSubscriptionAction {
   value: BatchEmailSubscriptionState;
 }
 
+interface IUserSettingsSetPhoneNumberAction {
+  type: 'setPhoneNumber';
+  value: string | null;
+}
+
+interface IUserSettingsSetSMSMarketingSubscriptionAction {
+  type: 'setSMSMarketingSubscription';
+  value: BatchSMSSubscriptionState;
+}
+
 interface IUserSettingsAddToArrayAction {
   type: 'addToArray';
   key: string;
@@ -73,7 +91,9 @@ type IUserSettingsAction =
   | IUserSettingsAddToArrayAction
   | IUserSettingsRemoveFromArrayAction
   | IUserSettingsSetEmailAddressAction
-  | IUserSettingsSetEmailMarketingSubscriptionAction;
+  | IUserSettingsSetEmailMarketingSubscriptionAction
+  | IUserSettingsSetPhoneNumberAction
+  | IUserSettingsSetSMSMarketingSubscriptionAction;
 
 type IUserSettingsActions = IUserSettingsAction[];
 
@@ -133,6 +153,20 @@ export class BatchProfileAttributeEditor {
   public setEmailMarketingSubscription(value: BatchEmailSubscriptionState): BatchProfileAttributeEditor {
     return this.addAction({
       type: 'setEmailMarketingSubscription',
+      value,
+    });
+  }
+
+  public setPhoneNumber(value: string | null): BatchProfileAttributeEditor {
+    return this.addAction({
+      type: 'setPhoneNumber',
+      value,
+    });
+  }
+
+  public setSMSMarketingSubscription(value: BatchSMSSubscriptionState): BatchProfileAttributeEditor {
+    return this.addAction({
+      type: 'setSMSMarketingSubscription',
       value,
     });
   }
