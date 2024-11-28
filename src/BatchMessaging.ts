@@ -6,6 +6,8 @@ export interface BatchMessagingEventPayload {
   isPositiveAction: boolean;
   trackingId?: string | null;
   webViewAnalyticsIdentifier?: string | null;
+  messagingCustomPayload?: Record<string, unknown>; // Custom payload attached to In-App message
+  pushPayload?: Record<string, unknown>; // Push Payload (only on Mobile Landing event)
   deeplink?: string | null;
 }
 

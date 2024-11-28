@@ -1,17 +1,22 @@
 package com.batch.batch_rn;
 
 import android.util.Log;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.batch.android.Batch;
 import com.batch.android.BatchEventDispatcher;
+import com.batch.android.BatchMessage;
 import com.batch.android.BatchPushPayload;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.LinkedList;
 
@@ -83,6 +88,30 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
                 params.putMap("pushPayload", Arguments.fromBundle(pushPayload.getPushBundle()));
             }
 
+            BatchMessage messagingPayload = payload.getMessagingPayload();
+            if (messagingPayload != null) {
+                Bundle bundle = new Bundle();
+                messagingPayload.writeToBundle(bundle);
+                Bundle messagingBundle =  bundle.getBundle(BatchMessage.MESSAGING_EXTRA_PAYLOAD_KEY);
+                if (messagingBundle != null) {
+                    Bundle dataBundle = messagingBundle.getBundle("data");
+                    if(dataBundle != null) {
+                        Bundle landingPushPayload = dataBundle.getBundle("batchPushPayload");
+                        if (landingPushPayload != null) {
+                            params.putMap("pushPayload", Arguments.fromBundle(landingPushPayload));
+                        }
+                        String customPayload =  dataBundle.getString("custom_payload");
+                        if(customPayload != null) {
+                            try {
+                                JSONObject customPayloadJSON = new JSONObject(customPayload);
+                                params.putMap("messagingCustomPayload", RNUtils.convertJSONObjectToWritableMap(customPayloadJSON));
+                            } catch (JSONException e) {
+                                Log.d(RNBatchModuleImpl.LOGGER_TAG,"Failed to parse messaging custom payload");
+                            }
+                        }
+                    }
+                }
+            }
             RNBatchEvent event = new RNBatchEvent(eventName, params);
             if (!isModuleReady() || !hasListener) {
                 Log.d(RNBatchModuleImpl.LOGGER_TAG,
