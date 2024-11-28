@@ -17,6 +17,10 @@ UPCOMING
 - Added `setPhoneNumber` API to the `BatchProfileAttributeEditor` class. This requires to have a user identifier registered or to call the `identify` method beforehand.
 - Added `setSMSMarketingSubscription` API to the `BatchProfileAttributeEditor` class.
 
+**Messaging**
+- Added `messagingCustomPayload` property to `BatchMessagingEventPayload` (only for In-App Message).
+- Added `pushPayload` property to `BatchMessagingEventPayload` (only for Landing Mobile).
+
 
 9.0.2
 ----
