@@ -14,10 +14,14 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -143,5 +147,23 @@ public class RNUtils {
             list.add(array.getString(i));
         }
         return list;
+    }
+
+    /**
+     * Convert a JSONObject into a Map
+     * @param jsonObject The JSONObject to convert
+     * @return the Map
+     */
+    public static WritableMap convertJSONObjectToWritableMap(JSONObject jsonObject) throws JSONException {
+        Map<String, Object> map = new HashMap<>();
+        Iterator<String> keys = jsonObject.keys();
+
+        while (keys.hasNext()) {
+            String key = keys.next();
+            Object value = jsonObject.get(key);
+            map.put(key, value);
+        }
+
+        return convertMapToWritableMap(map);
     }
 }

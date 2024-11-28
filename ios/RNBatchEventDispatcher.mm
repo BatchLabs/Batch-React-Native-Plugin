@@ -67,7 +67,7 @@
 /// Batch event dispatcher callback
 - (void)dispatchEventWithType:(BatchEventDispatcherType)type
                       payload:(nonnull id<BatchEventDispatcherPayload>)payload {
-    
+
 
     NSString* eventName = [RNBatchEventDispatcher mapBatchEventDispatcherTypeToRNEvent:type];
     if (eventName != nil) {
@@ -122,6 +122,13 @@
 
     if (payload.notificationUserInfo != nil) {
         output[@"pushPayload"] = payload.notificationUserInfo;
+    }
+
+    if (payload.sourceMessage != nil) {
+        BatchMessage* sourceMessage = payload.sourceMessage;
+        if ([sourceMessage isKindOfClass:BatchInAppMessage.class]) {
+            output[@"messagingCustomPayload"] = ((BatchInAppMessage*) sourceMessage).customPayload;
+        }
     }
 
     return output;
