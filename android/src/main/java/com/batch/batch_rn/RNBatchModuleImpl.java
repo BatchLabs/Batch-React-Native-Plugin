@@ -442,7 +442,7 @@ public class RNBatchModuleImpl {
         });
     }
 
-    public void inbox_fetcher_displayLandingMessage(String fetcherIdentifier, String notificationIdentifier, final Promise promise) {
+    public void inbox_fetcher_displayLandingMessage(Activity currentActivity, String fetcherIdentifier, String notificationIdentifier, final Promise promise) {
         if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
             promise.reject("InboxError", "FETCHER_NOT_FOUND");
             return;
@@ -455,7 +455,7 @@ public class RNBatchModuleImpl {
             promise.reject("InboxError", "NOTIFICATION_NOT_FOUND");
             return;
         }
-        notification.displayLandingMessage(reactContext);
+        notification.displayLandingMessage(currentActivity);
         promise.resolve(null);
     }
 
