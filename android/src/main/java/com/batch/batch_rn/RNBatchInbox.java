@@ -73,9 +73,4 @@ public class RNBatchInbox {
         output.putBoolean("hasLandingMessage", notification.hasLandingMessage());
         return output;
     }
-
-    private static WritableMap pushPayloadToWritableMap(Map<String, Object> payload)
-    {
-        return RNUtils.convertMapToWritableMap(payload);
-    }
 }
