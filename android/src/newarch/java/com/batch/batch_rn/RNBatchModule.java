@@ -194,7 +194,7 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
 
     @Override
     public void inbox_fetcher_displayLandingMessage(String fetcherIdentifier, String notificationIdentifier, Promise promise) {
-        impl.inbox_fetcher_displayLandingMessage(fetcherIdentifier, notificationIdentifier, promise);
+        impl.inbox_fetcher_displayLandingMessage(getCurrentActivity(), fetcherIdentifier, notificationIdentifier, promise);
     }
 
     // USER MODULE

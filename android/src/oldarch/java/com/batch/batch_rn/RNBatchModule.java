@@ -200,7 +200,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void inbox_fetcher_displayLandingMessage(String fetcherIdentifier, String notificationIdentifier, final Promise promise) {
-        impl.inbox_fetcher_displayLandingMessage(fetcherIdentifier, notificationIdentifier, promise);
+        impl.inbox_fetcher_displayLandingMessage(getCurrentActivity(), fetcherIdentifier, notificationIdentifier, promise);
     }
 
     // USER MODULE
