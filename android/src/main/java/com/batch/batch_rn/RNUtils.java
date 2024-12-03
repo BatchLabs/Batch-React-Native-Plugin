@@ -34,8 +34,15 @@ public class RNUtils {
             Object value = entry.getValue();
             if (value instanceof Map) {
                 output.putMap(key, convertMapToWritableMap((Map<String, Object>) value));
-            } else if (value instanceof JSONArray) {
-                output.putArray(key, convertArrayToWritableArray((Object[]) value));
+            } else if (value instanceof JSONObject) {
+                try {
+                    output.putMap(key, convertJSONObjectToWritableMap((JSONObject) value));
+                } catch (JSONException e) {
+                    Log.e(RNBatchModuleImpl.LOGGER_TAG, "Failed to parse JSON Object.", e);
+                }
+            }
+            else if (value instanceof JSONArray) {
+                output.putArray(key, convertArrayToWritableArray((JSONArray) value));
             } else if (value instanceof Boolean) {
                 output.putBoolean(key, (Boolean) value);
             } else if (value instanceof Integer) {
@@ -48,6 +55,8 @@ public class RNUtils {
                 output.putDouble(key, ((Date) value).getTime());
             } else if (value instanceof URI) {
                 output.putString(key, value.toString());
+            } else if (value == null || value == JSONObject.NULL) {
+                output.putNull(key);
             } else {
                 output.putString(key, value.toString());
             }
@@ -55,29 +64,38 @@ public class RNUtils {
         return output;
     }
 
-    public static WritableArray convertArrayToWritableArray(Object[] input) {
+    public static WritableArray convertArrayToWritableArray(JSONArray input) {
         WritableArray output = new WritableNativeArray();
 
-        for (int i = 0; i < input.length; i++) {
-            Object value = input[i];
-            if (value instanceof Map) {
-                output.pushMap(convertMapToWritableMap((Map<String, Object>) value));
-            } else if (value instanceof JSONArray) {
-                output.pushArray(convertArrayToWritableArray((Object[]) value));
-            } else if (value instanceof Boolean) {
-                output.pushBoolean((Boolean) value);
-            } else if (value instanceof Integer) {
-                output.pushInt((Integer) value);
-            } else if (value instanceof Double) {
-                output.pushDouble((Double) value);
-            } else if (value instanceof String) {
-                output.pushString((String) value);
-            } else if (value instanceof Date) {
-                output.pushDouble(((Date) value).getTime());
-            } else if (value instanceof URI) {
-                output.pushString(value.toString());
-            } else {
-                output.pushString(value.toString());
+        for (int i = 0; i < input.length(); i++) {
+            Object value = null;
+            try {
+                value = input.get(i);
+                if (value instanceof Map) {
+                    output.pushMap(convertMapToWritableMap((Map<String, Object>) value));
+                }
+                else if (value instanceof JSONObject) {
+                    output.pushMap(convertJSONObjectToWritableMap((JSONObject) value));
+                }
+                else if (value instanceof JSONArray) {
+                    output.pushArray(convertArrayToWritableArray((JSONArray) value));
+                } else if (value instanceof Boolean) {
+                    output.pushBoolean((Boolean) value);
+                } else if (value instanceof Integer) {
+                    output.pushInt((Integer) value);
+                } else if (value instanceof Double) {
+                    output.pushDouble((Double) value);
+                } else if (value instanceof String) {
+                    output.pushString((String) value);
+                } else if (value instanceof Date) {
+                    output.pushDouble(((Date) value).getTime());
+                } else if (value instanceof URI) {
+                    output.pushString(value.toString());
+                } else {
+                    output.pushString(value.toString());
+                }
+            } catch (JSONException e) {
+                Log.e(RNBatchModuleImpl.LOGGER_TAG, "Failed to parse JSON Array.", e);
             }
         }
         return output;
@@ -163,7 +181,6 @@ public class RNUtils {
             Object value = jsonObject.get(key);
             map.put(key, value);
         }
-
         return convertMapToWritableMap(map);
     }
 }
