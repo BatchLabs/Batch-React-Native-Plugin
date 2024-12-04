@@ -21,6 +21,11 @@ UPCOMING
 - Added `messagingCustomPayload` property to `BatchMessagingEventPayload` (only for In-App Message).
 - Added `pushPayload` property to `BatchMessagingEventPayload` (only for Landing Mobile).
 
+**Inbox**
+- Added `isSilent` property to `IInboxNotification`.
+- Added `setFilterSilentNotifications` method to `BatchInboxFetcher`. Default value is true.
+- ⚠️ BREAKING: `body` property from `IInboxNotification` is now nullable since the inbox fetcher may not filter silent notifications.
+
 
 9.0.2
 ----
