@@ -65,6 +65,7 @@ export interface Spec extends TurboModule {
     endReached: boolean;
   }>;
   inbox_fetcher_displayLandingMessage(fetcherIdentifier: string, notificationIdentifier: string): Promise<void>;
+  inbox_fetcher_setFilterSilentNotifications(fetcherIdentifier: string, filterSilentNotifications: boolean): Promise<void>;
 
   // User Module
   user_getInstallationId(): Promise<string>;

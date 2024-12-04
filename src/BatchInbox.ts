@@ -20,9 +20,9 @@ export interface IInboxNotification {
   title?: string;
 
   /**
-   * Notification alert body
+   * Notification alert body (if notification not silent)
    */
-  body: string;
+  body?: string;
 
   /**
    * URL of the rich notification attachment (image/audio/video) - iOS Only
@@ -43,6 +43,11 @@ export interface IInboxNotification {
    * Flag indicating whether this notification is unread or not
    */
   isUnread: boolean;
+
+  /**
+   * Flag indicating whether this notification is silent or not
+   */
+  isSilent: boolean;
 
   /**
    * The push notification's source, indicating what made Batch send it.

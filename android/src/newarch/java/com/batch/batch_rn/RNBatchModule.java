@@ -197,6 +197,11 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
         impl.inbox_fetcher_displayLandingMessage(getCurrentActivity(), fetcherIdentifier, notificationIdentifier, promise);
     }
 
+    @Override
+    public void inbox_fetcher_setFilterSilentNotifications(String fetcherIdentifier, boolean filterSilentNotifications, Promise promise) {
+        impl.inbox_fetcher_setFilterSilentNotifications(fetcherIdentifier, filterSilentNotifications, promise);
+    }
+
     // USER MODULE
 
     @Override
