@@ -786,9 +786,10 @@ RCT_EXPORT_METHOD(inbox_fetcher_displayLandingMessage:
         reject(@"InboxError", @"NOTIFICATION_NOT_FOUND", nil);
         return;
     }
-
-    [notification displayLandingMessage];
-    resolve([NSNull null]);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [notification displayLandingMessage];
+        resolve([NSNull null]);
+    });
 }
 
 RCT_EXPORT_METHOD(inbox_fetcher_setFilterSilentNotifications:
