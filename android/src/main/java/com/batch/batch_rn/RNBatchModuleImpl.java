@@ -459,6 +459,15 @@ public class RNBatchModuleImpl {
         promise.resolve(null);
     }
 
+    public void inbox_fetcher_setFilterSilentNotifications(String fetcherIdentifier, boolean filterSilentNotifications, Promise promise) {
+        if (!this.batchInboxFetcherMap.containsKey(fetcherIdentifier)) {
+            promise.reject("InboxError", "FETCHER_NOT_FOUND");
+            return;
+        }
+        BatchInboxFetcher fetcher = this.batchInboxFetcherMap.get(fetcherIdentifier);
+        fetcher.setFilterSilentNotifications(filterSilentNotifications);
+    }
+
     // USER MODULE
 
     public void user_getInstallationId(Promise promise) {

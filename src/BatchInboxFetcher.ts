@@ -66,6 +66,16 @@ export class BatchInboxFetcher {
   }
 
   /**
+   * Sets whether the SDK should filter silent notifications (pushes that don't result in a message being
+   * shown to the user). Default: true
+   *
+   * @param filterSilentNotifications Whether the SDK should filter silent notifications
+   */
+  public setFilterSilentNotifications(filterSilentNotifications: boolean): Promise<void> {
+    return RNBatch.inbox_fetcher_setFilterSilentNotifications(this.identifier, filterSilentNotifications);
+  }
+
+  /**
    * Fetches new notifications (and resets pagination to 0).
    *
    * Usually used as an initial fetch and refresh method in an infinite list.

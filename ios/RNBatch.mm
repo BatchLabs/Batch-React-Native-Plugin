@@ -791,6 +791,24 @@ RCT_EXPORT_METHOD(inbox_fetcher_displayLandingMessage:
     resolve([NSNull null]);
 }
 
+RCT_EXPORT_METHOD(inbox_fetcher_setFilterSilentNotifications:
+                  (NSString *) fetcherIdentifier
+                  filterSilentNotifications:
+                  (BOOL) filterSilentNotifications
+                  resolve:
+                  (RCTPromiseResolveBlock) resolve
+                  reject:
+                  (RCTPromiseRejectBlock) reject) {
+    BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
+    if (!fetcher) {
+        reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
+        return;
+    }
+
+    [fetcher setFilterSilentNotifications:filterSilentNotifications];
+    resolve([NSNull null]);
+}
+
 
 RCT_EXPORT_METHOD(inbox_fetcher_fetchNewNotifications:
                   (NSString *) fetcherIdentifier
@@ -871,22 +889,26 @@ RCT_EXPORT_METHOD(inbox_fetcher_fetchNextPage:
     }
 
     NSString *title = notification.message.title;
+    NSString *body = notification.message.body;
 
     NSDictionary *output = @{
         @"identifier": notification.identifier,
-        @"body": notification.message.body,
         @"isUnread": @(notification.isUnread),
+        @"isSilent": @(notification.isSilent),
         @"date": [NSNumber numberWithDouble:notification.date.timeIntervalSince1970 * 1000],
         @"source": source,
         @"payload": notification.payload,
         @"hasLandingMessage": @(notification.hasLandingMessage)
     };
 
+    NSMutableDictionary *mutableOutput = [output mutableCopy];
     if (title != nil) {
-        NSMutableDictionary *mutableOutput = [output mutableCopy];
         mutableOutput[@"title"] = title;
-        output = mutableOutput;
     }
+    if (body != nil) {
+        mutableOutput[@"body"] = body;
+    }
+    output = mutableOutput;
     return output;
 }
 
