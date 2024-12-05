@@ -119,7 +119,7 @@ const parseNotifications = (notifications: IInboxNotification[]): IInboxNotifica
         ...notification,
         payload: {
           ...(notification.payload as Record<string, unknown>),
-          'com.batch': JSON.parse(batchPayload),
+          'com.batch': typeof batchPayload == 'string' ? JSON.parse(batchPayload) : batchPayload,
         },
       };
     } catch (error) {
