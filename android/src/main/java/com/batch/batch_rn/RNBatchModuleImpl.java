@@ -54,7 +54,7 @@ public class RNBatchModuleImpl {
 
     private static final String PLUGIN_VERSION_ENVIRONMENT_VARIABLE = "batch.plugin.version";
 
-    public static final String PLUGIN_VERSION = "ReactNative/9.0.2";
+    public static final String PLUGIN_VERSION = "ReactNative/10.0.0";
 
     public static final String LOGGER_TAG = "RNBatchBridge";
 

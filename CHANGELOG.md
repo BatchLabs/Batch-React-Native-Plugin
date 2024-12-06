@@ -1,4 +1,4 @@
-UPCOMING
+10.0.0
 ----
 
 **Plugin**
