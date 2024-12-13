@@ -1,3 +1,10 @@
+10.0.1
+----
+
+**Plugin**
+- Fixed a build issue related to Codegen.
+- Batch now publish TypeScript source files since Codegen does not support DTS files for Turbo Module Specifications.
+
 10.0.0
 ----
 
