@@ -16,5 +16,5 @@ Pod::Spec.new do |s|
 
   s.dependency "React"
   s.dependency 'Batch', '~> 2.1.0'
-
+  s.module_map   = "ios/RNBatch.modulemap"
 end
