@@ -1,7 +1,0 @@
-framework module RNBatch {
-    
-    umbrella header "RNBatch.h"
-    
-    export *
-    module * { export * }
-}
