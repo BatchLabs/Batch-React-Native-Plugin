@@ -1,9 +1,20 @@
+10.1.0
+----
+
+**Plugin**
+- Added Swift/Objective-C compatibility. You can now directly import module `RNBatchPush` into your swift files.
+
+**Expo**
+- Added support for Expo SDK 53.
+
+
 10.0.1
 ----
 
 **Plugin**
 - Fixed a build issue related to Codegen.
 - Batch now publish TypeScript source files since Codegen does not support DTS files for Turbo Module Specifications.
+
 
 10.0.0
 ----
