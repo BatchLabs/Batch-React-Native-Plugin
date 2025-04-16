@@ -44,7 +44,7 @@ public class AppDelegate: ExpoAppDelegate {
 
 export const swift_appDelegateExpectedFixture = `import React
 
-import RNBatch
+import RNBatchPush
 import Expo
 
 @UIApplicationMain
