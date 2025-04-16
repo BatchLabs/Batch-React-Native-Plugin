@@ -19,7 +19,7 @@ public class AppDelegate: ExpoAppDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {`;
-const IMPORT_SWIFT_BATCH = '\n\nimport RNBatch\n';
+const IMPORT_SWIFT_BATCH = '\n\nimport RNBatchPush\n';
 const REGISTER_SWIFT_BATCH = '\n    RNBatch.start()\n';
 
 export const modifySwiftDelegate = (contents: string): string => {
