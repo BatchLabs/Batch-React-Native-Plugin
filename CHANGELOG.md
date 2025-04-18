@@ -5,7 +5,7 @@
 - Added Swift/Objective-C compatibility. You can now directly import module `RNBatchPush` into your swift files.
 
 **Expo**
-- Added support for Expo SDK 53.
+- Added support for Expo SDK 53. Since, as of writing, it is still under preview version, this may not works in future versions.
 
 **Core**
 - Fixed an issue where opting the SDK after been opted-out would unexpectedly reset default configurations, such as Do Not Disturb setting.
