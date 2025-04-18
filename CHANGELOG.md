@@ -7,6 +7,9 @@
 **Expo**
 - Added support for Expo SDK 53.
 
+**Core**
+- Fixed an issue where opting the SDK after been opted-out would unexpectedly reset default configurations, such as Do Not Disturb setting.
+
 
 10.0.1
 ----

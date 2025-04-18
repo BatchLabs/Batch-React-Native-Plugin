@@ -117,10 +117,19 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    [BatchSDK optIn];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [RNBatch start];
-    });
+    if (BatchSDK.isOptedOut) {
+        // Opt-in SDK
+        [BatchSDK optIn];
+        
+        // Get API key and restart sdk
+        NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+        NSString *batchAPIKey = [info objectForKey:@"BatchAPIKey"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [BatchSDK startWithAPIKey:batchAPIKey];
+        });
+    } else {
+        NSLog(@"RNBatch: Batch SDK is already opted-in");
+    }
     resolve([NSNull null]);
 }
 
