@@ -51,5 +51,5 @@ export const modifyAppDelegate = (content: string): string => {
 };
 
 const isObjCDelegate = (content: string): boolean => {
-  return content.includes('@interface AppDelegate () <RCTBridgeDelegate>');
+  return content.includes('@implementation AppDelegate');
 };
