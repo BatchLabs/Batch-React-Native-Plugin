@@ -1,3 +1,10 @@
+10.1.1
+----
+
+**Expo**
+- Fixed an issue preventing Expo from pre-building on iOS
+
+
 10.1.0
 ----
 
