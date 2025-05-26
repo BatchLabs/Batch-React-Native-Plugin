@@ -13,12 +13,7 @@ export const modifyObjCDelegate = (contents: string): string => {
 
 // MARK : - Swift
 
-const DID_FINISH_LAUNCHING_WITH_OPTIONS_SWIFT_DECLARATION = `@UIApplicationMain
-public class AppDelegate: ExpoAppDelegate {
-  public override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-  ) -> Bool {`;
+const DID_FINISH_LAUNCHING_WITH_OPTIONS_SWIFT_DECLARATION = 'return super.application(application, didFinishLaunchingWithOptions: launchOptions)';
 const IMPORT_SWIFT_BATCH = '\n\nimport RNBatchPush\n';
 const REGISTER_SWIFT_BATCH = '\n    RNBatch.start()\n';
 
@@ -31,11 +26,10 @@ export const modifySwiftDelegate = (contents: string): string => {
 export const modifyDelegate = (contents: string, importBatch: string, declaration: string, register: string): string => {
   contents = contents.replace('\n', importBatch);
 
-  const [beforeDeclaration, afterDeclaration] = contents.split(declaration);
+  if (contents.includes(declaration) && !contents.includes(register)) {
+    contents = contents.replace(declaration, `${register}    ${declaration}`);
+  }
 
-  const newAfterDeclaration = declaration.concat(register).concat(afterDeclaration);
-
-  contents = beforeDeclaration.concat(newAfterDeclaration);
   return contents;
 };
 
