@@ -4,6 +4,10 @@
 **Expo**
 - Fixed a build issue on iOS after pre-building with Expo SDK 53.
 
+**Messaging**
+- Fixed an issue on Android (old arch only) where `setFontOverride` was not working.
+
+
 10.1.1
 ----
 
@@ -21,7 +25,7 @@
 - Added support for Expo SDK 53. Since, as of writing, it is still under preview version, this may not works in future versions.
 
 **Core**
-- Fixed an issue where opting the SDK after been opted-out would unexpectedly reset default configurations, such as Do Not Disturb setting.
+- Fixed an issue where opting the SDK after being opted-out would unexpectedly reset default configurations, such as Do Not Disturb setting.
 
 
 10.0.1
