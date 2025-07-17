@@ -147,7 +147,7 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void messaging_setTypefaceOverride(@Nullable String normalTypefaceName, @Nullable String boldTypefaceName, @Nullable String italicFontName, @Nullable String italicBoldFontName, Promise promise) {
+    public void messaging_setFontOverride(@Nullable String normalTypefaceName, @Nullable String boldTypefaceName, @Nullable String italicFontName, @Nullable String italicBoldFontName, Promise promise) {
         impl.messaging_setTypefaceOverride(normalTypefaceName, boldTypefaceName, promise);
     }
 
