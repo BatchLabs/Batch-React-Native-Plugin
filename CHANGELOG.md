@@ -1,3 +1,9 @@
+10.1.2
+----
+
+**Expo**
+- Fixed a build issue on iOS after pre-building with Expo SDK 53.
+
 10.1.1
 ----
 

@@ -13,12 +13,8 @@ export const modifyObjCDelegate = (contents: string): string => {
 
 // MARK : - Swift
 
-const DID_FINISH_LAUNCHING_WITH_OPTIONS_SWIFT_DECLARATION = `@UIApplicationMain
-public class AppDelegate: ExpoAppDelegate {
-  public override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-  ) -> Bool {`;
+const DID_FINISH_LAUNCHING_WITH_OPTIONS_SWIFT_DECLARATION =
+  'didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil\n  ) -> Bool {';
 const IMPORT_SWIFT_BATCH = '\n\nimport RNBatchPush\n';
 const REGISTER_SWIFT_BATCH = '\n    RNBatch.start()\n';
 
