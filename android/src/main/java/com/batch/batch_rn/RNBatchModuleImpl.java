@@ -25,7 +25,6 @@ import com.batch.android.BatchTagCollectionsFetchListener;
 import com.batch.android.BatchEmailSubscriptionState;
 import com.batch.android.BatchSMSSubscriptionState;
 import com.batch.android.BatchUserAttribute;
-import com.batch.android.PushNotificationType;
 import com.batch.android.BatchInboxFetcher;
 import com.batch.android.BatchInboxNotificationContent;
 import com.batch.android.BatchMessage;
@@ -73,16 +72,7 @@ public class RNBatchModuleImpl {
     private static boolean isInitialized = false;
 
     public static Map<String, Object> getConstants() {
-        final Map<String, Object> constants = new HashMap<>();
-
-        // Add push notification types
-        final Map<String, Object> notificationTypes = new HashMap<>();
-        for (PushNotificationType type : PushNotificationType.values()) {
-            notificationTypes.put(type.name(), type.ordinal());
-        }
-        constants.put("NOTIFICATION_TYPES", notificationTypes);
-
-        return constants;
+        return new HashMap<>();
     }
 
     public static void initialize(Application application) {
@@ -203,9 +193,12 @@ public class RNBatchModuleImpl {
 
     // PUSH MODULE
 
-    public void push_setNotificationTypes(Integer notifType) {
-        EnumSet<PushNotificationType> pushTypes = PushNotificationType.fromValue(notifType);
-        Batch.Push.setNotificationsType(pushTypes);
+    public void push_setShowNotifications(boolean enabled) {
+        Batch.Push.setShowNotifications(enabled);
+    }
+
+    public void push_shouldShowNotifications(Promise promise) {
+        promise.resolve(Batch.Push.shouldShowNotifications(reactContext));
     }
 
     public void push_getLastKnownPushToken(Promise promise) {
