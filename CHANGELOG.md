@@ -1,3 +1,17 @@
+11.0.0
+___
+
+**Plugin**
+* Updated Batch to 3.1
+* Batch requires iOS 15.0 or higher and Xcode 16.4
+* Batch requires to compile with SDK 36 (Android 16 'Baklava')
+
+**Push**
+- Added `setShowNotifications` method to control whether android push notifications should be displayed.
+- Added `shouldShowNotifications` method to check current android notification display settings.
+- Removed `setNotificationTypes` method. You should now use `setShowNotifications` to control whether Batch should display notifications or not. Note that Batch still preserves your previous values and `shouldShowNotifications` will reflect them.
+
+
 10.1.2
 ----
 
