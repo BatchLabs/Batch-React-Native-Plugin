@@ -65,15 +65,26 @@ export const BatchPush = {
   },
 
   /**
-   * Change the used remote notification types on Android. (Ex: sound, vibrate, alert)
+   * Enable or disable notifications.
    *
-   * __Does not work with iOS__
-   *
-   * Example : setAndroidNotificationTypes(batch.push.AndroidNotificationTypes.ALERT | batch.push.AndroidNotificationTypes.SOUND)
+   * Android only.
    */
-  setAndroidNotificationTypes: (notificationTypes: number[]): void => {
-    const notificationType = notificationTypes.reduce((sum, value) => sum + value, 0);
-    RNBatch.push_setNotificationTypes(notificationType);
+  setShowNotifications: (enabled: boolean): void => {
+    if (Platform.OS === 'android') {
+      RNBatch.push_setShowNotifications(enabled);
+    }
+  },
+
+  /**
+   * Check whether Batch should display push notifications.
+   *
+   * Android only.
+   */
+  shouldShowNotifications: (): Promise<boolean | undefined> => {
+    if (Platform.OS === 'android') {
+      return RNBatch.push_shouldShowNotifications();
+    }
+    return Promise.resolve(undefined);
   },
 
   /**

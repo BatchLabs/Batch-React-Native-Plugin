@@ -93,10 +93,15 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     // PUSH MODULE
     @ReactMethod
-    public void push_setNotificationTypes(Integer notifType) {
-        impl.push_setNotificationTypes(notifType);
+    public void push_setShowNotifications(boolean enabled) {
+        impl.push_setShowNotifications(enabled);
     }
 
+    @ReactMethod
+    public void push_shouldShowNotifications(Promise promise) {
+        impl.push_shouldShowNotifications(promise);
+    }
+    
     @ReactMethod
     public void push_clearBadge() { /* No effect on android */ }
 

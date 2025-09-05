@@ -1,8 +1,8 @@
 def DEFAULT_MIN_SDK_VERSION                 = 21
-def DEFAULT_COMPILE_SDK_VERSION             = 34
-def DEFAULT_BUILD_TOOLS_VERSION             = "34.0.0"
-def DEFAULT_TARGET_SDK_VERSION              = 34
-def DEFAULT_BATCH_SDK_VERSION               = "2.1.+"
+def DEFAULT_COMPILE_SDK_VERSION             = 36
+def DEFAULT_BUILD_TOOLS_VERSION             = "36.0.0"
+def DEFAULT_TARGET_SDK_VERSION              = 36
+def DEFAULT_BATCH_SDK_VERSION               = "3.1.+"
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback

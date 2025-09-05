@@ -27,7 +27,8 @@ export interface Spec extends TurboModule {
   showDebugView(): void;
 
   // Push Module
-  push_setNotificationTypes(notifType: number): void;
+  push_setShowNotifications(enabled: boolean): void;
+  push_shouldShowNotifications(): Promise<boolean | undefined>;
   push_clearBadge(): void;
   push_dismissNotifications(): void;
   push_getLastKnownPushToken(): Promise<string | null>;

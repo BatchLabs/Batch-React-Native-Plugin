@@ -92,8 +92,13 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
     // PUSH MODULE
 
     @Override
-    public void push_setNotificationTypes(double notifType) {
-        impl.push_setNotificationTypes((int) notifType);
+    public void push_setShowNotifications(boolean enabled) {
+        impl.push_setShowNotifications(enabled);
+    }
+
+    @Override
+    public void push_shouldShowNotifications(Promise promise) {
+        impl.push_shouldShowNotifications(promise);
     }
 
     @Override

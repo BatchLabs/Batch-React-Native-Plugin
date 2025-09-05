@@ -98,20 +98,8 @@ RCT_EXPORT_MODULE()
     return events;
 }
 
-- (NSDictionary*)constantsToExport {
-    return @{
-        @"NOTIFICATION_TYPES": @{
-            @"NONE":@0,
-            @"SOUND":@1,
-            @"VIBRATE":@2,
-            @"LIGHTS":@3,
-            @"ALERT":@4,
-        }
-    };
-}
-
 - (NSDictionary*)getConstants {
-    return [self constantsToExport];
+    return @{};
 }
 
 RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
@@ -226,11 +214,6 @@ RCT_EXPORT_METHOD(push_getInitialDeeplink:(RCTPromiseResolveBlock)resolve reject
 {
     resolve([RNBatchOpenedNotificationObserver getInitialDeeplink]);
 }
-
-RCT_EXPORT_METHOD(push_setNotificationTypes:(double)notifType) {
-    // Android only
-}
-
 
 // User module
 
