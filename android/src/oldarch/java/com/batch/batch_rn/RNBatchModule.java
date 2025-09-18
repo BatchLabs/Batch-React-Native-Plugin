@@ -17,9 +17,14 @@ import com.facebook.react.bridge.ReadableMap;
 import java.util.Map;
 
 
+@Deprecated
 public class RNBatchModule extends ReactContextBaseJavaModule {
 
     private final RNBatchModuleImpl impl;
+
+    private static final String DEPRECATION_MESSAGE =
+            "RNBatch old architecture module is deprecated and will be removed in a future release. " +
+            "Enable the React Native New Architecture to keep receiving updates.";
 
     static {
         System.setProperty("batch.plugin.version", RNBatchModuleImpl.PLUGIN_VERSION);
@@ -37,13 +42,13 @@ public class RNBatchModule extends ReactContextBaseJavaModule {
 
     public static void initialize(Application application) {
         Log.d("RNBatchBridge","Init Batch Native Module");
+        Log.w(RNBatchModuleImpl.LOGGER_TAG, DEPRECATION_MESSAGE);
         RNBatchModuleImpl.initialize(application);
     }
 
     private static void setDefaultProfileMigrations(Context context, String packageName) {
         RNBatchModuleImpl.setDefaultProfileMigrations(context, packageName);
     }
-
 
     public RNBatchModule(ReactApplicationContext reactContext) {
         super(reactContext);

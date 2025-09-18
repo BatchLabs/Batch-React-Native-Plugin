@@ -80,4 +80,3 @@ if (isNewArchitectureEnabled()) {
         codegenJavaPackageName = "com.batch.batch_rn"
     }
 }
-

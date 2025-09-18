@@ -42,6 +42,10 @@ RCT_EXPORT_MODULE()
 {
     setenv("BATCH_PLUGIN_VERSION", PluginVersion, 1);
 
+#ifndef RCT_NEW_ARCH_ENABLED
+    NSLog(@"[BatchBridge] React Native old architecture bridge is deprecated and will be removed in a future release. Enable the New Architecture to keep receiving updates.");
+#endif
+
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
 
     // Handling do not disturbed initial state
