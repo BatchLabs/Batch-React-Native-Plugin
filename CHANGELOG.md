@@ -10,7 +10,7 @@ ___
 **Push**
 - Added `setShowNotifications` method to control whether android push notifications should be displayed.
 - Added `shouldShowNotifications` method to check current android notification display settings.
-- Removed `setNotificationTypes` method. You should now use `setShowNotifications` to control whether Batch should display notifications or not. Note that Batch still preserves your previous values and `shouldShowNotifications` will reflect them.
+- Removed `AndroidNotificationTypes` enum and related method `setNotificationTypes`. You should now use `setShowNotifications` to control whether Batch should display notifications or not. Note that Batch still preserves your previous values and `shouldShowNotifications` will reflect them.
 
 **Messaging**
 - Added support for Mobile Landings within the Customer Engagement Platform.
