@@ -15,6 +15,11 @@ As this plugin is built over Batch's Native SDKs, their respective Android and i
 - [Help center](https://help.batch.com/en/): answers to most questions you may have during the integration
 - [API reference](https://batchlabs.github.io/Batch-React-Native-Plugin/): this documents each of the classes and methods in the Batch React-Native Plugin
 
+# React Native architecture
+Batch ships a TurboModule implementation for the React Native New Architecture.
+The legacy bridge is still bundled for compatibility but is now deprecated and will be removed in a future release.
+Enable the New Architecture to keep receiving updates.
+
 You may also find this guide useful to review after integration to make sure you're ready to go live: [How can I test the integration on iOS?](https://help.batch.com/en/articles/2669866-how-can-i-test-the-integration-on-ios) / [How can I test the integration on Android?](https://help.batch.com/en/articles/2672749-how-can-i-test-the-integration-on-android)
 
 # Releases
