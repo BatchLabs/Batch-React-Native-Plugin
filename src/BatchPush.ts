@@ -4,28 +4,16 @@ import { BatchEventEmitter, EmitterSubscription } from './BatchEventEmitter';
 
 const RNBatch = require('./NativeRNBatchModule').default;
 
-export interface IAndroidNotificationTypes {
-  NONE: number;
-  SOUND: number;
-  VIBRATE: number;
-  LIGHTS: number;
-  ALERT: number;
-}
-
 export interface BatchPushEventPayload {
   isPositiveAction: boolean;
   pushPayload: Record<string, unknown>;
   deeplink?: string | null;
 }
 
-export const AndroidNotificationTypes: IAndroidNotificationTypes = RNBatch.getConstants().NOTIFICATION_TYPES;
-
 /**
  * Batch's push module
  */
 export const BatchPush = {
-  AndroidNotificationTypes,
-
   /**
    * Ask users if they want to accept push notifications.
    * Required to be able to push users (or use requestProvisionalNotificationAuthorization - ios only).
