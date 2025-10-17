@@ -70,7 +70,7 @@ import com.batch.android.Batch`
 
     newContent =
       start +
-      `\n  override fun onNewIntent(intent: Intent?) {
+      `\n  override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Batch.onNewIntent(this, intent)
   }\n` +
