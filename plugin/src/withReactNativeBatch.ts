@@ -38,7 +38,7 @@ const withReactNativeBatch: ConfigPlugin<Props | void> = (config, props) => {
   newConfig = withReactNativeBatchMainActivity(newConfig, _props);
   newConfig = withReactNativeBatchInfoPlist(newConfig, _props);
   newConfig = withReactNativeBatchEntitlements(newConfig);
-  newConfig = withReactNativeBatchAppDelegate(newConfig);
+  // newConfig = withReactNativeBatchAppDelegate(newConfig);
   // Return the modified config.
   return newConfig;
 };
