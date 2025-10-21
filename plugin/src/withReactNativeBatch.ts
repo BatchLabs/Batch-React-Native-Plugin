@@ -16,6 +16,7 @@ export type Props = {
   enableDefaultOptOut?: boolean;
   enableProfileCustomIDMigration?: boolean;
   enableProfileCustomDataMigration?: boolean;
+  shouldUseNonNullableIntent?: boolean;
 };
 /**
  * Apply react-native-batch configuration for Expo SDK 42 projects.
@@ -23,13 +24,18 @@ export type Props = {
 const withReactNativeBatch: ConfigPlugin<Props | void> = (config, props) => {
   const _props = props || { androidApiKey: '', iosApiKey: '' };
 
+  // Default shouldUseNonNullableIntent to false if not explicitly provided
+  if (_props.shouldUseNonNullableIntent === undefined) {
+    _props.shouldUseNonNullableIntent = false;
+  }
+
   let newConfig = withGoogleServicesFile(config);
   newConfig = withClassPath(newConfig);
   newConfig = withApplyPlugin(newConfig);
   newConfig = withReactNativeBatchManifest(newConfig, _props);
   newConfig = withReactNativeBatchAppBuildGradle(newConfig, _props);
   newConfig = withReactNativeBatchMainApplication(newConfig);
-  newConfig = withReactNativeBatchMainActivity(newConfig);
+  newConfig = withReactNativeBatchMainActivity(newConfig, _props);
   newConfig = withReactNativeBatchInfoPlist(newConfig, _props);
   newConfig = withReactNativeBatchEntitlements(newConfig);
   newConfig = withReactNativeBatchAppDelegate(newConfig);

@@ -1,4 +1,9 @@
-import { ConfigPlugin, withMainActivity } from '@expo/config-plugins';
+import { ConfigPlugin, ExportedConfigWithProps, withMainActivity } from '@expo/config-plugins';
+import { ApplicationProjectFile } from '@expo/config-plugins/build/android/Paths';
+
+export type MainActivityProps = {
+  shouldUseNonNullableIntent?: boolean;
+};
 
 export const modifyMainJavaActivity = (content: string): string => {
   let newContent = content;
@@ -44,7 +49,7 @@ import com.batch.android.Batch;`
   return newContent;
 };
 
-export const modifyMainKotlinActivity = (content: string): string => {
+export const modifyMainKotlinActivity = (content: string, useNonNullableIntent: boolean): string => {
   let newContent = content;
 
   if (!newContent.includes('import android.content.Intent')) {
@@ -68,9 +73,12 @@ import com.batch.android.Batch`
     const start = newContent.substring(0, lastBracketIndex);
     const end = newContent.substring(lastBracketIndex);
 
+    // Use non-nullable Intent for SDK 54+, nullable for SDK 53 and below
+    const intentType = useNonNullableIntent ? 'Intent' : 'Intent?';
+
     newContent =
       start +
-      `\n  override fun onNewIntent(intent: Intent?) {
+      `\n  override fun onNewIntent(intent: ${intentType}) {
         super.onNewIntent(intent)
         Batch.onNewIntent(this, intent)
   }\n` +
@@ -86,21 +94,28 @@ import com.batch.android.Batch`
   return newContent;
 };
 
-export const modifyMainActivity = (content: string): string => {
-  return isKotlinMainActivity(content) ? modifyMainKotlinActivity(content) : modifyMainJavaActivity(content);
+export const modifyMainActivity = (
+  config: ExportedConfigWithProps<ApplicationProjectFile>,
+  shouldUseNonNullableIntent: boolean = false
+): string => {
+  return isKotlinMainActivity(config.modResults.contents)
+    ? modifyMainKotlinActivity(config.modResults.contents, shouldUseNonNullableIntent)
+    : modifyMainJavaActivity(config.modResults.contents);
 };
 
 const isKotlinMainActivity = (content: string): boolean => {
   return content.includes('class MainActivity : ReactActivity()');
 };
 
-export const withReactNativeBatchMainActivity: ConfigPlugin<object | void> = config => {
+export const withReactNativeBatchMainActivity: ConfigPlugin<MainActivityProps | void> = (config, props) => {
+  const shouldUseNonNullableIntent = props?.shouldUseNonNullableIntent ?? false;
+
   return withMainActivity(config, config => {
     return {
       ...config,
       modResults: {
         ...config.modResults,
-        contents: modifyMainActivity(config.modResults.contents),
+        contents: modifyMainActivity(config, shouldUseNonNullableIntent),
       },
     };
   });
