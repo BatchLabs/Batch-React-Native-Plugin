@@ -1,9 +1,0 @@
-{
-  "platforms": [
-    "android",
-    "ios"
-  ],
-  "ios": {
-    "appDelegateSubscribers": ["ExpoBatchAppDelegate"]
-  }
-}
