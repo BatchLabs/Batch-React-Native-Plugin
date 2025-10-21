@@ -1,7 +1,7 @@
 #import <React/RCTEventEmitter.h>
 #import <Batch/Batch.h>
 
-#define PluginVersion "ReactNative/11.0.0"
+#define PluginVersion "ReactNative/11.1.0"
 
 #ifdef RCT_NEW_ARCH_ENABLED
 #import <RNBatchSpec/RNBatchSpec.h>

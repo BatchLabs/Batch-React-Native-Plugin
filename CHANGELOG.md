@@ -1,3 +1,10 @@
+11.1.0
+___
+
+**Expo**
+- Added configuration field `shouldUseNonNullableIntent` to control whether the MainActivity's `onNewIntent` method uses a nullable or non-nullable Intent parameter on Android. This is required for compatibility with AndroidX Activity 1.9+ which uses non-nullable Intent types. By default, it is set to `false` (nullable Intent) for backwards compatibility. Set it to `true` if you're using AndroidX Activity 1.9 or higher.
+
+
 11.0.0
 ___
 
