@@ -84,6 +84,8 @@ export default [...compat.extends(
             argsIgnorePattern: "^_",
         }],
         "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-wrapper-object-types": "off",
 
         "prettier/prettier": "warn",
     },

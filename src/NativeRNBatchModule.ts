@@ -1,5 +1,3 @@
-/* eslint-disable  @typescript-eslint/ban-types */
-
 import { TurboModule, TurboModuleRegistry } from 'react-native';
 
 import { BatchInboxFetcher, BatchUserAttribute, IInboxNotification } from './Batch';
