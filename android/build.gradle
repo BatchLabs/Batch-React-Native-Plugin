@@ -69,7 +69,6 @@ repositories {
 }
 
 dependencies {
-    implementation project(':expo-modules-core')
     implementation "com.facebook.react:react-native:+"
     api "com.batch.android:batch-sdk:${safeExtGet('batchSdkVersion', DEFAULT_BATCH_SDK_VERSION)}"
 }

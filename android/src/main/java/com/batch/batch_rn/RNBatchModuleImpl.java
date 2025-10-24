@@ -66,7 +66,7 @@ public class RNBatchModuleImpl {
     private static final RNBatchEventDispatcher eventDispatcher = new RNBatchEventDispatcher();
 
     static {
-        System.setProperty("batch.plugin.version", PLUGIN_VERSION);
+        System.setProperty(PLUGIN_VERSION_ENVIRONMENT_VARIABLE, PLUGIN_VERSION);
     }
 
     private static boolean isInitialized = false;
@@ -77,6 +77,7 @@ public class RNBatchModuleImpl {
 
     public static void initialize(Application application) {
         if (!isInitialized) {
+            Log.w("BatchPlugin", "Initializing native module");
             Resources resources = application.getResources();
             String packageName = application.getPackageName();
             setDefaultProfileMigrations(application.getApplicationContext(), packageName);
@@ -89,10 +90,10 @@ public class RNBatchModuleImpl {
             } catch (Resources.NotFoundException e) {
                 Batch.Messaging.setDoNotDisturbEnabled(false);
             }
-
             application.registerActivityLifecycleCallbacks(new BatchActivityLifecycleHelper());
-
             isInitialized = true;
+        } else {
+            Log.w("BatchPlugin", "Native module already initialized");
         }
     }
 
@@ -122,6 +123,14 @@ public class RNBatchModuleImpl {
 
 
     public RNBatchModuleImpl(ReactApplicationContext reactContext) {
+        if(!isInitialized) {
+            Application app = (Application) reactContext.getApplicationContext();
+            if (app != null) {
+                initialize(app);
+            } else {
+                Log.e(LOGGER_TAG, "Application context is null, cannot initialize Batch module");
+            }
+        }
         this.reactContext = reactContext;
         this.batchInboxFetcherMap = new HashMap<>();
         eventDispatcher.setReactContext(reactContext);

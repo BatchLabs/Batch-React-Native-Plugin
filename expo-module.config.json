@@ -1,9 +1,0 @@
-{
-  "platforms": ["apple", "android"],
-  "apple": {
-    "appDelegateSubscribers": ["ExpoBatchAppDelegate"]
-  },
-  "android": {
-    "modules": ["com.batch.expo.ExpoBatchPackage"]
-  }
-}

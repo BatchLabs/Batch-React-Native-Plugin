@@ -9,14 +9,13 @@ Pod::Spec.new do |s|
   }
   s.platform     = :ios, "15.0"
   s.source       = { :git => "git@github.com:BatchLabs/Batch-React-Native-Plugin.git", :tag => "master" }
-  s.source_files  = "*.{h,m,mm,swift}"
+  s.source_files  = "ios/*.{h,m,mm,swift}"
   s.requires_arc = true
 
   install_modules_dependencies(s)
 
   s.dependency "React"
   s.dependency 'Batch', '~> 3.1.0'
-  s.dependency 'ExpoModulesCore'
 
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end

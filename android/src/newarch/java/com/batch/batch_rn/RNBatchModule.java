@@ -1,9 +1,5 @@
 package com.batch.batch_rn;
 
-import android.app.Application;
-import android.content.Context;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -16,8 +12,9 @@ import java.util.Map;
 
 public class RNBatchModule extends NativeRNBatchModuleSpec {
 
-    private RNBatchModuleImpl impl;
+    private final RNBatchModuleImpl impl;
 
+    @NonNull
     @Override
     public String getName() {
         return RNBatchModuleImpl.NAME;
@@ -28,30 +25,20 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
         return RNBatchModuleImpl.getConstants();
     }
 
-    public static void initialize(Application application) {
-        Log.d("RNBatchBridge","Init Batch Turbo Module");
-        RNBatchModuleImpl.initialize(application);
-    }
-
-    private static void setDefaultProfileMigrations(Context context, String packageName) {
-        RNBatchModuleImpl.setDefaultProfileMigrations(context, packageName);
-    }
-
-
     public RNBatchModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.impl = new RNBatchModuleImpl(reactContext);
     }
 
     public void start() {
-        impl.start(getCurrentActivity());
+        impl.start(getReactApplicationContext().getCurrentActivity());
     }
 
     // BASE MODULE
 
     @Override
     public void optIn(Promise promise) {
-        impl.optIn(getCurrentActivity(), promise);
+        impl.optIn(getReactApplicationContext().getCurrentActivity(), promise);
     }
 
     @Override
@@ -76,7 +63,7 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
 
     @Override
     public void showDebugView() {
-        impl.showDebugView(getCurrentActivity());
+        impl.showDebugView(getReactApplicationContext().getCurrentActivity());
     }
 
     @Override
@@ -137,7 +124,7 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
 
     @Override
     public void messaging_showPendingMessage(Promise promise) {
-        impl.messaging_showPendingMessage(getCurrentActivity(), promise);
+        impl.messaging_showPendingMessage(getReactApplicationContext().getCurrentActivity(), promise);
     }
 
     @Override
@@ -147,7 +134,7 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
 
     @Override
     public void messaging_disableDoNotDisturbAndShowPendingMessage(Promise promise) {
-        impl.messaging_disableDoNotDisturbAndShowPendingMessage(getCurrentActivity(), promise);
+        impl.messaging_disableDoNotDisturbAndShowPendingMessage(getReactApplicationContext().getCurrentActivity(), promise);
     }
 
     @Override
@@ -199,7 +186,7 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
 
     @Override
     public void inbox_fetcher_displayLandingMessage(String fetcherIdentifier, String notificationIdentifier, Promise promise) {
-        impl.inbox_fetcher_displayLandingMessage(getCurrentActivity(), fetcherIdentifier, notificationIdentifier, promise);
+        impl.inbox_fetcher_displayLandingMessage(getReactApplicationContext().getCurrentActivity(), fetcherIdentifier, notificationIdentifier, promise);
     }
 
     @Override
