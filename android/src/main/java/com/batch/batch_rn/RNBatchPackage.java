@@ -1,23 +1,18 @@
 package com.batch.batch_rn;
 
-import android.app.Application;
 
 import androidx.annotation.Nullable;
+
+import com.facebook.react.BaseReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.module.model.ReactModuleInfo;
 import com.facebook.react.module.model.ReactModuleInfoProvider;
-import com.facebook.react.TurboReactPackage;
 
 import java.util.Map;
 import java.util.HashMap;
 
-public class RNBatchPackage extends TurboReactPackage {
-
-    public RNBatchPackage(Application application) {
-        super();
-        RNBatchModule.initialize(application);
-    }
+public class RNBatchPackage extends BaseReactPackage {
 
     @Nullable
     @Override
