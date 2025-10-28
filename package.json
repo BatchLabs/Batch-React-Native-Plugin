@@ -19,7 +19,6 @@
   "scripts": {
     "test": "jest",
     "bump-version": "./scripts/bump-version.sh",
-    "prepare": "tsc && expo-module prepare",
     "doc": "typedoc",
     "doc:generate": "typedoc && touch ./docs/.nojekyll",
     "doc:publish": "./scripts/deploy-doc.sh",
