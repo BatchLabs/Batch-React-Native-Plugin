@@ -80,16 +80,10 @@ public class RNBatchModuleImpl {
             Log.w("BatchPlugin", "Initializing native module");
             Resources resources = application.getResources();
             String packageName = application.getPackageName();
-            setDefaultProfileMigrations(application.getApplicationContext(), packageName);
+            setDefaultConfig(application.getApplicationContext(), packageName);
             String batchAPIKey = resources.getString(resources.getIdentifier("BATCH_API_KEY", "string", packageName));
             Batch.start(batchAPIKey);
             Batch.EventDispatcher.addDispatcher(eventDispatcher);
-            try {
-                boolean doNotDisturbEnabled = resources.getBoolean(resources.getIdentifier("BATCH_DO_NOT_DISTURB_INITIAL_STATE", "bool", packageName));
-                Batch.Messaging.setDoNotDisturbEnabled(doNotDisturbEnabled);
-            } catch (Resources.NotFoundException e) {
-                Batch.Messaging.setDoNotDisturbEnabled(false);
-            }
             application.registerActivityLifecycleCallbacks(new BatchActivityLifecycleHelper());
             isInitialized = true;
         } else {
@@ -97,12 +91,17 @@ public class RNBatchModuleImpl {
         }
     }
 
-    public static void setDefaultProfileMigrations(Context context, String packageName) {
+    public static void setDefaultConfig(Context context, String packageName) {
         try {
             Bundle metaData = context.getPackageManager()
                     .getApplicationInfo(packageName, PackageManager.GET_META_DATA)
                     .metaData;
             if (metaData != null) {
+                // DnD Initial State
+                boolean doNotDisturbEnabled = metaData.getBoolean("batch_do_not_disturb_initial_state", false);
+                Batch.Messaging.setDoNotDisturbEnabled(doNotDisturbEnabled);
+
+                // Profile Migrations
                 boolean profileCustomIdMigrationEnabled = metaData.getBoolean("batch.profile_custom_id_migration_enabled", true);
                 boolean profileCustomDataMigrationEnabled = metaData.getBoolean("batch.profile_custom_data_migration_enabled", true);
                 EnumSet<BatchMigration> migrations = EnumSet.noneOf(BatchMigration.class);
