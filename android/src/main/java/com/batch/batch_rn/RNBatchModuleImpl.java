@@ -77,7 +77,7 @@ public class RNBatchModuleImpl {
 
     public static void initialize(Application application) {
         if (!isInitialized) {
-            Log.w("BatchPlugin", "Initializing native module");
+            Log.i(LOGGER_TAG, "Initializing module");
             Resources resources = application.getResources();
             String packageName = application.getPackageName();
             setDefaultConfig(application.getApplicationContext(), packageName);
@@ -87,7 +87,7 @@ public class RNBatchModuleImpl {
             application.registerActivityLifecycleCallbacks(new BatchActivityLifecycleHelper());
             isInitialized = true;
         } else {
-            Log.w("BatchPlugin", "Native module already initialized");
+            Log.w(LOGGER_TAG, "Module already initialized");
         }
     }
 
