@@ -82,4 +82,4 @@ export interface Spec extends TurboModule {
   profile_saveEditor(actions: Object[]): void;
 }
 
-export default TurboModuleRegistry.get<Spec>('RNBatch') as Spec | null;
+export default TurboModuleRegistry.get<Spec>('RNBatchModule') as Spec | null;

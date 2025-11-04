@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "prepare": "tsc",
     "bump-version": "./scripts/bump-version.sh",
     "doc": "typedoc",
     "doc:generate": "typedoc && touch ./docs/.nojekyll",
