@@ -1,4 +1,4 @@
-# import "RNBatch.h"
+#import <Batch/Batch.h>
 
 @interface RNBatchEvent : NSObject
 
