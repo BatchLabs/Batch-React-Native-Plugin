@@ -1,8 +1,10 @@
-# import <React/RCTConvert.h>
-# import "RNBatch.h"
-# import "RNBatchOpenedNotificationObserver.h"
-# import "RNBatchEventDispatcher.h"
-# import "BatchBridgeNotificationCenterDelegate.h"
+#import <Batch/Batch.h>
+#import <React/RCTConvert.h>
+#import "RNBatch.h"
+#import "RNBatchOpenedNotificationObserver.h"
+#import "RNBatchEventDispatcher.h"
+#import "BatchBridgeNotificationCenterDelegate.h"
+#import <React/RCTEventEmitter.h>
 
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "RNBatchSpec.h"
@@ -10,7 +12,22 @@
 
 static RNBatchEventDispatcher* dispatcher = nil;
 
-@implementation RNBatch
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <RNBatchSpec/RNBatchSpec.h>
+@interface RNBatchModule: RCTEventEmitter <NativeRNBatchModuleSpec>
+#else
+#import <React/RCTBridgeModule.h>
+@interface RNBatchModule: RCTEventEmitter <RCTBridgeModule>
+#endif
+
++ (void)start;
+
+@property (nonatomic, strong) NSMutableDictionary<NSString *, BatchInboxFetcher *> * batchInboxFetcherMap;
+
+@end
+
+
+@implementation RNBatchModule
 
 + (BOOL)requiresMainQueueSetup
 {
@@ -112,7 +129,7 @@ RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
     if (BatchSDK.isOptedOut) {
         // Opt-in SDK
         [BatchSDK optIn];
-        
+
         // Get API key and restart sdk
         NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
         NSString *batchAPIKey = [info objectForKey:@"BatchAPIKey"];
@@ -958,4 +975,12 @@ RCT_EXPORT_METHOD(messaging_setFontOverride:(nullable NSString*) normalFontName 
 }
 #endif
 
+@end
+
+@implementation RNBatch
+
++ (void) start
+{
+    [RNBatchModule start];
+}
 @end

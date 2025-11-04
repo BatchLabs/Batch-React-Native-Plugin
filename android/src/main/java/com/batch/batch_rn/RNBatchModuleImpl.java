@@ -49,7 +49,7 @@ import java.util.UUID;
 
 public class RNBatchModuleImpl {
 
-    public static final String NAME = "RNBatch";
+    public static final String NAME = "RNBatchModule";
 
     private static final String PLUGIN_VERSION_ENVIRONMENT_VARIABLE = "batch.plugin.version";
 
