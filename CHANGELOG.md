@@ -1,12 +1,28 @@
+12.0.0
+----
+
+This is a major release with **important breaking changes**, please see our [migration guide](https://doc.batch.com/react-native/advanced/11x-migration/) for more info on how to update your current Batch implementation.
+
+**Expo**
+- Removed Expo support from this repository. You should now use our new dedicated [Batch-Expo-Plugin](https://github.com/BatchLabs/Batch-Expo-Plugin). 
+
+**Core**
+- Batch no longer requires a custom React Native CLI configuration. If `react-native.config.js` only exists for Batch, delete it or remove the `@batch.com/react-native-plugin` entry.
+
+**Android**
+- The plugin is no longer auto-initialized. You should now call `RNBatchModuleImpl.initialize(application)` from `MainApplication.onCreate()` to complete setup.
+- The initial state of the "Do Not Disturb" (DnD) feature is no longer read from the Android resources. You should now add a meta-data tag `batch_do_not_disturb_initial_state` to the <application> section of your `AndroidManifest`.
+
+
 11.1.0
-___
+----
 
 **Expo**
 - Added configuration field `shouldUseNonNullableIntent` to control whether the MainActivity's `onNewIntent` method uses a nullable or non-nullable Intent parameter on Android. This is required for compatibility with AndroidX Activity 1.9+ which uses non-nullable Intent types. By default, it is set to `false` (nullable Intent) for backwards compatibility. Set it to `true` if you're using AndroidX Activity 1.9 or higher.
 
 
 11.0.0
-___
+----
 
 **Plugin**
 * Updated Batch to 3.1
