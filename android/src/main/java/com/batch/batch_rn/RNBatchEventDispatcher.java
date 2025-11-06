@@ -39,7 +39,7 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
 
     /**
      * Event Queue
-     *
+     * <p>
      * We need to queue events because Batch SDK is started before
      * we have react context catalyst instance ready.
      */
@@ -57,10 +57,10 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
      * @param event dispatched event
      */
     private void sendEvent(@NonNull RNBatchEvent event) {
-        if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
-            Log.d(RNBatchModuleImpl.LOGGER_TAG,
+        if (reactContext == null || !reactContext.hasActiveReactInstance()) {
+            Log.d(RNBatchModule.LOGGER_TAG,
                     "Trying to send an event while react context is null" +
-                            " or has no active catalyst instance. Aborting.");
+                            " or has no active react instance. Aborting.");
             return;
         }
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
@@ -106,7 +106,7 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
                                 JSONObject customPayloadJSON = new JSONObject(customPayload);
                                 params.putMap("messagingCustomPayload", RNUtils.convertJSONObjectToWritableMap(customPayloadJSON));
                             } catch (JSONException e) {
-                                Log.d(RNBatchModuleImpl.LOGGER_TAG,"Failed to parse messaging custom payload");
+                                Log.d(RNBatchModule.LOGGER_TAG,"Failed to parse messaging custom payload");
                             }
                         }
                     }
@@ -114,7 +114,7 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
             }
             RNBatchEvent event = new RNBatchEvent(eventName, params);
             if (!isModuleReady() || !hasListener) {
-                Log.d(RNBatchModuleImpl.LOGGER_TAG,
+                Log.d(RNBatchModule.LOGGER_TAG,
                         "Module is not ready or no listener registered yet. Queuing event: ".concat(eventName));
                 queueEvent(event);
                 return;
@@ -131,7 +131,7 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
             if (events.isEmpty()) {
                 return;
             }
-            while(events.size() != 0) {
+            while(!events.isEmpty()) {
                 sendEvent(events.pop());
             }
         }
@@ -164,7 +164,7 @@ public class RNBatchEventDispatcher implements BatchEventDispatcher {
      * @return true if ready
      */
     private boolean isModuleReady() {
-        return reactContext != null && reactContext.hasActiveCatalystInstance();
+        return reactContext != null && reactContext.hasReactInstance();
     }
 
     /**

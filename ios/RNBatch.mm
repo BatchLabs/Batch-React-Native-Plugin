@@ -6,19 +6,15 @@
 #import "BatchBridgeNotificationCenterDelegate.h"
 #import <React/RCTEventEmitter.h>
 
-#ifdef RCT_NEW_ARCH_ENABLED
-#import "RNBatchSpec.h"
+#if !defined(RCT_NEW_ARCH_ENABLED)
+#error "Batch React Native plugin requires the React Native New Architecture. Please enable it in your project."
 #endif
+
+#import <RNBatchSpec/RNBatchSpec.h>
 
 static RNBatchEventDispatcher* dispatcher = nil;
 
-#ifdef RCT_NEW_ARCH_ENABLED
-#import <RNBatchSpec/RNBatchSpec.h>
 @interface RNBatchModule: RCTEventEmitter <NativeRNBatchModuleSpec>
-#else
-#import <React/RCTBridgeModule.h>
-@interface RNBatchModule: RCTEventEmitter <RCTBridgeModule>
-#endif
 
 + (void)start;
 
@@ -53,15 +49,14 @@ static RNBatchEventDispatcher* dispatcher = nil;
     return self;
 }
 
-RCT_EXPORT_MODULE()
++ (NSString *)moduleName
+{
+    return @"RNBatchModule";
+}
 
 + (void)start
 {
     setenv("BATCH_PLUGIN_VERSION", PluginVersion, 1);
-
-#ifndef RCT_NEW_ARCH_ENABLED
-    NSLog(@"[BatchBridge] React Native old architecture bridge is deprecated and will be removed in a future release. Enable the New Architecture to keep receiving updates.");
-#endif
 
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
 
@@ -123,8 +118,8 @@ RCT_EXPORT_MODULE()
     return @{};
 }
 
-RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+- (void)optIn:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
 {
     if (BatchSDK.isOptedOut) {
         // Opt-in SDK
@@ -142,27 +137,27 @@ RCT_EXPORT_METHOD(optIn:(RCTPromiseResolveBlock)resolve
     resolve([NSNull null]);
 }
 
-RCT_EXPORT_METHOD(optOut:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+- (void)optOut:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
 {
     [BatchSDK optOut];
     resolve([NSNull null]);
 }
 
-RCT_EXPORT_METHOD(optOutAndWipeData:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+- (void)optOutAndWipeData:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
 {
     [BatchSDK optOutAndWipeData];
     resolve([NSNull null]);
 }
 
-RCT_EXPORT_METHOD(isOptedOut:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+- (void)isOptedOut:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject
 {
     resolve([NSNumber numberWithBool:BatchSDK.isOptedOut]);
 }
 
-RCT_EXPORT_METHOD(updateAutomaticDataCollection:(NSDictionary *)dataCollectionConfig) {
+- (void)updateAutomaticDataCollection:(NSDictionary *)dataCollectionConfig {
     BOOL hasDeviceModel = [dataCollectionConfig objectForKey:@"deviceModel"] != nil;
     BOOL hasGeoIP = [dataCollectionConfig objectForKey:@"geoIP"] != nil;
 
@@ -180,7 +175,7 @@ RCT_EXPORT_METHOD(updateAutomaticDataCollection:(NSDictionary *)dataCollectionCo
     }
 }
 
-RCT_EXPORT_METHOD(showDebugView)
+- (void)showDebugView
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *debugVC = [BatchSDK makeDebugViewController];
@@ -191,78 +186,87 @@ RCT_EXPORT_METHOD(showDebugView)
 }
 
 // Push Module
-RCT_EXPORT_METHOD(push_requestNotificationAuthorization)
+- (void)push_requestNotificationAuthorization
 {
     [BatchPush requestNotificationAuthorization];
 }
 
-RCT_EXPORT_METHOD(push_requestProvisionalNotificationAuthorization)
+- (void)push_requestProvisionalNotificationAuthorization
 {
     [BatchPush requestProvisionalNotificationAuthorization];
 }
 
-RCT_EXPORT_METHOD(push_refreshToken)
+- (void)push_refreshToken
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [BatchPush refreshToken];
     });
 }
 
-RCT_EXPORT_METHOD(push_setShowForegroundNotification:(BOOL) enabled)
+- (void)push_setShowForegroundNotification:(BOOL) enabled
 {
     BatchBridgeNotificationCenterDelegate *delegate = [BatchBridgeNotificationCenterDelegate sharedInstance];
     delegate.showForegroundNotifications = enabled;
     delegate.shouldUseChainedCompletionHandlerResponse = false;
 }
 
-RCT_EXPORT_METHOD(push_clearBadge)
+- (void)push_clearBadge
 {
     [BatchPush clearBadge];
 }
 
-RCT_EXPORT_METHOD(push_dismissNotifications)
+- (void)push_dismissNotifications
 {
     [BatchPush dismissNotifications];
 }
 
-RCT_EXPORT_METHOD(push_getLastKnownPushToken:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)push_getLastKnownPushToken:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSString* lastKnownPushToken = [BatchPush lastKnownPushToken];
     resolve(lastKnownPushToken);
 }
 
-RCT_EXPORT_METHOD(push_getInitialDeeplink:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)push_getInitialDeeplink:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     resolve([RNBatchOpenedNotificationObserver getInitialDeeplink]);
 }
 
+- (void)push_setShowNotifications:(BOOL)enabled {
+    // Android only
+}
+
+
+- (void)push_shouldShowNotifications:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    // Android only
+}
+
 // User module
 
-RCT_EXPORT_METHOD(user_getInstallationId:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)user_getInstallationId:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSString* installationId = [BatchUser installationID];
     resolve(installationId);
 }
 
-RCT_EXPORT_METHOD(user_getIdentifier:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)user_getIdentifier:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSString* userId = [BatchUser identifier];
     resolve(userId);
 }
 
-RCT_EXPORT_METHOD(user_getRegion:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)user_getRegion:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSString* region = [BatchUser region];
     resolve(region);
 }
 
-RCT_EXPORT_METHOD(user_getLanguage:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)user_getLanguage:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSString* language = [BatchUser language];
     resolve(language);
 }
 
-RCT_EXPORT_METHOD(user_getAttributes:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)user_getAttributes:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     [BatchUser fetchAttributes:^(NSDictionary<NSString *,BatchUserAttribute *> * _Nullable attributes) {
 
@@ -327,7 +331,7 @@ RCT_EXPORT_METHOD(user_getAttributes:(RCTPromiseResolveBlock)resolve reject:(RCT
     }];
 }
 
-RCT_EXPORT_METHOD(user_getTags:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)user_getTags:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     [BatchUser fetchTagCollections:^(NSDictionary<NSString *,NSSet<NSString *> *> * _Nullable collections) {
         if (collections == nil) {
@@ -344,19 +348,19 @@ RCT_EXPORT_METHOD(user_getTags:(RCTPromiseResolveBlock)resolve reject:(RCTPromis
 
 }
 
-RCT_EXPORT_METHOD(user_clearInstallationData)
+- (void)user_clearInstallationData
 {
     [BatchUser clearInstallationData];
 }
 
 // Profile
 
-RCT_EXPORT_METHOD(profile_identify:(NSString*)identifier)
+- (void)profile_identify:(NSString*)identifier
 {
     [BatchProfile identify:identifier];
 }
 
-RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData resolve: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+- (void)profile_trackEvent:(NSString*)name data:(NSDictionary*)serializedEventData resolve: (RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     BatchEventAttributes *batchEventAttributes = nil;
 
@@ -481,7 +485,7 @@ RCT_EXPORT_METHOD(profile_trackEvent:(NSString*)name data:(NSDictionary*)seriali
     return eventAttributes;
 }
 
-RCT_EXPORT_METHOD(profile_trackLocation:(NSDictionary*)serializedLocation)
+- (void)profile_trackLocation:(NSDictionary*)serializedLocation
 {
     if (![serializedLocation isKindOfClass:[NSDictionary class]] || [serializedLocation count]==0)
     {
@@ -540,7 +544,7 @@ RCT_EXPORT_METHOD(profile_trackLocation:(NSDictionary*)serializedLocation)
                                                           timestamp:parsedDate]];
 }
 
-RCT_EXPORT_METHOD(profile_saveEditor:(NSArray*)actions)
+- (void)profile_saveEditor:(NSArray*)actions
 {
     BatchProfileEditor *editor = [BatchProfile editor];
     for (NSDictionary* action in actions) {
@@ -654,12 +658,12 @@ RCT_EXPORT_METHOD(profile_saveEditor:(NSArray*)actions)
     return [BatchInbox fetcherForUserIdentifier:userOptions[@"identifier"] authenticationKey:userOptions[@"authenticationKey"]];
 }
 
-RCT_EXPORT_METHOD(inbox_getFetcher:
+- (void)inbox_getFetcher:
                   (NSDictionary *) options
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
 
     BatchInboxFetcher* fetcher = [self getFetcherFromOptions:options];
 
@@ -677,22 +681,22 @@ RCT_EXPORT_METHOD(inbox_getFetcher:
     resolve(fetcherIdentifier);
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_destroy:
+- (void)inbox_fetcher_destroy:
                   (NSString *) fetcherIdentifier
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
     [_batchInboxFetcherMap removeObjectForKey:fetcherIdentifier];
     resolve([NSNull null]);
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_hasMore:
+- (void)inbox_fetcher_hasMore:
                   (NSString *) fetcherIdentifier
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
         reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
@@ -701,12 +705,12 @@ RCT_EXPORT_METHOD(inbox_fetcher_hasMore:
     resolve(@(!fetcher.endReached));
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_markAllAsRead:
+- (void)inbox_fetcher_markAllAsRead:
                   (NSString *) fetcherIdentifier
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
         reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
@@ -729,14 +733,14 @@ RCT_EXPORT_METHOD(inbox_fetcher_markAllAsRead:
     return [allNotifications objectAtIndex:notificationIndex];
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_markAsRead:
+- (void)inbox_fetcher_markAsRead:
                   (NSString *) fetcherIdentifier
                   notificationIdentifier:
                   (NSString *) notificationIdentifier
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
         reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
@@ -754,14 +758,14 @@ RCT_EXPORT_METHOD(inbox_fetcher_markAsRead:
     resolve([NSNull null]);
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_markAsDeleted:
+- (void)inbox_fetcher_markAsDeleted:
                   (NSString *) fetcherIdentifier
                   notificationIdentifier:
                   (NSString *) notificationIdentifier
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
         reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
@@ -779,14 +783,14 @@ RCT_EXPORT_METHOD(inbox_fetcher_markAsDeleted:
     resolve([NSNull null]);
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_displayLandingMessage:
+- (void)inbox_fetcher_displayLandingMessage:
                   (NSString *) fetcherIdentifier
                   notificationIdentifier:
                   (NSString *) notificationIdentifier
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
         reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
@@ -805,14 +809,14 @@ RCT_EXPORT_METHOD(inbox_fetcher_displayLandingMessage:
     });
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_setFilterSilentNotifications:
+- (void)inbox_fetcher_setFilterSilentNotifications:
                   (NSString *) fetcherIdentifier
                   filterSilentNotifications:
                   (BOOL) filterSilentNotifications
                   resolve:
                   (RCTPromiseResolveBlock) resolve
                   reject:
-                  (RCTPromiseRejectBlock) reject) {
+                  (RCTPromiseRejectBlock) reject {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
         reject(@"InboxError", @"FETCHER_NOT_FOUND", nil);
@@ -824,10 +828,10 @@ RCT_EXPORT_METHOD(inbox_fetcher_setFilterSilentNotifications:
 }
 
 
-RCT_EXPORT_METHOD(inbox_fetcher_fetchNewNotifications:
+- (void)inbox_fetcher_fetchNewNotifications:
                   (NSString *) fetcherIdentifier
                   resolve: (RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject
 {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -857,10 +861,10 @@ RCT_EXPORT_METHOD(inbox_fetcher_fetchNewNotifications:
     }];
 }
 
-RCT_EXPORT_METHOD(inbox_fetcher_fetchNextPage:
+- (void)inbox_fetcher_fetchNextPage:
                   (NSString *) fetcherIdentifier
                   resolve: (RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject
 {
     BatchInboxFetcher* fetcher = _batchInboxFetcherMap[fetcherIdentifier];
     if (!fetcher) {
@@ -928,24 +932,24 @@ RCT_EXPORT_METHOD(inbox_fetcher_fetchNextPage:
 
 // Messaging module
 
-RCT_EXPORT_METHOD(messaging_setNotDisturbed:(BOOL) active
+- (void)messaging_setNotDisturbed:(BOOL) active
                   resolve: (RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject
 {
     [BatchMessaging setDoNotDisturb:active];
     resolve([NSNull null]);
 }
 
-RCT_EXPORT_METHOD(messaging_showPendingMessage:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+- (void)messaging_showPendingMessage:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject {
     dispatch_async(dispatch_get_main_queue(), ^{
         [BatchMessaging showPendingMessage];
         resolve([NSNull null]);
     });
 }
 
-RCT_EXPORT_METHOD(messaging_disableDoNotDisturbAndShowPendingMessage:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+- (void)messaging_disableDoNotDisturbAndShowPendingMessage:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject {
     dispatch_async(dispatch_get_main_queue(), ^{
         [BatchMessaging setDoNotDisturb:false];
         [BatchMessaging showPendingMessage];
@@ -953,9 +957,9 @@ RCT_EXPORT_METHOD(messaging_disableDoNotDisturbAndShowPendingMessage:(RCTPromise
     });
 }
 
-RCT_EXPORT_METHOD(messaging_setFontOverride:(nullable NSString*) normalFontName boldFontName:(nullable NSString*) boldFontName italicFontName:(nullable NSString*) italicFontName italicBoldFontName:(nullable NSString*) italicBoldFontName
+- (void)messaging_setFontOverride:(nullable NSString*) normalFontName boldFontName:(nullable NSString*) boldFontName italicFontName:(nullable NSString*) italicFontName italicBoldFontName:(nullable NSString*) italicBoldFontName
                   resolve: (RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject
 {
     UIFont* normalFont = normalFontName != nil ? [UIFont fontWithName:normalFontName size: 14] : nil;
     UIFont* boldFont = boldFontName != nil ? [UIFont fontWithName:boldFontName size: 14] : nil;
@@ -967,13 +971,11 @@ RCT_EXPORT_METHOD(messaging_setFontOverride:(nullable NSString*) normalFontName 
     resolve([NSNull null]);
 }
 
-#ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
     return std::make_shared<facebook::react::NativeRNBatchModuleSpecJSI>(params);
 }
-#endif
 
 @end
 
