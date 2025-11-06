@@ -1,6 +1,7 @@
 package com.batch.batch_rn;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.BaseReactPackage;
@@ -17,27 +18,27 @@ public class RNBatchPackage extends BaseReactPackage {
     @Nullable
     @Override
     public NativeModule getModule(String name, ReactApplicationContext reactContext) {
-        if (name.equals(RNBatchModuleImpl.NAME)) {
+        if (name.equals(RNBatchModule.NAME)) {
             return new RNBatchModule(reactContext);
         } else {
             return null;
         }
     }
 
+    @NonNull
     @Override
     public ReactModuleInfoProvider getReactModuleInfoProvider() {
         return () -> {
             final Map<String, ReactModuleInfo> moduleInfos = new HashMap<>();
             moduleInfos.put(
-                    RNBatchModuleImpl.NAME,
+                    RNBatchModule.NAME,
                     new ReactModuleInfo(
-                            RNBatchModuleImpl.NAME,
-                            RNBatchModuleImpl.NAME,
-                            false, // canOverrideExistingModule
-                            false, // needsEagerInit
-                            true, // hasConstants
-                            false, // isCxxModule
-                            BuildConfig.IS_NEW_ARCHITECTURE_ENABLED // isTurboModule
+                            RNBatchModule.NAME,
+                            RNBatchModule.NAME,
+                            false,
+                            false,
+                            false,
+                            true
                     ));
             return moduleInfos;
         };
