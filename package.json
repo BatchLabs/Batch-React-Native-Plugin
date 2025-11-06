@@ -17,7 +17,7 @@
     "notifications"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "prepare": "tsc",
     "bump-version": "./scripts/bump-version.sh",
     "doc": "typedoc",
