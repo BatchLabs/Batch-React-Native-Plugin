@@ -7,6 +7,7 @@ This is a major release with **important breaking changes**, please see our [mig
 - Removed Expo support from this repository. You should now use our new dedicated [Batch-Expo-Plugin](https://github.com/BatchLabs/Batch-Expo-Plugin). 
 
 **Core**
+- Batch requires react-native v0.77 or higher.
 - Removed support for the old React Native architecture (Native Module). The plugin is now a pure Turbo Module and requires the new architecture enabled.
 - Batch no longer requires a custom React Native CLI configuration. If `react-native.config.js` only exists for Batch, delete it or remove the `@batch.com/react-native-plugin` entry.
 
