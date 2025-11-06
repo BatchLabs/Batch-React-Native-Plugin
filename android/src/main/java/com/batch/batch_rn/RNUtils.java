@@ -38,7 +38,7 @@ public class RNUtils {
                 try {
                     output.putMap(key, convertJSONObjectToWritableMap((JSONObject) value));
                 } catch (JSONException e) {
-                    Log.e(RNBatchModuleImpl.LOGGER_TAG, "Failed to parse JSON Object.", e);
+                    Log.e(RNBatchModule.LOGGER_TAG, "Failed to parse JSON Object.", e);
                 }
             }
             else if (value instanceof JSONArray) {
@@ -95,7 +95,7 @@ public class RNUtils {
                     output.pushString(value.toString());
                 }
             } catch (JSONException e) {
-                Log.e(RNBatchModuleImpl.LOGGER_TAG, "Failed to parse JSON Array.", e);
+                Log.e(RNBatchModule.LOGGER_TAG, "Failed to parse JSON Array.", e);
             }
         }
         return output;
@@ -147,7 +147,7 @@ public class RNUtils {
                 }
                 eventAttributes.putObjectList(key, list);
             } else {
-                Log.e(RNBatchModuleImpl.LOGGER_TAG, "Invalid parameter : Unknown event_data.attributes type (" + type + ")");
+                Log.e(RNBatchModule.LOGGER_TAG, "Invalid parameter : Unknown event_data.attributes type (" + type + ")");
             }
         }
         return eventAttributes;
