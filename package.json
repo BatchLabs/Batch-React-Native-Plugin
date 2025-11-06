@@ -1,6 +1,6 @@
 {
   "name": "@batch.com/react-native-plugin",
-  "version": "11.1.0",
+  "version": "12.0.0",
   "description": "Batch.com React-Native Plugin",
   "homepage": "https://github.com/BatchLabs/Batch-React-Native-Plugin",
   "main": "dist/Batch.js",
@@ -38,8 +38,7 @@
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.7.0",
     "@types/jest": "^29.5.12",
-    "@types/react": "^17.0.33",
-    "@types/react-native": "^0.73.0",
+    "@types/react": "^18.3.26",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.7.0",
@@ -50,7 +49,7 @@
     "jest-environment-node": "^29.7.0",
     "jest-util": "^29.7.0",
     "prettier": "^3.3.3",
-    "react-native": "^0.73.0",
+    "react-native": "^0.77.0",
     "ts-jest": "^29.1.0",
     "typedoc": "^0.26.4",
     "typescript": "^5.5.3"
