@@ -1,10 +1,11 @@
-INCOMING
+12.1.0
 ----
 
 **Inbox**
 - Added `androidCustomLargeIcon` property to `IInboxNotification`.
 - Added `androidBigPicture` property to `IInboxNotification`.
 - Added `deeplink` property to `IInboxNotification`.
+
 
 12.0.0
 ----
