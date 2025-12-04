@@ -1,8 +1,11 @@
 package com.batch.batch_rn;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.batch.android.BatchInboxNotificationContent;
+import com.batch.android.BatchPushPayload;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
@@ -11,17 +14,20 @@ import com.facebook.react.bridge.WritableNativeMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 public class RNBatchInbox {
     final private static String TAG = "BatchRNPluginInbox";
 
-    protected static WritableArray getSuccessResponse(List<BatchInboxNotificationContent> notifications)
+    protected static WritableArray getSuccessResponse(List<BatchInboxNotificationContent> notifications, Context context)
     {
         final WritableArray rnNotifications = new WritableNativeArray();
         for (BatchInboxNotificationContent notification : notifications) {
-            rnNotifications.pushMap(getWritableMapNotification(notification));
+            rnNotifications.pushMap(getWritableMapNotification(notification, context));
         }
 
         return rnNotifications;
@@ -44,7 +50,7 @@ public class RNBatchInbox {
         }
     }
 
-    private static WritableMap getWritableMapNotification(BatchInboxNotificationContent notification)
+    private static WritableMap getWritableMapNotification(BatchInboxNotificationContent notification, Context context)
     {
         final WritableMap output = new WritableNativeMap();
 
@@ -72,6 +78,25 @@ public class RNBatchInbox {
 
         output.putMap("payload", RNUtils.convertMapToWritableMap((Map) notification.getRawPayload()));
         output.putBoolean("hasLandingMessage", notification.hasLandingMessage());
+
+        try {
+            BatchPushPayload pushPayload = notification.getPushPayload();
+
+            // Deeplink
+            output.putString("deeplink", pushPayload.getDeeplink());
+
+            // Custom large icon
+            output.putString("androidCustomLargeIcon", pushPayload.getCustomLargeIconURL(context));
+
+            // Big picture
+            output.putString("androidBigPicture", pushPayload.getBigPictureURL(context));
+        } catch (BatchPushPayload.ParsingException e) {
+            Log.d(TAG, "Failed to parse push payload: " + e.getMessage());
+            output.putNull("deeplink");
+            output.putNull("androidCustomLargeIcon");
+            output.putNull("androidBigPicture");
+        }
+
         return output;
     }
 }

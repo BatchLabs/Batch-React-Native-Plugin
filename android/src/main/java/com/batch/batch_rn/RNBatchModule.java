@@ -439,7 +439,7 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
             public void onFetchSuccess(@NonNull List<BatchInboxNotificationContent> notifications,
                                        boolean foundNewNotifications,
                                        boolean endReached) {
-                WritableArray formattedNotifications = RNBatchInbox.getSuccessResponse(notifications);
+                WritableArray formattedNotifications = RNBatchInbox.getSuccessResponse(notifications, getReactApplicationContext());
                 WritableMap results = new WritableNativeMap();
                 results.putArray("notifications", formattedNotifications);
                 results.putBoolean("foundNewNotifications", foundNewNotifications);
@@ -465,7 +465,7 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
         fetcher.fetchNextPage(new BatchInboxFetcher.OnNextPageFetchedListener() {
             @Override
             public void onFetchSuccess(@NonNull List<BatchInboxNotificationContent> notifications, boolean endReached) {
-                WritableArray formattedNotifications = RNBatchInbox.getSuccessResponse(notifications);
+                WritableArray formattedNotifications = RNBatchInbox.getSuccessResponse(notifications, getReactApplicationContext());
                 WritableMap results = new WritableNativeMap();
                 results.putArray("notifications", formattedNotifications);
                 results.putBoolean("endReached", endReached);

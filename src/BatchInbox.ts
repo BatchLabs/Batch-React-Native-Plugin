@@ -35,6 +35,21 @@ export interface IInboxNotification {
   payload: unknown;
 
   /**
+   * URL of the custom large icon (if present) - Android Only
+   */
+  androidCustomLargeIcon?: string;
+
+  /**
+   * URL of the big picture (if present) - Android Only
+   */
+  androidBigPicture?: string;
+
+  /**
+   * Deeplink attached to the notification (if present)
+   */
+  deeplink?: string;
+
+  /**
    * Date at which the push notification has been sent to the device
    */
   date: Date;

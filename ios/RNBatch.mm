@@ -916,7 +916,9 @@ static RNBatchEventDispatcher* dispatcher = nil;
         @"date": [NSNumber numberWithDouble:notification.date.timeIntervalSince1970 * 1000],
         @"source": source,
         @"payload": notification.payload,
-        @"hasLandingMessage": @(notification.hasLandingMessage)
+        @"hasLandingMessage": @(notification.hasLandingMessage),
+        @"deeplink": [self deeplinkFromPushPayload:notification.payload] ?: [NSNull null],
+        @"iOSAttachmentURL": notification.attachmentURL.absoluteString ?: [NSNull null],
     };
 
     NSMutableDictionary *mutableOutput = [output mutableCopy];
@@ -926,8 +928,43 @@ static RNBatchEventDispatcher* dispatcher = nil;
     if (body != nil) {
         mutableOutput[@"body"] = body;
     }
-    output = mutableOutput;
-    return output;
+    return [mutableOutput copy];
+}
+
+- (nullable NSString*) deeplinkFromPushPayload:(NSDictionary*)payload
+{
+    NSString *deeplink = nil;
+    id batchData = @{};
+
+    if ([payload isKindOfClass:[NSDictionary class]]) {
+        batchData = payload[@"com.batch"] ?: @{};
+
+        deeplink = [self extractDeeplinkFromBatchData:batchData];
+
+        if (!deeplink) {
+            id rootDeeplink = payload[@"deeplink"];
+            if (rootDeeplink && [rootDeeplink isKindOfClass:[NSString class]]) {
+                deeplink = (NSString *)rootDeeplink;
+            }
+        }
+    }
+
+    return deeplink;
+}
+
+- (NSString*) extractDeeplinkFromBatchData:(id)batchData
+{
+    if (![batchData isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+
+    NSDictionary *batchDict = (NSDictionary *)batchData;
+    id deepLinkValue = batchDict[@"l"];
+    if (deepLinkValue && [deepLinkValue isKindOfClass:[NSString class]]) {
+        return (NSString *)deepLinkValue;
+    }
+
+    return nil;
 }
 
 // Messaging module
