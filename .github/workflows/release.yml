@@ -4,6 +4,10 @@ on:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -12,17 +16,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-            node-version: '18'
-            cache: 'yarn'
-            registry-url: https://registry.npmjs.org/
-      - name: Install dependencies
-        run: yarn
-      - name: Test
-        run: yarn test
-      - name: Lint
-        run: yarn lint
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      # Ensure npm 11.5.1 or later is installed
+      - name: Update npm
+        run: npm install -g npm@latest
+      - run: npm ci
+      - run: npm run lint:fail-on-warnings
+      - run: npm publish
+
       - name: Documentation
-        run: yarn doc:deploy
+        run: npm run doc:deploy
