@@ -24,6 +24,13 @@ export const BatchPush = {
   },
 
   /**
+   * Ask users if they want to accept push notifications and resolve with the authorization result.
+   * Required to be able to push users (or use requestProvisionalNotificationAuthorization - ios only).
+   *
+   */
+  requestNotificationAuthorizationAsync: (): Promise<boolean> => RNBatch.push_requestNotificationAuthorizationAsync(),
+
+  /**
    * Ask iOS for provisional notifications (no alert to users).
    * Required to be able to push users (or use requestNotificationAuthorization).
    *

@@ -31,6 +31,7 @@ export interface Spec extends TurboModule {
   push_dismissNotifications(): void;
   push_getLastKnownPushToken(): Promise<string | null>;
   push_requestNotificationAuthorization(): void;
+  push_requestNotificationAuthorizationAsync(): Promise<boolean>;
   push_requestProvisionalNotificationAuthorization(): void;
   push_refreshToken(): void;
   push_setShowForegroundNotification(enabled: boolean): void;
