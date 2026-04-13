@@ -191,6 +191,19 @@ static RNBatchEventDispatcher* dispatcher = nil;
     [BatchPush requestNotificationAuthorization];
 }
 
+- (void)push_requestNotificationAuthorizationAsync:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [BatchPush requestNotificationAuthorizationWithCompletionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (error != nil) {
+                reject(@"BatchBridgeError", @"Failed requesting notification authorization:", error);
+                return;
+            }
+            resolve(@(granted));
+        }];
+    });
+}
+
 - (void)push_requestProvisionalNotificationAuthorization
 {
     [BatchPush requestProvisionalNotificationAuthorization];

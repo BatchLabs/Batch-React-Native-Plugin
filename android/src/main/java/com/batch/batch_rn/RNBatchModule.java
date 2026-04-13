@@ -251,6 +251,11 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
     }
 
     @Override
+    public void push_requestNotificationAuthorizationAsync(Promise promise) {
+        Batch.Push.requestNotificationPermission(getReactApplicationContext(), granted -> promise.resolve(granted));
+    }
+
+    @Override
     public void push_requestProvisionalNotificationAuthorization() {
         /* No effect on android */
     }
