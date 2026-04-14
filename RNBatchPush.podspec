@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   install_modules_dependencies(s)
 
   s.dependency "React"
-  s.dependency 'Batch', '~> 3.1.0'
+  s.dependency 'Batch', '~> 3.3.0'
 
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end
