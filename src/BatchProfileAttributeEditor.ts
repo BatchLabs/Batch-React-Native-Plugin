@@ -69,6 +69,21 @@ interface IUserSettingsSetSMSMarketingSubscriptionAction {
   value: BatchSMSSubscriptionState;
 }
 
+interface IUserSettingsSetTopicPreferencesAction {
+  type: 'setTopicPreferences';
+  value: string[] | null;
+}
+
+interface IUserSettingsAddToTopicPreferencesAction {
+  type: 'addToTopicPreferences';
+  value: string[];
+}
+
+interface IUserSettingsRemoveFromTopicPreferencesAction {
+  type: 'removeFromTopicPreferences';
+  value: string[];
+}
+
 interface IUserSettingsAddToArrayAction {
   type: 'addToArray';
   key: string;
@@ -93,7 +108,10 @@ type IUserSettingsAction =
   | IUserSettingsSetEmailAddressAction
   | IUserSettingsSetEmailMarketingSubscriptionAction
   | IUserSettingsSetPhoneNumberAction
-  | IUserSettingsSetSMSMarketingSubscriptionAction;
+  | IUserSettingsSetSMSMarketingSubscriptionAction
+  | IUserSettingsSetTopicPreferencesAction
+  | IUserSettingsAddToTopicPreferencesAction
+  | IUserSettingsRemoveFromTopicPreferencesAction;
 
 type IUserSettingsActions = IUserSettingsAction[];
 
@@ -114,9 +132,10 @@ export class BatchProfileAttributeEditor {
 
   /**
    * Set an attribute for a key
-   * @param key Attribute key. Cannot be null, empty or undefined. It should be made of letters, numbers or underscores
+   *
+   * @param key Attribute key. Cannot be null, empty, or undefined. It should be made of letters, numbers or underscores
    * ([a-z0-9_]) and can't be longer than 30 characters.
-   * @param value Attribute value. Accepted types are strings, numbers, booleans and array of strings.
+   * @param value Attribute value. Accepted types are strings, numbers, booleans, and array of strings.
    */
   public setAttribute(key: string, value: string | boolean | number | string[] | null): BatchProfileAttributeEditor {
     return this.addAction({
@@ -129,7 +148,7 @@ export class BatchProfileAttributeEditor {
   /**
    * Set a Date attribute for a key
    *
-   * @param key Attribute key. Cannot be null, empty or undefined. It should be made of letters, numbers or underscores
+   * @param key Attribute key. Cannot be null, empty, or undefined. It should be made of letters, numbers or underscores
    * ([a-z0-9_]) and can't be longer than 30 characters.
    * @param value The date value
    *
@@ -150,7 +169,7 @@ export class BatchProfileAttributeEditor {
   /**
    * Set an URL attribute for a key
    *
-   * @param key Attribute key. Cannot be null, empty or undefined. It should be made of letters, numbers or underscores
+   * @param key Attribute key. Cannot be null, empty, or undefined. It should be made of letters, numbers or underscores
    * ([a-z0-9_]) and can't be longer than 30 characters.
    * @param value The URL value
    *
@@ -170,6 +189,7 @@ export class BatchProfileAttributeEditor {
 
   /**
    * Remove an attribute
+   *
    * @param key The key of the attribute to remove
    */
   public removeAttribute(key: string): BatchProfileAttributeEditor {
@@ -182,7 +202,7 @@ export class BatchProfileAttributeEditor {
   /**
    * Set the profile email address.
    *
-   * This requires to have a custom user ID registered
+   * This requires having a custom user ID registered
    * or to call the `setIdentifier` method on the editor instance beforehand.
    * @param value A valid email address. Null to erase.
    */
@@ -208,7 +228,7 @@ export class BatchProfileAttributeEditor {
   /**
    * Set the profile phone number.
    *
-   * This requires to have a custom profile ID registered or to call the `identify` method beforehand.
+   * This requires having a custom profile ID registered or to call the `identify` method beforehand.
    * @param value  A valid E.164 formatted string. Must start with a `+` and not be longer than 15 digits
    * without special characters (eg: "+33123456789"). Null to reset.
    */
@@ -222,13 +242,57 @@ export class BatchProfileAttributeEditor {
   /**
    * Set the profile SMS marketing subscription state.
    *
-   * Note that profile's subscription status is automatically set to unsubscribed when users send a STOP message.
+   * Note that a profile's subscription status is automatically set to unsubscribed when users send a STOP message.
    * @param value The state of the SMS marketing subscription. Must be "subscribed" or "unsubscribed".
    */
   public setSMSMarketingSubscription(value: BatchSMSSubscriptionState): BatchProfileAttributeEditor {
     return this.addAction({
       type: 'setSMSMarketingSubscription',
       value,
+    });
+  }
+
+  /**
+   * Set the profile topic preferences.
+   *
+   * @param value Array of topics to set. Null to reset.
+   *               Must be a valid string array not longer than 25 items.
+   *               String should be made of letters, numbers or underscores ([a-z0-9_]) and can't be longer than 300 characters.
+   */
+  public setTopicPreferences(value: string[] | null): BatchProfileAttributeEditor {
+    return this.addAction({
+      type: 'setTopicPreferences',
+      value,
+    });
+  }
+
+  /**
+   * Add topics to the profile topic preferences.
+   *
+   * @param value Topics to add.
+   *               Must be a valid string array not longer than 25 items or a single string.
+   *               String should be made of letters, numbers or underscores ([a-z0-9_]) and can't be longer than 300 characters.
+   */
+  public addToTopicPreferences(value: string | string[]): BatchProfileAttributeEditor {
+    const arrayValue = Array.isArray(value) ? value : [value];
+    return this.addAction({
+      type: 'addToTopicPreferences',
+      value: arrayValue,
+    });
+  }
+
+  /**
+   * Remove topics from the profile topic preferences.
+   *
+   * @param value Topics to remove.
+   *               Must be a valid string array not longer than 25 items or a single string.
+   *               String should be made of letters, numbers or underscores ([a-z0-9_]) and can't be longer than 300 characters.
+   */
+  public removeFromTopicPreferences(value: string | string[]): BatchProfileAttributeEditor {
+    const arrayValue = Array.isArray(value) ? value : [value];
+    return this.addAction({
+      type: 'removeFromTopicPreferences',
+      value: arrayValue,
     });
   }
 
@@ -259,11 +323,11 @@ export class BatchProfileAttributeEditor {
   }
 
   /**
-   * Add value to an array attribute. If the array doesn't exist it will be created.
+   * Add value to an array attribute. If the array doesn't exist, it will be created.
    *
-   * @param key Attribute key. Cannot be null, empty or undefined. It should be made of letters, numbers or underscores
+   * @param key Attribute key. Cannot be null, empty, or undefined. It should be made of letters, numbers or underscores
    * ([a-z0-9_]) and can't be longer than 30 characters.
-   * @param value The value to add. Cannot be null, undefined or empty. Must be an array of string or a string no longer
+   * @param value The value to add. Cannot be null, undefined, or empty. Must be an array of string or a string no longer
    * than 64 characters.
    */
   public addToArray(key: string, value: string | string[]): BatchProfileAttributeEditor {
@@ -277,9 +341,9 @@ export class BatchProfileAttributeEditor {
   /**
    * Remove a value from an array attribute.
    *
-   * @param key Attribute key. Cannot be null, empty or undefined. It should be made of letters, numbers or underscores
+   * @param key Attribute key. Cannot be null, empty, or undefined. It should be made of letters, numbers or underscores
    * ([a-z0-9_]) and can't be longer than 30 characters.
-   * @param value The value to remove. Can be a String or an Array of String. Cannot be null, empty or undefined.
+   * @param value The value to remove. Can be a String or an Array of String. Cannot be null, empty, or undefined.
    */
   public removeFromArray(key: string, value: string | string[]): BatchProfileAttributeEditor {
     return this.addAction({

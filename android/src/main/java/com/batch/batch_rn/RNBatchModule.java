@@ -734,6 +734,20 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
             } else if (type.equals("setSMSMarketingSubscription")) {
                 String value = action.getString("value");
                 editor.setSMSMarketingSubscription(BatchSMSSubscriptionState.valueOf(value));
+            } else if (type.equals("setTopicPreferences")) {
+                ReadableType valueType = action.getType("value");
+                if (valueType.equals(ReadableType.Null)) {
+                    editor.setTopicPreferences(null);
+                } else {
+                    ReadableArray arrayValue = action.getArray("value");
+                    editor.setTopicPreferences(RNUtils.convertReadableArrayToList(arrayValue));
+                }
+            } else if (type.equals("addToTopicPreferences")) {
+                ReadableArray arrayValue = action.getArray("value");
+                editor.addToTopicPreferences(RNUtils.convertReadableArrayToList(arrayValue));
+            } else if (type.equals("removeFromTopicPreferences")) {
+                ReadableArray arrayValue = action.getArray("value");
+                editor.removeFromTopicPreferences(RNUtils.convertReadableArrayToList(arrayValue));
             } else if (type.equals("setLanguage")) {
                 ReadableType valueType = action.getType("value");
                 if (valueType.equals(ReadableType.Null)) {

@@ -626,6 +626,18 @@ static RNBatchEventDispatcher* dispatcher = nil;
             }
         }
 
+        else if([type isEqualToString:@"setTopicPreferences"]) {
+            [editor setTopicPreferences:[self safeNilValue:action[@"value"]] error:nil];
+        }
+
+        else if([type isEqualToString:@"addToTopicPreferences"]) {
+            [editor addToTopicPreferences:action[@"value"] error:nil];
+        }
+
+        else if([type isEqualToString:@"removeFromTopicPreferences"]) {
+            [editor removeFromTopicPreferences:action[@"value"] error:nil];
+        }
+
         else if([type isEqualToString:@"setLanguage"]) {
             [editor setLanguage:[self safeNilValue:action[@"value"]] error:nil];
         }
