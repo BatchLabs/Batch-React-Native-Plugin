@@ -1,4 +1,4 @@
-#define PluginVersion "ReactNative/12.1.0"
+#define PluginVersion "ReactNative/12.2.0"
 
 @interface RNBatch: NSObject
 
