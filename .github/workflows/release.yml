@@ -24,6 +24,3 @@ jobs:
       - run: npm ci
       - run: npm run lint:fail-on-warnings
       - run: npm publish
-
-      - name: Documentation
-        run: npm run doc:deploy
