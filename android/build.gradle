@@ -1,7 +1,7 @@
 def DEFAULT_MIN_SDK_VERSION                 = 21
-def DEFAULT_COMPILE_SDK_VERSION             = 36
-def DEFAULT_BUILD_TOOLS_VERSION             = "36.0.0"
-def DEFAULT_TARGET_SDK_VERSION              = 36
+def DEFAULT_COMPILE_SDK_VERSION             = 37
+def DEFAULT_BUILD_TOOLS_VERSION             = "37.0.0"
+def DEFAULT_TARGET_SDK_VERSION              = 37
 def DEFAULT_BATCH_SDK_VERSION               = "3.4.+"
 
 def safeExtGet(prop, fallback) {
