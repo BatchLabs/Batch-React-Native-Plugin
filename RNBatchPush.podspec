@@ -10,6 +10,10 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "15.0"
   s.source       = { :git => "git@github.com:BatchLabs/Batch-React-Native-Plugin.git", :tag => "master" }
   s.source_files  = "ios/*.{h,m,mm,swift}"
+  # SPM-only files that must not be compiled into the CocoaPods pod:
+  # - Package.swift would be built as a Swift source (import PackageDescription fails).
+  # - the SPM prefix header is only needed by the SPM build (CocoaPods has its own).
+  s.exclude_files = "ios/Package.swift", "ios/react-native-spm-prefix.h"
   s.requires_arc = true
 
   install_modules_dependencies(s)
