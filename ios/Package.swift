@@ -1,23 +1,7 @@
 // swift-tools-version: 6.0
 //
 // Swift Package Manager support for @batch.com/react-native-plugin.
-//
-// This is a hand-authored, self-managed manifest: React Native's experimental
-// SPM tooling (`npx react-native spm`) detects it and leaves it untouched
-// (it only regenerates manifests that carry its own AUTO-SCAFFOLDED marker).
-// We own it here because RN's autolinking scaffolder cannot resolve the
-// plugin's external native dependency — the Batch iOS SDK (the podspec's
-// `s.dependency 'Batch'`), which is not an npm package — nor propagate the
-// New Architecture flag to the generated target.
-//
-// Path references to the React Native + codegen packages are resolved from the
-// normalized symlink location the autolinker creates
-// (`<app>/ios/build/generated/autolinking/libs/ReactNativePlugin`), which sits
-// at a fixed depth regardless of this package's own (scoped) node_modules
-// path — hence the plain relative paths below.
-//
-// Requires Xcode 16.3+ (Swift tools 6.1) because the Batch iOS SDK's own
-// Swift package manifest targets swift-tools 6.1.
+
 
 import PackageDescription
 
@@ -35,9 +19,7 @@ let package = Package(
     dependencies: [
         .package(name: "ReactNative", path: "../../../../xcframeworks"),
         .package(name: "React-GeneratedCode", path: "../../../ios"),
-        // Native Batch iOS SDK. Pinned to 3.3.x (major+minor fixed, patch
-        // floats to the latest) to mirror the podspec's `~> 3.3.0`.
-        .package(url: "https://github.com/BatchLabs/Batch-iOS-SDK.git", .upToNextMinor(from: "3.3.0")),
+        .package(url: "https://github.com/BatchLabs/Batch-iOS-SDK.git", .upToNextMinor(from: "3.4.0")),
     ],
     targets: [
         .target(

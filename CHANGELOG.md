@@ -1,6 +1,9 @@
 UPCOMING
 ----
 
+**Plugin**
+- Updated Batch to 3.4
+
 **iOS**
 - Added [experimental Swift Package Manager support](https://reactnative.dev/blog/2026/08/11/react-native-0.87#experimental-swift-package-manager-support-for-ios) for iOS, for apps built with React Native's SPM integration (`npx react-native spm`) instead of CocoaPods. Keep in mind this feature is still experimental and may break in upcoming React Native releases.
 
