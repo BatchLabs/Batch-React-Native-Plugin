@@ -234,7 +234,9 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
     public void push_clearBadge() { /* No effect on android */ }
 
     @Override
-    public void push_dismissNotifications() { /* No effect on android */ }
+    public void push_dismissNotifications() {
+        Batch.Push.dismissNotifications();
+    }
 
     @Override
     public void push_refreshToken() { /* No effect on android */ }
