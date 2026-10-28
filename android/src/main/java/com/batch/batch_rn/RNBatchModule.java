@@ -2,6 +2,7 @@ package com.batch.batch_rn;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -235,7 +236,11 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
 
     @Override
     public void push_dismissNotifications() {
-        Batch.Push.dismissNotifications();
+        NotificationManager manager = (NotificationManager) getReactApplicationContext()
+            .getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null) {
+            manager.cancelAll();
+        }
     }
 
     @Override
