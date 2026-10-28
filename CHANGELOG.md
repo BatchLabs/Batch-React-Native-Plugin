@@ -1,3 +1,10 @@
+UPCOMING
+----
+
+**Android**
+- Fixed an issue where `BatchPush.dismissNotifications` had no effect.
+
+
 12.3.0
 ----
 

@@ -89,9 +89,11 @@ export const BatchPush = {
   clearBadge: (): void => RNBatch.push_clearBadge(),
 
   /**
-   * Dismiss the app's shown notifications on iOS. Should be called on startup.
+   * Dismiss the app's shown notifications. Should be called on startup.
    *
-   * No effect on Android.
+   * Note: this dismisses every notification shown by the app, including the ones that do not come from Batch.
+   *
+   * On iOS, this also clears the app's badge.
    */
   dismissNotifications: (): void => RNBatch.push_dismissNotifications(),
 
