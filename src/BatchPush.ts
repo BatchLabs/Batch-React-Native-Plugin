@@ -131,11 +131,19 @@ export const BatchPush = {
   /**
    * Listen for push events
    *
+   * receive is a live receipt signal, not a display/open event or an inbox synchronization guarantee.
+   * On iOS it requires the plugin notification delegate and a foreground willPresent callback.
+   * On Android it observes Batch FCM delivery while the React Native module is alive, including when alerts are denied.
+   * It is not replayed after launch. Keep refresh-on-resume/polling for deliveries without a local callback.
+   *
    * dismiss and display are only supported on Android (you can still call addListener on those but it's a no-op).
    *
    * Push payload will vary depending on the platform.
    */
-  addListener(eventType: 'open' | 'dismiss' | 'display', callback: (payload: BatchPushEventPayload) => void): EmitterSubscription {
+  addListener(
+    eventType: 'open' | 'dismiss' | 'display' | 'receive',
+    callback: (payload: BatchPushEventPayload) => void
+  ): EmitterSubscription {
     if (Platform.OS === 'ios' && ['dismiss', 'display'].includes(eventType)) {
       // not supported by Batch iOS SDK
       return {
