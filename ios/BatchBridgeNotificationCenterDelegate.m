@@ -4,7 +4,7 @@
 
 #import "BatchBridgeNotificationCenterDelegate.h"
 
-#import <Batch/BatchPush.h>
+#import <Batch/Batch.h>
 
 @implementation BatchBridgeNotificationCenterDelegate
 {
@@ -77,6 +77,14 @@ static BOOL _batBridgeNotifDelegateShouldAutomaticallyRegister = true;
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
 {
+    NSDictionary *userInfo = notification.request.content.userInfo;
+    if (!BatchSDK.isOptedOut && [BatchPush isBatchPush:userInfo]) {
+        void (^observer)(NSDictionary *) = self.notificationReceived;
+        if (observer != nil) {
+            observer(userInfo);
+        }
+    }
+
     [BatchPush handleUserNotificationCenter:center willPresentNotification:notification willShowSystemForegroundAlert:self.showForegroundNotifications];
 
     id<UNUserNotificationCenterDelegate> chainDelegate = self.previousDelegate;
