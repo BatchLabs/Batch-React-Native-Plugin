@@ -10,10 +10,17 @@ let package = Package(
     platforms: [.iOS(.v15)],
     products: [
         // The product name must stay "ReactNativePlugin": RN's autolinker
-        // derives it from the npm package name and references it that way from
-        // the generated aggregate package. The *target* (i.e. the importable
-        // Swift/Clang module) is named "RNBatchPush" so consumers use the same
-        // `import RNBatchPush` under SPM as under CocoaPods.
+        // references every dependency by its "Swift name" and expects a
+        // product of that exact name in the aggregate package it generates.
+        // Since RN 0.88 that name is read from `swiftpmConfig.name` in our
+        // package.json (which pins it to "ReactNativePlugin"); without it
+        // 0.88 would derive it from the podspec and look for "RNBatchPush"
+        // instead. Older versions derive it from the npm package name, which
+        // yields the same "ReactNativePlugin".
+        //
+        // The *target* (i.e. the importable Swift/Clang module) is named
+        // "RNBatchPush" so consumers use the same `import RNBatchPush` under
+        // SPM as under CocoaPods.
         .library(name: "ReactNativePlugin", targets: ["RNBatchPush"]),
     ],
     dependencies: [
