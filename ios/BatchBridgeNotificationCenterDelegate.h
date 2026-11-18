@@ -31,6 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Default: true, but the plugin will automatically set that to false when calling "setShowForegroundNotification" from JavaScript.
 @property (assign) BOOL shouldUseChainedCompletionHandlerResponse;
 
+/// Optional live receipt observer. Does not control presentation or completion.
+@property (copy, nullable) void (^notificationReceived)(NSDictionary *userInfo);
+
 /// Previous delegate
 @property (weak, nullable) id<UNUserNotificationCenterDelegate> previousDelegate;
 

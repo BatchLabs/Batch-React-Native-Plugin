@@ -92,17 +92,27 @@ static RNBatchEventDispatcher* dispatcher = nil;
 }
 
 -(void)startObserving {
+    __weak RNBatchModule *weakSelf = self;
+    BatchBridgeNotificationCenterDelegate.sharedInstance.notificationReceived = ^(NSDictionary *userInfo) {
+        NSMutableDictionary *body = [@{@"isPositiveAction": @NO, @"pushPayload": userInfo} mutableCopy];
+        NSString *deeplink = [BatchPush deeplinkFromUserInfo:userInfo];
+        if (deeplink != nil) {
+            body[@"deeplink"] = deeplink;
+        }
+        [weakSelf sendEventWithName:@"notification_receive" body:body];
+    };
     [dispatcher setSendBlock:^(RNBatchEvent* event) {
         [self sendEventWithName:event.name body:event.body];
     }];
 }
 
 -(void)stopObserving {
+    BatchBridgeNotificationCenterDelegate.sharedInstance.notificationReceived = nil;
     [dispatcher setSendBlock:nil];
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    NSMutableArray *events = [NSMutableArray new];
+    NSMutableArray *events = [NSMutableArray arrayWithObject:@"notification_receive"];
 
     for (int i = BatchEventDispatcherTypeNotificationOpen; i <= BatchEventDispatcherTypeMessagingWebViewClick; i++) {
         NSString* eventName = [RNBatchEventDispatcher mapBatchEventDispatcherTypeToRNEvent:(BatchEventDispatcherType)i];

@@ -61,6 +61,8 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
 
     private final Map<String, BatchInboxFetcher> batchInboxFetcherMap;
 
+    private final RNBatchPushReceivedReceiver pushReceivedReceiver;
+
     private static final RNBatchEventDispatcher eventDispatcher = new RNBatchEventDispatcher();
 
     private static boolean isInitialized = false;
@@ -137,6 +139,19 @@ public class RNBatchModule extends NativeRNBatchModuleSpec {
         }
         this.batchInboxFetcherMap = new HashMap<>();
         eventDispatcher.setReactContext(reactContext);
+        pushReceivedReceiver = new RNBatchPushReceivedReceiver(reactContext);
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        pushReceivedReceiver.register();
+    }
+
+    @Override
+    public void invalidate() {
+        pushReceivedReceiver.unregister();
+        super.invalidate();
     }
 
     @Nullable

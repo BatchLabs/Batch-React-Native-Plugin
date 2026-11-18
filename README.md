@@ -34,6 +34,28 @@ npx react-native spm   # regenerates the SPM autolinking graph
 
 `ios/Package.swift` wires the native [Batch iOS SDK](https://github.com/BatchLabs/Batch-iOS-SDK) as a Swift package dependency.
 
+# Refreshing an inbox when a push arrives
+
+Subscribe to `receive` when you need a live hint to refresh an already-open inbox or unread badge:
+
+```ts
+const subscription = BatchPush.addListener('receive', () => {
+  // Refresh using your app's existing inbox loader.
+  // Coalesce concurrent requests and keep local read state.
+  refreshInbox();
+});
+
+// Remove the listener when its owner unmounts or the user changes.
+subscription.remove();
+```
+
+This event differs from `open` (the user tapped a push) and `display` (Android displayed an alert).
+Its payload is a `BatchPushEventPayload` with `isPositiveAction: false` and the native `pushPayload`.
+
+- **iOS:** emitted by the plugin's notification-center delegate when iOS calls `willPresentNotification` for a Batch push. It does not change foreground presentation or delegate chaining. There is no receipt event when iOS does not call that delegate, including deliveries with alerts denied. If automatic delegate registration is disabled, a custom delegate must forward `willPresentNotification` to `BatchBridgeNotificationCenterDelegate` to use this event.
+- **Android:** observes Batch FCM broadcasts while the React Native module is alive, independently of permission to display alerts. The receiver is protected by Google Play services' SEND permission and is removed when the module is invalidated. Custom native delivery paths that bypass that broadcast are not covered.
+- Receipt events are live hints, not persisted or replayed events. They do not start JavaScript in a killed app and do not confirm that inbox history is ready to fetch. Keep resume/reconnect refresh and a periodic or manual fallback for missed callbacks, server-only history changes, and temporary fetch failures.
+
 # Releases
 Release instructions are detailed in [RELEASING.md](https://github.com/BatchLabs/Batch-React-Native-Plugin/blob/master/RELEASING.md).
  
