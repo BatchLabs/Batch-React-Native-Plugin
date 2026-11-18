@@ -51,6 +51,9 @@
     "typedoc": "^0.26.4",
     "typescript": "^5.5.3"
   },
+  "swiftpmConfig": {
+    "name": "ReactNativePlugin"
+  },
   "codegenConfig": {
     "name": "RNBatchSpec",
     "type": "modules",
