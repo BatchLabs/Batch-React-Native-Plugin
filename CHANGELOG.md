@@ -1,3 +1,10 @@
+UPCOMING
+----
+
+**iOS**
+- Fixed Swift Package Manager autolinking with React Native 0.88.
+
+
 12.3.1
 ----
 
